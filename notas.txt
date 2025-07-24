@@ -1,0 +1,1 @@
+Lo mejor es que el backend y la app tengan sus propias dependencias
