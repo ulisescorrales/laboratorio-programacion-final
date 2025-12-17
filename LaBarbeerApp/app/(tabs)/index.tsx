@@ -1,11 +1,12 @@
-import { Text, View, ScrollView, ImageBackground } from "react-native";
+import { View, ScrollView, ImageBackground } from "react-native";
 import { Image } from "react-native";
 import { StyleSheet } from "react-native";
 import Cortes from "../componentes/cortes";
+import Cervezas from "../componentes/cervezas";
 
 export default function HomeScreen() {
   return (
-    <ImageBackground source={require("../../assets/images/fondobarberia2.jpg")}>
+    <ImageBackground source={require("../../assets/images/fondobarberia2.jpg")} style={{height:"100%"}} >
       <View>
         <Image
           source={require("../../assets/images/logo.png")}
@@ -13,6 +14,7 @@ export default function HomeScreen() {
         />
         <ScrollView>
           <Cortes />
+		  <Cervezas />
         </ScrollView>
       </View>
     </ImageBackground>
@@ -49,8 +51,8 @@ export const styles = StyleSheet.create({
     alignItems: "center",
   },
   image: {
-    height: 200,
-    width: 200,
+    height: 170,
+    width: 170,
     marginBottom: 10,
   },
   containerTitle: {
