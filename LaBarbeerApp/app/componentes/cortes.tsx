@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native'
+import { useRef } from "react";
 import { Text,GestureResponderEvent, Pressable, View, FlatList } from "react-native";
 import { Image } from "react-native";
 import { styles } from "../(tabs)/index";
@@ -39,9 +40,7 @@ export default function Cortes() {
       pathImagen: require("../../assets/images/cortes/corte4.jpg")
     },
   ];
-  // const cortes = colCortes.map((corte) => corte.pathImagen);
 
-  // const cortesRef = useRef(null);
   //
   // const cortes = [
   //   require("../../assets/images/cortes/corte1.jpg"),
