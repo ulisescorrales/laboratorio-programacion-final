@@ -4,7 +4,7 @@ import { StyleSheet } from "react-native";
 import Cortes from "@/components/cortes";
 import Cervezas from "@/components/cervezas";
 import Seccion from "@/components/seccion"
-import Producto from "../../components/interfaces/Producto"
+import Producto from "@/components/interfaces/Producto"
 export default function HomeScreen() {
   const colCortes: Producto[] = [
     {
@@ -36,9 +36,26 @@ export default function HomeScreen() {
 	  descripcion:"Corte sencillo y práctico, fácil de mantener, ideal para niños y adolescentes.",
       marca: null,
       precio: 11000,
-      promocion: null,
+    promocion: null,
       pathImagen: require("../../assets/images/cortes/corte4.jpg")
     },
+  ];
+  const colCervezas:Producto[]=[{
+	nombre: "Kuruf1",
+	descripcion:"Cerveza refrezcante",
+	marca:'Kuruf',
+	precio:300,
+	promocion:null,
+	pathImagen:
+  }]
+  const cervezas = [
+    require("@/assets/images/cervezas/kuruf1.jpg"),
+    require("@/assets/images/cervezas/kuruf2.jpg"),
+    require("@/assets/images/cervezas/kuruf3.jpg"),
+    require("@/assets/images/cervezas/kuruf4.jpg"),
+    require("@/assets/images/cervezas/kuruf5.jpg"),
+    require("@/assets/images/cervezas/kuruf6.jpg"),
+    require("@/assets/images/cervezas/kuruf7.jpg")
   ];
 
   return (
