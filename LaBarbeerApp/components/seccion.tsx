@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native'
-import { Text,GestureResponderEvent, Pressable, View, FlatList } from "react-native";
+import { Text, Pressable, View, FlatList } from "react-native";
 import { Image } from "react-native";
-import { styles } from "../(tabs)/index";
+import { styles } from "../app/(tabs)/index";
 import Producto from "@/components/interfaces/Producto";
 
 type seccionProps={

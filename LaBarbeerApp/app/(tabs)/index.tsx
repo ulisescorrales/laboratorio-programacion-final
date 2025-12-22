@@ -1,9 +1,9 @@
 import { View, ScrollView, ImageBackground } from "react-native";
 import { Image } from "react-native";
 import { StyleSheet } from "react-native";
-import Cortes from "../componentes/cortes";
-import Cervezas from "../componentes/cervezas";
-import Seccion from "../componentes/seccion"
+import Cortes from "@/components/cortes";
+import Cervezas from "@/components/cervezas";
+import Seccion from "@/components/seccion"
 import Producto from "../../components/interfaces/Producto"
 export default function HomeScreen() {
   const colCortes: Producto[] = [
@@ -40,16 +40,6 @@ export default function HomeScreen() {
       pathImagen: require("../../assets/images/cortes/corte4.jpg")
     },
   ];
-  const cortes = [
-    require("../../assets/images/cervezas/kuruf1.jpg"),
-    require("../../assets/images/cervezas/kuruf2.jpg"),
-    require("../../assets/images/cervezas/kuruf3.jpg"),
-    require("../../assets/images/cervezas/kuruf4.jpg"),
-    require("../../assets/images/cervezas/kuruf5.jpg"),
-    require("../../assets/images/cervezas/kuruf6.jpg"),
-    require("../../assets/images/cervezas/kuruf7.jpg")]
-
-  
 
   return (
     <ImageBackground source={require("../../assets/images/fondobarberia2.jpg")} style={{height:"100%"}} >
