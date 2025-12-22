@@ -2,7 +2,7 @@ import { StyleSheet } from 'react-native'
 import { useRef } from "react";
 import { Text,GestureResponderEvent, Pressable, View, FlatList } from "react-native";
 import { Image } from "react-native";
-import { styles } from "../(tabs)/index";
+import { styles } from "../app/(tabs)/index";
 import Producto from "@/components/interfaces/Producto";
 
 export default function Cortes() {
@@ -13,7 +13,7 @@ export default function Cortes() {
       marca: null,
       precio: 10000,
       promocion: null,
-      pathImagen: require("../../assets/images/cortes/corte1.jpg")
+      pathImagen: require("@/assets/images/cortes/corte1.jpg")
     },
     {
       nombre: "Corte a tijera",
@@ -21,7 +21,7 @@ export default function Cortes() {
       marca: null,
       precio: 12000,
       promocion: null,
-      pathImagen: require("../../assets/images/cortes/corte2.jpg")
+      pathImagen: require("@/assets/images/cortes/corte2.jpg")
     },
     {
       nombre: "Corte + afeitada",
@@ -29,7 +29,7 @@ export default function Cortes() {
       marca: null,
       precio: 15000,
       promocion: null,
-      pathImagen: require("../../assets/images/cortes/corte3.jpg")
+      pathImagen: require("@/assets/images/cortes/corte3.jpg")
     },
     {
       nombre: "Estilo urbano",
@@ -37,18 +37,10 @@ export default function Cortes() {
       marca: null,
       precio: 11000,
       promocion: null,
-      pathImagen: require("../../assets/images/cortes/corte4.jpg")
+      pathImagen: require("@/assets/images/cortes/corte4.jpg")
     },
   ];
 
-  //
-  // const cortes = [
-  //   require("../../assets/images/cortes/corte1.jpg"),
-  //   require("../../assets/images/cortes/corte2.jpg"),
-  //   require("../../assets/images/cortes/corte3.jpg"),
-  //   require("../../assets/images/cortes/corte4.jpg"),
-  // ];
-  //
   return (
     <View style={styles.containerCenter}>
       <View style={styles.containerTitle}>
