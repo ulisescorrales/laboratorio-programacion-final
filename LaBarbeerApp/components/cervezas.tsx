@@ -6,6 +6,7 @@ import { styles } from "../app/(tabs)/index";
 export default function Cervezas() {
   
 
+
   const cortes = [
     require("@/assets/images/cervezas/kuruf1.jpg"),
     require("@/assets/images/cervezas/kuruf2.jpg"),
