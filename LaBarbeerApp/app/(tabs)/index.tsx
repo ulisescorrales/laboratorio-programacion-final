@@ -40,14 +40,6 @@ export default function HomeScreen() {
       pathImagen: require("../../assets/images/cortes/corte4.jpg")
     },
   ];
-  const colCervezas:Producto[]=[{
-	nombre: "Kuruf1",
-	descripcion:"Cerveza refrezcante",
-	marca:'Kuruf',
-	precio:300,
-	promocion:null,
-	pathImagen:
-  }]
   const cervezas = [
     require("@/assets/images/cervezas/kuruf1.jpg"),
     require("@/assets/images/cervezas/kuruf2.jpg"),
