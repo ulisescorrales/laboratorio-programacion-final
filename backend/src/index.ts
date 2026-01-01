@@ -4,7 +4,7 @@ import {Router} from 'express'
 import cors from 'cors';
 import env from 'dotenv';
 const port = 3000;
-const backend_path=process.env.BACKEND_PATH||'http:localhost:3000'
+const backend_path=process.env.BACKEND_PATH||'http://192.168.1.12:3000'
 
 const app:Express = express();
 app.use(cors({ origin: 'http://localhost:4200' }));
