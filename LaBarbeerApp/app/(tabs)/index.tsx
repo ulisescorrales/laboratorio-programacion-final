@@ -1,8 +1,8 @@
 import { View, ScrollView, ImageBackground } from "react-native";
 import { Image } from "react-native";
 import { StyleSheet } from "react-native";
-import Cortes from "@/components/cortes";
-import Cervezas from "@/components/cervezas";
+// import Cortes from "@/components/cortes";
+// import Cervezas from "@/components/cervezas";
 import Seccion from "@/components/seccion"
 import Producto from "@/components/interfaces/Producto"
 export default function HomeScreen() {
