@@ -25,7 +25,7 @@ export default function Seccion({title,colProductos}:seccionProps){
 		  (<View style={{ margin: 10 }}>
             <Pressable >
               <Image
-                source={item.pathImagen}
+                source={{uri:item.pathImagen}}
                 key={index}
                 style={[styles.image]}
                 borderRadius={16}
