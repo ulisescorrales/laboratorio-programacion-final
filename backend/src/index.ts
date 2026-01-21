@@ -15,6 +15,36 @@ app.use("/api/",router)
 
 app.use(express.static("assets"))
 
+let horaApertura=10;
+let horaCierre=21;
+const turnosConfirmados:any={
+	'2026-01-06':[new Date(2026,1,6,17,0).toTimeString()]
+}
+// console.log(turnosConfirmados)
+const turnosTemplate:any=[];
+const date = new Date();
+for(let i=horaApertura;i<horaCierre;i++){
+	let tempTime1=new Date(date.getFullYear(),date.getMonth(),date.getDay(),i,0)
+	turnosTemplate.push({
+		fecha:null,
+		hora:tempTime1.toTimeString(),
+		time:tempTime1.toJSON()
+		// usuario:null
+	})
+	let tempTime2=new Date(date.getFullYear(),date.getMonth(),date.getDay(),i,30)
+	turnosTemplate.push({
+		fecha:null,
+		hora:tempTime2.toTimeString(),
+		time:tempTime2.toJSON()
+		// usuario:null
+	})
+}
+// console.log(turnosTemplate)
+//Fecha 
+//hora
+///Usuario
+const turnos=[]
+
 const colCervezas = [
 	{
 		nombre: "Copa de Kuruf",
@@ -114,6 +144,68 @@ router.get("/cervezas",(req,res)=>{
 })
 router.get("/cortes",(req,res)=>{
 	res.status(200).json(colCortes);
+})
+router.get("/turnos/:fecha",(req,res)=>{
+	const fecha=req.params.fecha;
+	//Controlar estructura: año-mes-día
+	if (!/^\d{4}-\d{2}-\d{2}$/.test(fecha)){
+		res.status(400).send("Error, fecha debe estar en formato aaaa-mm-dd")
+	} else{
+		const partesFecha=fecha.split("-");
+		const anio=Number(partesFecha[0]);
+
+		//Meses van del 0 al 11
+		const mes=Number(partesFecha[1])-1;
+		const dia=Number(partesFecha[2]);
+
+		const today = new Date();
+		const anioActual=today.getFullYear()
+		const mesActual=today.getMonth();
+
+		const entradaDate=new Date(anio,mes,dia)
+		
+		// console.log(entradaDate)
+
+		if(anioActual!=anio){
+			res.status(400).send("Año fuera de rango")
+		}else if((mesActual+1)<mes || mes<mesActual){
+			res.status(400).send("Mes fuera de rango")
+		}else{
+			//TODO: corroborar feriado y dias no laborables
+			const turnosDisponibles=turnosTemplate.filter((turno:any)=>{
+				const horasConfirmadas=turnosConfirmados[fecha]//si para la fecha no hay hora reservada, retorna vacío
+				// console.log(horasConfirmadas)
+				if(horasConfirmadas!=undefined){
+					const longitud=horasConfirmadas.length
+					let encontrado=false;
+					let i=0;
+					while(i<longitud && !encontrado){
+						// console.log(horasConfirmadas[i] + " ---- " + turno.hora)
+						if(turno.hora === horasConfirmadas[i]){
+							return false
+						}
+						i++;
+					}
+				}
+				return true;
+			} )
+			for(let i=0;i<turnosDisponibles.length;i++){
+				turnosDisponibles[i].fecha=fecha;
+				// console.log(fecha)
+			}
+			res.status(200).json(turnosDisponibles)
+		}
+	}
+})
+router.post("/turnos/",(req,res)=>{
+	const fechaTurno=req.body.fechaTurno;
+	const horaTurno=req.body.horaTurno;
+
+	//Comprobar entrada
+
+
+	console.log(fechaTurno +" --- " + horaTurno)
+	res.status(200).send("OK?")
 })
 
 app.listen(port, () => {
