@@ -1,6 +1,7 @@
 import { LocaleConfig, Calendar } from 'react-native-calendars';
-import { View, Text } from 'react-native';
+import { View, Text, Button , ScrollView } from 'react-native';
 import { useState, useEffect } from 'react';
+import {router} from 'expo-router';
 export default function TurnosCliente() {
 	LocaleConfig.locales['es'] = {
 		monthNames: [
@@ -82,14 +83,16 @@ export default function TurnosCliente() {
 		}
 	}, []);
 
+	const [horas, setHoras] = useState<Date[]>([]);
 	return (
 		<View>
+			<Text>Seleccione la fecha</Text>
 			<Calendar
 				style={{ marginTop: 50 }}
-				// Replace default arrows with custom ones (direction can be 'left' or 'right')
 				markedDates={disabledDays}
 				minDate={today}
 				onDayPress={(day) => {
+					//Borrar selección anterior y seleccionar nuevo día
 					const keys = Object.keys(disabledDays);
 					const lastKey = keys[keys.length - 1];
 					delete disabledDays[lastKey];
@@ -102,10 +105,41 @@ export default function TurnosCliente() {
 					setDisabledDays((prev: any) => ({
 						...prev
 					}));
+					//Consultar turnos disponibles para dicho día
+					fetch(
+						'http://192.168.1.12:3000/api/turnos/' + day.dateString
+					).then((data) => {
+						if (data.status == 200) {
+							data.json().then((json) => {
+								let longitud = json.length;
+								for (let i = 0; i < longitud; i++) {
+									let date = new Date(json[i].time);
+									horas.push(date);
+								}
+								setHoras([...horas]);
+							});
+						} else {
+							console.log('TURNOS ERROR');
+						}
+					});
 				}}
 				disableArrowLeft={true}
 				disableArrowRight={true}
 			/>
+			<Text>Seleccione la hora</Text>
+
+			<ScrollView>
+				{horas.map((hora, index) => {
+					return <Button title={hora.toTimeString()} key={index} 
+					onPress={()=>router.push({
+						pathname:'/confirmar_turno',
+						params:{
+							hora:hora.toTimeString()
+						}
+					})}
+					/>;
+				})}
+			</ScrollView>
 		</View>
 	);
 }
