@@ -6,13 +6,19 @@ import env from 'dotenv';
 const port = 3000;
 const backend_path=process.env.BACKEND_PATH||'http://192.168.1.12:3000'
 
+const jwt=require('jsonwebtoken');
+const secreto='secreto'
+const bcrypt=require('bcrypt')
+const saltRounds=10;
+
+const users=new Map()
+
 const app:Express = express();
 app.use(cors({ origin: 'http://localhost:4200' }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 const router=Router();
 app.use("/api/",router)
-
 app.use(express.static("assets"))
 
 let horaApertura=10;
@@ -207,8 +213,65 @@ router.post("/turnos/",(req,res)=>{
 	console.log(fechaTurno +" --- " + horaTurno)
 	res.status(200).send("OK?")
 })
+router.post("/login/crear", (req,res)=>{
+	//Genera un par usuario, contraseña
+	const user=req.body.user;
+	const password=req.body.password
+	if(user){
+		if(password){
+			bcrypt.genSalt(saltRounds,(err:any,salt:any)=>{
+				bcrypt.hash(password,salt,(err:any,hash:any)=>{
+					if(err){
+						res.status(500).send("Error")
+						console.log("Error: "+err)
+					}else{
+						users.set(user,hash)
+						res.status(200).send("OK\n")
+					}
+				})
+			})
+		}else{
+			console.log("Falta password en el body")
+		}
+	}else{
+		console.log("Falta user en el body")
+	}
+
+})
+router.post("/login/auth",(req,res)=>{
+	//Authentica y crea un token
+	const user=req.body.user
+	const password=req.body.password
+	if(user && password){
+		console.log("Comparar en "+user+" con :" +users.get(user))
+		bcrypt.compare(password,users.get(user),(err:any,result:any)=>{
+			if(result){
+				const token=jwt.sign({
+					user: user,
+					role:'normal'
+				},secreto,{expiresIn:'10m'})
+				res.status(200).send(token)
+			}else{
+				res.status(400).send("Error de autenticación");
+			}
+		})
+
+	}else{
+		res.status(500).send("Falta usuario o contraseña")
+	}
+})
+router.post("/login/verificar",(req,res)=>{
+	const authorization=req.headers.authorization
+	if(authorization){
+		const token=authorization.split(" ")[1]
+		const decodificado=jwt.verify(token,secreto,(err:any,decoded:any)=>{
+			res.status(200).send(decoded['user'])
+		})
+	}else{
+		res.status(500).send("Falta el token\n")
+	}
+})
 
 app.listen(port, () => {
 	console.log('Server started on port ' + port);
-}
-		  );
+});
