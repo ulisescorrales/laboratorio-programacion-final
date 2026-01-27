@@ -1,3 +1,3 @@
 cd backend
-nvim +'vsplit | terminal npm run dev'  + "wincmd l | terminal bash"
+nvim +'split | terminal npm run dev'  + "wincmd l | terminal bash"
 cd ..
