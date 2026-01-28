@@ -1,2 +1,4 @@
 curl localhost:3000/api/login/crear -H Content-Type: application/json -X POST --data '{user:ulisescorrales,password:1234}'
 curl localhost:3000/api/login/auth -H Content-Type: application/json -X POST --data '{user:ulisescorrales,password:1234}'
+curl http://192.168.10.100:3000/api/cortes/
+curl http://192.168.10.100:3000/api/cervezas/
