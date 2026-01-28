@@ -53,3 +53,10 @@ CREATE TABLE Trabaja_cuando(
     FOREIGN KEY (hora_inicio,hora_fin,dia) REFERENCES Horario(hora_inicio,hora_fin,dia)
 ); 
 COMMIT;
+------------------------Nuevo
+--Usuarios y roles
+CREATE TABLE rol(nombre_rol VARCHAR(20),PRIMARY KEY (nombre_rol));
+CREATE TABLE usuario(nombre_usuario VARCHAR(100),hash VARCHAR(60), PRIMARY KEY(nombre_usuario));
+CREATE TABLE usuario_rol(nombre_usuario VARCHAR(100) , nombre_rol VARCHAR(20),PRIMARY KEY (nombre_usuario,nombre_rol), FOREIGN KEY (nombre_usuario) REFERENCES usuario(nombre_usuario),FOREIGN KEY (nombre_rol) REFERENCES rol(nombre_rol));
+--Roles iniciales
+INSERT INTO rol VALUES ('normal'),('admin')
