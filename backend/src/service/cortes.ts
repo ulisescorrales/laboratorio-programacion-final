@@ -8,3 +8,6 @@ export const getCortesJSON=()=>{
 		throw new Error("Error de conexión al a BD")
 	}
 }
+export const registrarCorteService=(nombre:string,descripcion:string,marca:string,precio:number,pathImagen:string)=>{
+	cortesRepository.insertarCorteBD(nombre,descripcion,marca,precio,pathImagen)
+}
