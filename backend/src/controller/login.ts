@@ -1,65 +1,73 @@
-const secreto='secreto'
-const saltRounds=10;
-const jwt=require('jsonwebtoken');
-const bcrypt=require('bcrypt')
-const users=new Map()
+import * as loginService from '../service/login'
 import { Request, Response } from 'express'
 
-export const crearUsuario=(req:Request,res:Response)=>{
+export const crearUsuario=async(req:Request,res:Response)=>{
 	//Genera un par usuario, contraseña
 	const user=req.body.user;
 	const password=req.body.password
 	if(user){
 		if(password){
-			bcrypt.genSalt(saltRounds,(err:any,salt:any)=>{
-				bcrypt.hash(password,salt,(err:any,hash:any)=>{
-					if(err){
-						res.status(500).send("Error")
-						console.log("Error: "+err)
-					}else{
-						users.set(user,hash)
-						res.status(200).send("OK\n")
-					}
-				})
-			})
+			try{
+				await loginService.generarUsuario(user,password)
+				res.status(200).send("OK")
+			}catch (err){
+				res.status(500).send("Error")
+			}
 		}else{
-			console.log("Falta password en el body")
+			res.status(500).send("Falta password en el body")
 		}
 	}else{
-		console.log("Falta user en el body")
+		res.status(500).send("Falta user en el body")
 	}
 }
 
-export const autenticarUsuario= (req:Request,res:Response)=>{
+export const autenticarUsuario=async(req:Request,res:Response)=>{
 	//Authentica y crea un token
 	const user=req.body.user
 	const password=req.body.password
 	if(user && password){
-		console.log("Comparar en "+user+" con :" +users.get(user))
-		bcrypt.compare(password,users.get(user),(err:any,result:any)=>{
-			if(result){
-				const token=jwt.sign({
-					user: user,
-					role:'normal'
-				},secreto,{expiresIn:'10m'})
-				res.status(200).send(token)
-			}else{
-				res.status(400).send("Error de autenticación");
-			}
-		})
-
+		try{
+			await loginService.compararContrasenias(user,password);
+			const token=loginService.generarToken(user,'normal')
+			res.status(200).json({
+				token:token
+			})
+		}catch{
+			res.status(401).send("Contraseña incorrecta")
+		}
 	}else{
 		res.status(500).send("Falta usuario o contraseña")
 	}
 }
 export const verificarUsuario=(req:Request,res:Response)=>{
-	const authorization=req.headers.authorization
-	if(authorization){
-		const token=authorization.split(" ")[1]
-		const decodificado=jwt.verify(token,secreto,(err:any,decoded:any)=>{
-			res.status(200).send(decoded['user'])
-		})
+	// const authorization=req.headers.authorization
+	// if(authorization){
+	// 	const token=authorization.split(" ")[1]
+	// 	const decodificado=jwt.verify(token,secreto,(err:any,decoded:any)=>{
+	// 		res.status(200).send(decoded['user'])
+	// 	})
+	// }else{
+	// 	res.status(500).send("Falta el token\n")
+	// }
+}
+//
+export const estaLogueado=(req:any,res:any,next:any)=>{
+	if(req.headers.authorization!=undefined){
+		next();
 	}else{
-		res.status(500).send("Falta el token\n")
+		res.send(401).send("No está logueado")
+	}
+}
+export const esAdmin=async (req:any,res:any,next:any)=>{
+	const token=req.headers.authorization.split[' '][1]
+	if(token!=undefined){
+		const role= await loginService.getRole(token);
+		if(role==='admin'){
+			next()
+		}else{
+			res.status(401).send("No posees rol de administrador")
+		}
+	}else{
+		res.status(401).send("Falta el token")
 	}
 }
