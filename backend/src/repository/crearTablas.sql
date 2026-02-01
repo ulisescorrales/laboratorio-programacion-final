@@ -60,3 +60,112 @@ CREATE TABLE usuario(nombre_usuario VARCHAR(100),hash VARCHAR(60), PRIMARY KEY(n
 CREATE TABLE usuario_rol(nombre_usuario VARCHAR(100) , nombre_rol VARCHAR(20),PRIMARY KEY (nombre_usuario,nombre_rol), FOREIGN KEY (nombre_usuario) REFERENCES usuario(nombre_usuario),FOREIGN KEY (nombre_rol) REFERENCES rol(nombre_rol));
 --Roles iniciales
 INSERT INTO rol VALUES ('normal'),('admin')
+
+CREATE TABLE cerveza (
+    nombre_cerveza VARCHAR(100) PRIMARY KEY,
+    descripcion VARCHAR (255) NOT NULL,
+    marca VARCHAR(100) DEFAULT NULL,
+    precio INT NOT NULL,
+    promocion VARCHAR(100) DEFAULT NULL,
+    pathImagen VARCHAR(255) NOT NULL
+);
+CREATE TABLE corte (
+    nombre_cerveza VARCHAR(100) PRIMARY KEY,
+    descripcion VARCHAR (255) NOT NULL,
+    marca VARCHAR(100) DEFAULT NULL,
+    precio INT NOT NULL,
+    promocion VARCHAR(100) DEFAULT NULL,
+    pathImagen VARCHAR(255) NOT NULL
+);
+INSERT INTO corte  VALUES
+(
+  'Corte Clásico',
+  'Corte tradicional y prolijo, ideal para quienes buscan un look formal y atemporal. Se trabaja principalmente con tijera y terminaciones limpias.',
+  NULL,
+  10000,
+  NULL,
+  '/images/cortes/corte1.jpg'
+),
+(
+  'Corte a tijera',
+  'Corte realizado íntegramente con tijera, logrando un acabado natural, con volumen y movimiento.',
+  NULL,
+  12000,
+  NULL,
+  '/images/cortes/corte2.jpg'
+),
+(
+  'Corte + afeitada',
+  'Todo el cabello al mismo largo, ofreciendo un estilo simple y uniforme.',
+  NULL,
+  15000,
+  NULL,
+  '/images/cortes/corte3.jpg'
+),
+(
+  'Estilo urbano',
+  'Corte sencillo y práctico, fácil de mantener, ideal para niños y adolescentes.',
+  NULL,
+  11000,
+  NULL,
+  '/images/cortes/corte4.jpg'
+);
+INSERT INTO cerveza VALUES
+(
+  'Copa de Kuruf',
+  'Una copa de kuruf tradicional',
+  'kuruf',
+  2000,
+  NULL,
+  '/images/cervezas/kuruf1.jpg'
+),
+(
+  'Kuruf edición verano',
+  'Cerveza rubia para refrezcarse',
+  'kuruf',
+  2500,
+  NULL,
+  '/images/cervezas/kuruf2.jpg'
+),
+(
+  'Kuruf invernal',
+  'Cerveza refrezcante',
+  'kuruf',
+15000,
+  NULL,
+  '/images/cervezas/kuruf3.jpg'
+),
+(
+  'Kuruf negra',
+  'Verión negra para deleitar',
+  'kuruf',
+  3000,
+  NULL,
+  '/images/cervezas/kuruf4.jpg'
+),
+(
+  'Edición Yellow',
+  'Edición limitada con sabor agregado',
+  'kuruf',
+  3400,
+  NULL,
+  '/images/cervezas/kuruf5.jpg'
+),
+(
+  'Edición Limay',
+  'Cerveza con agregado de limón',
+  'kuruf',
+  4000,
+  NULL,
+  '/images/cervezas/kuruf6.jpg'
+),
+(
+  'Edición marítima',
+  'Edición limitada para tomar en la playa',
+  'kuruf',
+  3200,
+  NULL,
+  '/images/cervezas/kuruf7.jpg'
+);
+
+
