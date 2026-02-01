@@ -1,13 +1,17 @@
 import * as cortesRepository from '../repository/cortes'
 
-export const getCortesJSON=()=>{
+export const getCortesJSON=async ()=>{
 	try{
-		const cortes=cortesRepository.getCortesBD()
+		const cortes=await cortesRepository.getCortesBD()
 		return cortes
-	}catch(err){
-		throw new Error("Error de conexión al a BD")
+	}catch(err:any){
+		throw new Error(err.message)
 	}
 }
-export const registrarCorteService=(nombre:string,descripcion:string,marca:string,precio:number,pathImagen:string)=>{
-	cortesRepository.insertarCorteBD(nombre,descripcion,marca,precio,pathImagen)
+export const registrarCorteService=async(nombre:string,descripcion:string,marca:string,precio:number,pathImagen:string)=>{
+	try{
+		await cortesRepository.insertarCorteBD(nombre,descripcion,marca,precio,pathImagen)
+	}catch(err:any){
+		throw new Error(err.message)
+	}
 }
