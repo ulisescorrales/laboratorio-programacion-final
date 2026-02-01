@@ -4,10 +4,10 @@ const secreto='secreto'
 const bcrypt=require('bcrypt')
 const saltRounds=10;
 
-export const compararContrasenias=async (user:string,password:string)=>{
-	return new Promise((reject,resolv)=>{
+export const compararContrasenias=async(user:string,password:string)=>{
+	return new Promise(async(resolv,reject)=>{
 		try {
-			const hash=loginRepository.getHash(user)
+			const hash= await loginRepository.getHash(user)
 			bcrypt.compare(password,hash,(err:any,result:any)=>{
 			if(err){
 				reject(err)
@@ -24,18 +24,23 @@ export const compararContrasenias=async (user:string,password:string)=>{
 		}
 	})
 }
-export const generarUsuario=(user:string,password:string)=>{
+export const generarUsuario=async(user:string,password:string)=>{
 	return new Promise((resolv,reject)=>{
 		bcrypt.genSalt(saltRounds,(err:any,salt:any)=>{
 			if(err){
 				reject(err)
 			}
-			bcrypt.hash(password,salt,(err:any,hash:any)=>{
+			bcrypt.hash(password,salt,async (err:any,hash:any)=>{
 				if(err){
 					reject(err)
 				}else{
-					loginRepository.insertarUser(user,hash)
-					resolv("Usuario creado")
+					try{
+						await loginRepository.insertarUser(user,hash)
+						resolv("Usuario creado")
+					}catch(err){
+						console.log("Service - login: "+ err)
+						reject(err)
+					}
 				}
 			})
 		})
@@ -53,6 +58,19 @@ export const getRole=(token:string)=>{
 		jwt.verify(token,secreto,(err:any,decoded:any)=>{
 			if(err){
 				reject(err)
+			}else{
+				resolv(decoded)
+			}
+		})
+	})
+}
+export const getUserRole=(token:string)=>{
+	//Reciben un token jwt, verifica y retorna usuario y rol asignado
+	return new Promise((resolv,reject)=>{
+		jwt.verify(token,secreto,(err:any,decoded:any)=>{
+			if(err){
+				console.log(err)
+				reject("Error en jwt")
 			}else{
 				resolv(decoded)
 			}
