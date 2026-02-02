@@ -3,6 +3,7 @@ import { View, Text, Button , ScrollView } from 'react-native';
 import { useState, useEffect } from 'react';
 import {router} from 'expo-router';
 export default function TurnosCliente() {
+	const backendHost=process.env.EXPO_PUBLIC_BACKEND_HOST
 	LocaleConfig.locales['es'] = {
 		monthNames: [
 			'Enero',
@@ -107,7 +108,7 @@ export default function TurnosCliente() {
 					}));
 					//Consultar turnos disponibles para dicho día
 					fetch(
-						'http://192.168.1.12:3000/api/turnos/' + day.dateString
+						backendHost + day.dateString
 					).then((data) => {
 						if (data.status == 200) {
 							data.json().then((json) => {
