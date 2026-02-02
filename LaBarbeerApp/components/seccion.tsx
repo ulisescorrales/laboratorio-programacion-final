@@ -10,7 +10,7 @@ type seccionProps={
 }
 
 export default function Seccion({title,colProductos}:seccionProps){
-
+  const backendHost=process.env.EXPO_PUBLIC_BACKEND_HOST
   return (
     <View style={styles.containerCenter}>
       <View style={styles.containerTitle}>
@@ -25,7 +25,7 @@ export default function Seccion({title,colProductos}:seccionProps){
 		  (<View style={{ margin: 10 }}>
             <Pressable >
               <Image
-                source={{uri:item.pathImagen}}
+                source={{uri:backendHost+item.pathImagen}}
                 key={index}
                 style={[styles.image]}
                 borderRadius={16}

@@ -1,5 +1,6 @@
 import MapView, { Marker } from 'react-native-maps';
-import { View, ScrollView, ImageBackground, Text } from 'react-native';
+import {useRouter} from 'expo-router';
+import { View, Button, ScrollView, ImageBackground, Text } from 'react-native';
 import { Image } from 'react-native';
 import { StyleSheet } from 'react-native';
 import { useState, useEffect } from 'react';
@@ -8,16 +9,20 @@ import { useState, useEffect } from 'react';
 import Seccion from '@/components/seccion';
 import Producto from '@/components/interfaces/Producto';
 export default function HomeScreen() {
+	const router = useRouter();
+	// useRouter()
 	const [colCortes, setColCortes] = useState<Producto[]>([]);
 	const [colCervezas, setColCervezas] = useState<Producto[]>([]);
 
 	const latitud = -38.95857;
 	const longitud = -68.0548;
+
+	const backendHost=process.env.EXPO_PUBLIC_BACKEND_HOST
 	useEffect(() => {
-		fetch('http://192.168.1.12:3000/api/cervezas')
+		fetch(backendHost+'/api/cervezas')
 			.then((data) => data.json())
 			.then((json) => setColCervezas(json));
-		fetch('http://192.168.1.12:3000/api/cortes')
+		fetch(backendHost+'/api/cortes')
 			.then((data) => data.json())
 			.then((json) => setColCortes(json));
 	}, []);
@@ -27,10 +32,16 @@ export default function HomeScreen() {
 			style={{ height: '100%' }}
 		>
 			<View>
-				<Image
-					source={require('../../assets/images/logo.png')}
-					style={styles.titleContainer}
-				/>
+				<View style={{flexDirection:'row',alignItems:'center',justifyContent:'space-between'}}>
+					<Image
+						source={require('../../assets/images/logo.png')}
+						style={styles.titleContainer}
+					/>
+					<Button title={'Login'}
+					onPress={()=>router.push('/login')}
+					/>
+				</View>
+
 				<ScrollView>
 					<Seccion
 						title={'Nuestros Cortes'}
@@ -45,8 +56,12 @@ export default function HomeScreen() {
 						<View style={styles.containerTitle}>
 							<Text style={styles.title}>Dónde estamos</Text>
 						</View>
-						<Text style={styles.textDomicilio}>Chubut 322, Neuquén capital</Text>
-						<Text style={styles.textDomicilio}>Lunea a viernes de 9 a 21 hs.</Text>
+						<Text style={styles.textDomicilio}>
+							Chubut 322, Neuquén capital
+						</Text>
+						<Text style={styles.textDomicilio}>
+							Lunea a viernes de 9 a 21 hs.
+						</Text>
 						<MapView
 							style={styles.map}
 							loadingEnabled={true}
@@ -123,10 +138,10 @@ export const styles = StyleSheet.create({
 		flexWrap: 'wrap',
 		justifyContent: 'space-around'
 	},
-	textDomicilio:{
-		color:'white',
-		fontSize:16,
-		marginLeft:8,
-		backgroundColor:'black'
+	textDomicilio: {
+		color: 'white',
+		fontSize: 16,
+		marginLeft: 8,
+		backgroundColor: 'black'
 	}
 });
