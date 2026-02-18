@@ -169,3 +169,4 @@ INSERT INTO cerveza VALUES
 );
 
 
+ INSERT INTO usuario_rol VALUES('ulisescorrales','admin')

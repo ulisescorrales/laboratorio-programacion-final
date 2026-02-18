@@ -77,3 +77,11 @@ export const getUserRole=(token:string)=>{
 		})
 	})
 }
+export const getRoleUser=async(user:string)=>{
+	try{
+		const role:string=await loginRepository.getRoleBD(user)
+		return role;
+	}catch(err:any){
+		throw new Error(err.message)
+	}
+}

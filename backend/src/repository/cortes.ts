@@ -4,7 +4,7 @@ import { writeFile } from 'node:fs';
 
 export const getCortesBD=()=>{
 	return new Promise((resolv,reject)=>{
-		pool.query('SELECT nombre_corte,descripcion,marca,precio,promocion,pathImagen FROM corte;',(err,result)=>{
+		pool.query('SELECT nombre_corte as nombre,descripcion,marca,precio,promocion,pathImagen FROM corte;',(err,result)=>{
 			if(err) {
 				console.log(err);
 				reject('Error obteniendo cortes en la BD')

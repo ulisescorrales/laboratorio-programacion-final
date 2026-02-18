@@ -8,6 +8,15 @@ export const getCortes=async (req:any,res:any)=>{
 		res.status(500).send("Error obteniendo cortes")
 	}
 }
+export const getCorte=async(req:any,res:any)=>{
+	const nombre=req.params.nombre
+	try{
+		const corte=await cortesService.getCorteJSON(nombre);
+		res.statuc(200).json(corte)
+	}catch(err){
+		res.status(500).send("Error obteniendo el corte '"+nombre+"'")
+	}
+}
 
 export const registrarCorte=async(req:any,res:any)=>{
 	const nombre=req.body.nombre;

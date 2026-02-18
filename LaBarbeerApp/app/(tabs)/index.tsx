@@ -1,4 +1,5 @@
 import MapView, { Marker } from 'react-native-maps';
+import { useLocalSearchParams } from 'expo-router';
 import {useRouter} from 'expo-router';
 import { View, Button, ScrollView, ImageBackground, Text } from 'react-native';
 import { Image } from 'react-native';
@@ -8,7 +9,12 @@ import { useState, useEffect } from 'react';
 // import Cervezas from "@/components/cervezas";
 import Seccion from '@/components/seccion';
 import Producto from '@/components/interfaces/Producto';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Toast from 'react-native-toast-message';
 export default function HomeScreen() {
+	// const isAdmin=useState<boolean>(false);
+    const { role } = useLocalSearchParams();
+	const [rol, setRol]=useState<string|null>(null)
 	const router = useRouter();
 	// useRouter()
 	const [colCortes, setColCortes] = useState<Producto[]>([]);
@@ -17,8 +23,44 @@ export default function HomeScreen() {
 	const latitud = -38.95857;
 	const longitud = -68.0548;
 
+
 	const backendHost=process.env.EXPO_PUBLIC_BACKEND_HOST
 	useEffect(() => {
+		//Fetch de login
+		AsyncStorage.getItem('token', (err, result) => {
+			if (result) {
+				fetch(backendHost + '/api/login/verificar', {
+					method: 'GET',
+					headers: {
+						'Content-Type': 'application/json',
+						'Authorization': 'Bearer '+result
+					},
+				}).then(data=>{
+					// console.log(data.status)
+					if(data.status==200){
+						//Rehusar la sesión activa
+						Toast.show({
+							type: 'success',
+							text1: 'Su sesión sigue activa',
+							position: 'bottom',
+						});
+						data.json().then(json=>{
+							setRol(json.role)
+						})
+					}else{
+						//Borrar en storage
+						AsyncStorage.removeItem("token",(err)=>{})
+					}
+				});
+			}else{
+				if(role){
+					console.log(role)
+				}
+			}
+		});
+	}, []);
+	useEffect(() => {
+		//Fetch de productos
 		fetch(backendHost+'/api/cervezas')
 			.then((data) => data.json())
 			.then((json) => setColCervezas(json));
@@ -46,10 +88,12 @@ export default function HomeScreen() {
 					<Seccion
 						title={'Nuestros Cortes'}
 						colProductos={colCortes}
+						rol={rol}
 					/>
 					<Seccion
 						title={'Nuestras Cervezas'}
 						colProductos={colCervezas}
+						rol={rol}
 					/>
 
 					<View style={styles.map}>
@@ -82,6 +126,7 @@ export default function HomeScreen() {
 						</MapView>
 					</View>
 				</ScrollView>
+				<Toast />
 			</View>
 		</ImageBackground>
 	);
