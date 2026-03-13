@@ -1,5 +1,4 @@
 import * as cortesService from '../service/cortes'
-const jwt=require('jsonwebtoken')
 export const getCortes=async (req:any,res:any)=>{
 	try{
 		const cortes=await cortesService.getCortesJSON();
@@ -40,5 +39,25 @@ export const registrarCorte=async(req:any,res:any)=>{
 		}
 	}else{
 		res.status(400).send("Faltan datos en el body")
+	}
+}
+export const borrarCorte=async(req:any,res:any)=>{
+	const nombre=req.params.nombre
+	try{
+		const exito=await cortesService.borrarCorte(nombre);
+		if(exito){
+			res.status(200).send("Elemento borrado correctamente")
+		}else{
+			res.status(404).send("Elemento no existe")
+		}
+	}catch(err){
+		res.status(500).send("Error del servidor al intentar borrar el elemento")
+	}
+}
+export const modificarCorte=async(req:any,res:any)=>{
+	const nombre=req.params.nombre
+	const body=req.body
+	try{
+		const exito=cortesService.modificarCorteService(nombre,body)
 	}
 }

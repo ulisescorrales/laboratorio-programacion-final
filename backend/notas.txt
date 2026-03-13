@@ -1,0 +1,2 @@
+Se está trabajando con los paths completos de router
+Unificar cortes y productos en un solo router
