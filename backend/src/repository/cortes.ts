@@ -42,3 +42,32 @@ export const guardarImagen=(imagenFile:any,nombre:string)=>{
 		})
 	})
 }
+
+export const getCorteBD=(nombre:string)=>{
+	return new Promise((resolv,reject)=>{
+		pool.query("SELECT * FROM corte WHERE nombre=?",[nombre],(err,result)=>{
+			if(err){
+				reject(err)
+			}else{
+				resolv(result)
+			}
+		})
+	})
+}
+export const borrarCorteBD=(nombre:string)=>{
+	return new Promise((resolv,reject)=>{
+		pool.query("DELETE FROM corte WHERE nombre=?",[nombre],(err,result:any)=>{
+			if(err){
+				console.log(err)
+				reject(false)
+			}
+			if(result.affectedRows==0){
+				resolv(false)
+			}else if(result.affectedRows==1){
+				resolv(true)
+			}else{
+				reject(false)
+			}
+		})
+	})
+}
