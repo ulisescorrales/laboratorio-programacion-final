@@ -1,2 +1,5 @@
 Se está trabajando con los paths completos de router
 Unificar cortes y productos en un solo router
+Revisar pathImagen en modificarCorte, si recibe una imagen, debe guardarla en un archivo
+
+diferenciar pathImagen de imagen

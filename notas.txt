@@ -3,3 +3,5 @@ Lo mejor es que el backend y la app tengan sus propias dependencias
 Se define el frontend primero con todas las imágenes estáticas y después se desarrolla el backend con la información para que cargue dinámicamente
 
 Con  <FlatList>  se tendría el mismo efecto que un RecyclerView en Android, implementar con paginación
+
+Borrar imagen de corte borra la imagen y pone en nulo el dato, no borra la tupla
