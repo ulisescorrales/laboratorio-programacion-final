@@ -1,9 +1,15 @@
 import Svg from 'react-native-svg';
 import { Path, Circle } from 'react-native-svg';
-
-export function Lapiz() {
+type lapizProps={
+	style:any;
+	onPress:any
+}
+export default function Lapiz(props:lapizProps) {
 	return (
-		<Svg>
+		<Svg height="45" width="45" viewBox="0 0 1200 1200"
+		style={props.style}
+		onPress={props.onPress}
+		>
 			<Circle cx="600" cy="600" r="600" fill="black" />
 			<Path
 				fill="white"

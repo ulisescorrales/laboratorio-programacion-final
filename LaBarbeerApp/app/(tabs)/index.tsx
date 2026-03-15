@@ -7,7 +7,7 @@ import { StyleSheet } from 'react-native';
 import { useState, useEffect } from 'react';
 // import Cortes from "@/components/cortes";
 // import Cervezas from "@/components/cervezas";
-import Seccion from '@/components/seccion';
+import Seccion from '@/components/Seccion';
 import Producto from '@/components/interfaces/Producto';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-toast-message';
