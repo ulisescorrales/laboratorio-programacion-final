@@ -34,7 +34,6 @@ export const registrarCorte=async(req:any,res:any)=>{
 				await cortesService.registrarCorteService(nombre,descripcion,marca,precio,imagen)
 				res.status(200).send("Guardado con éxito")
 		}catch(err){
-			console.log(err)
 				res.status(500).send("No se pudo guardar en la BD")
 		}
 	}else{
@@ -57,7 +56,15 @@ export const borrarCorte=async(req:any,res:any)=>{
 export const modificarCorte=async(req:any,res:any)=>{
 	const nombre=req.params.nombre
 	const body=req.body
+	const imagen = req.file;
 	try{
-		const exito=cortesService.modificarCorteService(nombre,body)
+		const exito= await cortesService.modificarCorteService(nombre,body,imagen)
+		if(exito){
+			res.status(200).send("OK")
+		}else{
+			res.status(404).send("Corte no encontrado")
+		}
+	}catch(err){
+		res.status(500).send("Error en el server")
 	}
 }

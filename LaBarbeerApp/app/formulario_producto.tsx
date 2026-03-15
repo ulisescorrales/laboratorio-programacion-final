@@ -11,16 +11,17 @@ import { useEffect, useState } from 'react';
 import {router} from 'expo-router';
 
 type ModificarProps={
-	tipoProducto:string
+	tipoProducto:string,
+	tipoAccion:string
 }
 
-export default function ModificarProducto({tipoProducto}:ModificarProps) {
+export default function FormularioProducto({tipoProducto,tipoAccion}:ModificarProps) {
 	const backendHost=process.env.EXPO_PUBLIC_BACKEND_HOST
 	const [token,setToken]=useState<string>("")
 	const [nombre,setNombre] = useState<string>("")
 	const [descripcion,setDescripcion] = useState<string>("")
 	const [marca,setMarca] = useState<string>("")
-	const [precio,setPrecio] = useState<Number>(0)
+	const [precio,setPrecio] = useState<string>("")
 	const [image, setImage] = useState<string | null>(null);
 	const pickImage = async () => {
 		const permissionResult =
@@ -46,8 +47,17 @@ export default function ModificarProducto({tipoProducto}:ModificarProps) {
 		}
 	};
 	const submit=()=>{
+		let method;
+		let path;
+		if(tipoAccion='m'){//Modificar
+			method='POST'
+			path=backendHost+"/api/"+tipoProducto+"/"
+		}else if(tipoAccion=='i'){
+			method='PUT'
+			path=backendHost+"/api/"+tipoProducto+"/++"
+		}//Insertar
 		fetch(backendHost+"/api/"+tipoProducto+"/alta",{
-			method:'POST',
+			method:method,
 			headers: {
 				'Content-Type': 'application/json',
 				'Autorizathion:': 'Bearer '+token
@@ -81,16 +91,15 @@ export default function ModificarProducto({tipoProducto}:ModificarProps) {
 
 	return (
 		<View>
-			<TextInput placeholder="Nombre" />
-			<TextInput placeholder="Descripción" />
-			<TextInput placeholder="Marca" />
-			<TextInput placeholder="Precio" />
-
+			<TextInput placeholder="Nombre" onChangeText={setNombre}/>
+			<TextInput placeholder="Descripción" onChangeText={setDescripcion}/>
+			<TextInput placeholder="Marca" onChangeText={setMarca}/>
+			<TextInput placeholder="Precio" onChangeText={setPrecio}/>
 			<Button
 				title="Pick an image from camera roll"
 				onPress={pickImage}
 			/>
-			{Image && <Image source={{ uri: Image }} style={styles.image} />}
+			{image && <Image source={{ uri: image }} style={styles.image} />}
 
 		<Button onPress={submit} title={"Enviar"}/>
 		</View>

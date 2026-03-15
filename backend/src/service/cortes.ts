@@ -16,24 +16,45 @@ export const getCorteJSON=async(nombre:string)=>{
 		throw new Error(err.message)
 	}
 }
-export const registrarCorteService=async(nombre:string,descripcion:string,marca:string,precio:number,pathImagen:string)=>{
+export const registrarCorteService=async(nombre:string,descripcion:string,marca:string,precio:number,imagen:any)=>{
+	let pathImagen:string|null=null;
 	try{
+		pathImagen=await cortesRepository.guardarImagenEnFS(imagen);
 		await cortesRepository.insertarCorteBD(nombre,descripcion,marca,precio,pathImagen)
 	}catch(err:any){
+		if(pathImagen){
+			//Borrar imagen
+			cortesRepository.borrarImagenCortePorPath(pathImagen)
+		}
 		throw new Error(err.message)
 	}
 }
 export const borrarCorte=async(nombre:string)=>{
 	try{
-		const exito=await cortesRepository.borrarCorteBD(nombre);
-		return exito
+	let exito=await cortesRepository.borrarImagenCortePorId(nombre)
+	if(exito){
+		exito=await cortesRepository.borrarCorteBD(nombre);
+	}
+	return exito
 	}catch(err:any){
 		throw new Error(err.message)
 	}
 }
-const  modificarCorteService=(id:string,body:any)=>{
+export const  modificarCorteService=async (id:string,body:any,imagen:any)=>{
+	//si no se cargó una imagen desde el frontend, ignorar
 	try{
-		const exito=cortesRepository
+		const exito= await cortesRepository.modificarCorteBD(id,body)
+		let pathImagen;
+		if(imagen){
+			await cortesRepository.borrarImagenCortePorId(id)
+			pathImagen=await cortesRepository.guardarImagenEnFS(imagen)
+			await cortesRepository.guardarImagenEnBD(id,pathImagen)
+		}
 		return exito;
+	}catch(err){
+		throw new Error("Error en cortes service");
 	}
+}
+export const borrarImagenCorte=async (pathImagen:string)=>{
+	await cortesRepository.borrarImagenCortePorPath(pathImagen)
 }
