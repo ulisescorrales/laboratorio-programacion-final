@@ -13,10 +13,14 @@ type seccionProps = {
 	title: string;
 	colProductos: Producto[];
 	rol: string | null;
-	tipoProducto:string;
+	tipoProducto: string;
 };
 
-export default function Seccion({ title, colProductos,tipoProducto}: seccionProps) {
+export default function Seccion({
+	title,
+	colProductos,
+	tipoProducto
+}: seccionProps) {
 	const router = useRouter();
 	const backendHost = process.env.EXPO_PUBLIC_BACKEND_HOST;
 	return (
@@ -53,8 +57,12 @@ export default function Seccion({ title, colProductos,tipoProducto}: seccionProp
 									}}
 									onPress={() => {
 										router.push({
-											pathname:'/formulario_producto',
-											params: {tipoAccion:'m',tipoProducto:tipoProducto,id:item.nombre}
+											pathname: '/formulario_producto',
+											params: {
+												tipoAccion: 'm',
+												tipoProducto: tipoProducto,
+												id: item.nombre
+											}
 										});
 									}}
 								/>
@@ -85,6 +93,21 @@ export default function Seccion({ title, colProductos,tipoProducto}: seccionProp
 					</View>
 				)}
 			/>
+			<View>
+				<Plus
+					style={{}}
+					onPress={() => {
+						router.push({
+							pathname: '/formulario_producto',
+							params: {
+								tipoAccion: 'i',
+								tipoProducto: tipoProducto,
+								id: null
+							}
+						});
+					}}
+				/>
+			</View>
 		</View>
 	);
 }

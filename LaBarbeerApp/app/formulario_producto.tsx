@@ -3,10 +3,31 @@ import * as ImagePicker from 'expo-image-picker';
 import { Alert, Text, Button, Image, View } from 'react-native';
 import { TextInput, StyleSheet } from 'react-native';
 import { useEffect, useState } from 'react';
-import { router, useLocalSearchParams } from 'expo-router';
+import {
+	router,
+	Stack,
+	useLocalSearchParams,
+	useNavigation
+} from 'expo-router';
 
 export default function FormularioProducto() {
 	const { tipoProducto, tipoAccion, id } = useLocalSearchParams();
+
+	let nombreScreen: string = '';
+	if (tipoAccion == 'm') {
+		nombreScreen = 'Modificar ' + tipoProducto;
+	} else if (tipoAccion == 'i') {
+		nombreScreen = 'Agregar ' + tipoProducto;
+	}
+	const navigation = useNavigation();
+
+	useEffect(() => {
+		navigation.setOptions({
+			title: nombreScreen,
+			// Aquí también puedes arreglar colores si el rojo persiste
+			headerStyle: { backgroundColor: '#fff' }
+		});
+	}, [navigation]);
 
 	const backendHost = process.env.EXPO_PUBLIC_BACKEND_HOST;
 	const [token, setToken] = useState<string>('');
@@ -14,11 +35,13 @@ export default function FormularioProducto() {
 	const [descripcion, setDescripcion] = useState<string>('');
 	const [marca, setMarca] = useState<string>('');
 	const [precio, setPrecio] = useState<string>('');
-	const [image, setImage] = useState<string | null>(null);
-	const [hayNuevaImagen,setHayNuevaImagen] = useState<boolean>(false)
-	useEffect(()=>{
-		setHayNuevaImagen(true)
-	},[image])
+	const [image, setImage] = useState<any>(
+		require('../assets/images/foto_anonima.jpg')
+	);
+	const [hayNuevaImagen, setHayNuevaImagen] = useState<boolean>(false);
+	useEffect(() => {
+		setHayNuevaImagen(true);
+	}, [image]);
 	const pickImage = async () => {
 		const permissionResult =
 			await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -39,26 +62,26 @@ export default function FormularioProducto() {
 		console.log(result);
 
 		if (!result.canceled) {
-			setImage(result.assets[0].uri);
+			setImage({ uri: result.assets[0].uri });
 		}
 	};
 	const submit = () => {
 		let method;
 		let path: string = '';
-		let bodyP:any={
-				nombre: nombre,
-				descripcion: descripcion,
-				marca: marca,
-				precio: precio,
-				promocion: null,
-			}
-			if(hayNuevaImagen){
-				bodyP['fhoto']={
-					uri: image,
-					type:'image/jpeg',
-					name:'photo.jpg'
-				}
-			}
+		let bodyP: any = {
+			nombre: nombre,
+			descripcion: descripcion,
+			marca: marca,
+			precio: precio,
+			promocion: null
+		};
+		if (hayNuevaImagen) {
+			bodyP['fhoto'] = {
+				uri: image,
+				type: 'image/jpeg',
+				name: 'photo.jpg'
+			};
+		}
 		if (tipoAccion == 'm') {
 			//Modificar
 			method = 'POST';
@@ -76,12 +99,12 @@ export default function FormularioProducto() {
 				'Content-Type': 'application/json',
 				'Autorizathion:': 'Bearer ' + token
 			},
-	body: JSON.stringify({
+			body: JSON.stringify({
 				nombre: nombre,
 				descripcion: descripcion,
 				marca: marca,
 				precio: precio,
-				promocion: null,
+				promocion: null
 			})
 		}).then((data) => {
 			let mensaje: string = '';
@@ -128,7 +151,7 @@ export default function FormularioProducto() {
 							setDescripcion(json.descripcion);
 							setMarca(json.marca);
 							setPrecio(json.precio.toString());
-							setImage(backendHost+json.pathImagen)
+							setImage({ uri: backendHost + json.pathImagen });
 						});
 					} else {
 						//Si no existe el id, volver
@@ -141,43 +164,84 @@ export default function FormularioProducto() {
 
 	return (
 		<View>
-			<Text>Nombre:</Text>
-			<TextInput
-				placeholder="Nombre"
-				onChangeText={(text) => setNombre(text)}
-				value={nombre}
-			/>
-			<Text>Descripción:</Text>
-			<TextInput
-				placeholder="Descripción"
-				numberOfLines={6}
-				multiline={true}
-				value={descripcion}
-			/>
-			<Text>Marca:</Text>
-			<TextInput
-				placeholder="Marca"
-				onChangeText={setMarca}
-				value={marca}
-			/>
-			<Text>Precio:</Text>
-			<TextInput
-				placeholder="Precio"
-				onChangeText={setPrecio}
-				value={precio}
-				keyboardType="numeric"
-			/>
-			<View>
-				{image && <Image source={{ uri: image }} style={styles.image} />}
+			<View style={styles2.inputGroup}>
+				<Text style={styles2.label}>Nombre del producto</Text>
+				<TextInput
+					style={styles2.input}
+					placeholder="Ej: IPA Artesanal o Degradado medio"
+					placeholderTextColor="#999"
+					onChangeText={setNombre}
+					value={nombre}
+				/>
 			</View>
-			<View style={{ margin: 10, width: 200,alignSelf:'center' }}>
+
+			{/* Campo Marca */}
+			<View style={styles2.inputGroup}>
+				<Text style={styles2.label}>Marca / Origen</Text>
+				<TextInput
+					style={styles2.input}
+					placeholder="Nombre de la marca"
+					placeholderTextColor="#999"
+					onChangeText={setMarca}
+					value={marca}
+				/>
+			</View>
+
+			{/* Campo Precio */}
+			<View style={styles2.inputGroup}>
+				<Text style={styles2.label}>Precio</Text>
+				<View style={styles2.priceInputWrapper}>
+					<Text style={styles2.currencySymbol}>$</Text>
+					<TextInput
+						style={[
+							styles2.input,
+							{
+								flex: 1,
+								borderLeftWidth: 0,
+								borderTopLeftRadius: 0,
+								borderBottomLeftRadius: 0
+							}
+						]}
+						placeholder="0.00"
+						placeholderTextColor="#999"
+						onChangeText={setPrecio}
+						value={precio}
+						keyboardType="numeric"
+					/>
+				</View>
+			</View>
+
+			{/* Campo Descripción */}
+			<View style={styles2.inputGroup}>
+				<Text style={styles2.label}>Descripción</Text>
+				<TextInput
+					style={[styles2.input, styles2.textArea]}
+					placeholder="Cuéntanos más sobre esto..."
+					placeholderTextColor="#999"
+					numberOfLines={6}
+					multiline={true}
+					textAlignVertical="top" // Importante para Android
+					onChangeText={setDescripcion}
+					value={descripcion}
+				/>
+			</View>
+			<View>
+				<Image source={image} style={styles.image} />
+			</View>
+			<View style={{ margin: 10, width: 200, alignSelf: 'center' }}>
 				<Button title="Seleccionar imagen" onPress={pickImage} />
 			</View>
-			<View style={{ margin: 10, width: 200, alignSelf:'center' }}>
+			<View style={{ margin: 10, width: 200, alignSelf: 'center' }}>
 				<Button
 					onPress={submit}
 					color="red"
-					title={tipoAccion == 'm' ? 'Actualizar' : tipoAccion=="i"?'Crear':"Error"}
+					title={
+						tipoAccion == 'm'
+							? 'Actualizar'
+							: tipoAccion == 'i'
+								? 'Crear'
+								: 'Error'
+					}
 				/>
 			</View>
 		</View>
@@ -192,6 +256,60 @@ const styles = StyleSheet.create({
 	image: {
 		width: 200,
 		height: 200,
-		alignSelf:'center'
+		alignSelf: 'center'
+	}
+});
+const styles2 = StyleSheet.create({
+	container: {
+		padding: 20,
+		backgroundColor: '#F8F9FA' // Fondo ligeramente gris para resaltar los inputs blancos
+	},
+	inputGroup: {
+		marginBottom: 10
+	},
+	label: {
+		fontSize: 16,
+		fontWeight: '600',
+		color: '#333',
+		marginBottom: 8,
+		marginLeft: 4
+	},
+	input: {
+		backgroundColor: '#FFF',
+		height: 40,
+		borderRadius: 12,
+		paddingHorizontal: 16,
+		fontSize: 16,
+		color: '#000',
+		borderWidth: 1,
+		borderColor: '#DDD',
+		// Sombra para iOS
+		shadowColor: '#000',
+		shadowOffset: { width: 0, height: 2 },
+		shadowOpacity: 0.05,
+		shadowRadius: 4,
+		// Sombra para Android
+		elevation: 2
+	},
+	textArea: {
+		height: 120,
+		paddingTop: 15
+	},
+	priceInputWrapper: {
+		flexDirection: 'row',
+		alignItems: 'center'
+	},
+	currencySymbol: {
+		backgroundColor: '#EEE',
+		height: 50,
+		paddingHorizontal: 15,
+		justifyContent: 'center',
+		lineHeight: 50,
+		borderTopLeftRadius: 12,
+		borderBottomLeftRadius: 12,
+		borderWidth: 1,
+		borderColor: '#DDD',
+		color: '#555',
+		fontWeight: 'bold'
 	}
 });
