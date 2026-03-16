@@ -77,13 +77,18 @@ export const guardarImagenEnFS = (imagenFile: any) => {
 export const getCorteBD = (nombre: string) => {
 	return new Promise((resolv, reject) => {
 		pool.query(
-			'SELECT * FROM corte WHERE nombre=?',
+			'SELECT * FROM corte WHERE nombre_corte=?',
 			[nombre],
-			(err, result) => {
+			(err,result:any) => {
 				if (err) {
-					reject(err);
+					console.log(err)
+					reject('500');
 				} else {
-					resolv(result);
+					if(result.length==0){
+						reject('404')
+					}else{
+						resolv(result[0]);
+					}
 				}
 			}
 		);
