@@ -1,5 +1,6 @@
 import Svg, { Circle, Path } from 'react-native-svg';
 import Lapiz from './ui/Lapiz';
+import Plus from './ui/Plus';
 import { StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Text, Pressable, View, FlatList } from 'react-native';
