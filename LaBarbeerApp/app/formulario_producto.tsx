@@ -176,16 +176,18 @@ export default function FormularioProducto() {
 			</View>
 
 			{/* Campo Marca */}
-			<View style={styles2.inputGroup}>
-				<Text style={styles2.label}>Marca / Origen</Text>
-				<TextInput
-					style={styles2.input}
-					placeholder="Nombre de la marca"
-					placeholderTextColor="#999"
-					onChangeText={setMarca}
-					value={marca}
-				/>
-			</View>
+			{tipoProducto == 'cerveza' ? (
+				<View style={styles2.inputGroup}>
+					<Text style={styles2.label}>Marca / Origen</Text>
+					<TextInput
+						style={styles2.input}
+						placeholder="Nombre de la marca"
+						placeholderTextColor="#999"
+						onChangeText={setMarca}
+						value={marca}
+					/>
+				</View>
+			) : null}
 
 			{/* Campo Precio */}
 			<View style={styles2.inputGroup}>
