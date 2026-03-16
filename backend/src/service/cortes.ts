@@ -13,7 +13,7 @@ export const getCorteJSON=async(nombre:string)=>{
 		const corte=await cortesRepository.getCorteBD(nombre)
 		return corte;
 	}catch(err:any){
-		throw new Error(err.message)
+		throw new Error(err)
 	}
 }
 export const registrarCorteService=async(nombre:string,descripcion:string,marca:string,precio:number,imagen:any)=>{

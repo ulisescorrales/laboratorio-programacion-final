@@ -11,9 +11,17 @@ export const getCorte=async(req:any,res:any)=>{
 	const nombre=req.params.nombre
 	try{
 		const corte=await cortesService.getCorteJSON(nombre);
-		res.statuc(200).json(corte)
-	}catch(err){
-		res.status(500).send("Error obteniendo el corte '"+nombre+"'")
+		res.status(200).json(corte)
+	}catch(err:any){
+		//err contiene el código de error
+		const status=Number(err.message)
+		let mensaje;
+		if(status==404){
+			mensaje="No existe el corte especificado"
+		}else{
+			mensaje="Error consultando corte"
+		}
+		res.status(status).send(mensaje)
 	}
 }
 
