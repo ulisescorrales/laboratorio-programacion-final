@@ -89,11 +89,13 @@ export default function HomeScreen() {
 						title={'Nuestros Cortes'}
 						colProductos={colCortes}
 						rol={rol}
+						tipoProducto={'corte'}
 					/>
 					<Seccion
 						title={'Nuestras Cervezas'}
 						colProductos={colCervezas}
 						rol={rol}
+						tipoProducto={'cerveza'}
 					/>
 
 					<View style={styles.map}>

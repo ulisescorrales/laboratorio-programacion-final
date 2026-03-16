@@ -12,9 +12,10 @@ type seccionProps = {
 	title: string;
 	colProductos: Producto[];
 	rol: string | null;
+	tipoProducto:string;
 };
 
-export default function Seccion({ title, colProductos }: seccionProps) {
+export default function Seccion({ title, colProductos,tipoProducto}: seccionProps) {
 	const router = useRouter();
 	const backendHost = process.env.EXPO_PUBLIC_BACKEND_HOST;
 	return (
@@ -50,7 +51,10 @@ export default function Seccion({ title, colProductos }: seccionProps) {
 										]
 									}}
 									onPress={() => {
-										router.push('/formulario_producto');
+										router.push({
+											pathname:'/formulario_producto',
+											params: {tipoAccion:'m',tipoProducto:tipoProducto,id:item.nombre}
+										});
 									}}
 								/>
 								<Trash
