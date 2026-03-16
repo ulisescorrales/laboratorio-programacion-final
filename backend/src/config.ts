@@ -3,7 +3,7 @@ dotenv.config();
 const env=process.env
 export const backend_path=env.BACKEND_PATH||'http://192.168.10.100:3000'
 import mysql, { Pool, RowDataPacket } from 'mysql2';
-const pool:Pool=mysql.createPool({
+export const pool:Pool=mysql.createPool({
 	host: env.HOST ||'localhost',
 	user: env.MYSQL_USER||'root',
 	password: env.MYSQL_PASSWORD||'1234',

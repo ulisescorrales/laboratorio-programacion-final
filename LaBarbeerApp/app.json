@@ -32,11 +32,17 @@
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
-        }
-      ]
-    ],
-    "experiments": {
-      "typedRoutes": true
-    }
+		}
+	  ],
+	  [
+		  "expo-image-picker",
+		  {
+			  "photosPermission": "La app necesita acceder a sus fotos para poder cargar la imagen de sus productos."
+		  }
+	  ]
+	],
+	"experiments": {
+		"typedRoutes": true
+	}
   }
 }

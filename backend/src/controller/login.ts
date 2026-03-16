@@ -11,7 +11,7 @@ export const crearUsuario=async(req:Request,res:Response)=>{
 				await loginService.generarUsuario(user,password)
 				res.status(200).send("OK")
 			}catch (err){
-				res.status(500).send("Error")
+				res.status(500).send("Error en BD")
 			}
 		}else{
 			res.status(500).send("Falta password en el body")
@@ -28,27 +28,52 @@ export const autenticarUsuario=async(req:Request,res:Response)=>{
 	if(user && password){
 		try{
 			await loginService.compararContrasenias(user,password);
-			const token=loginService.generarToken(user,'normal')
+			const role=await loginService.getRoleUser(user);
+			const token=loginService.generarToken(user,role)
 			res.status(200).json({
-				token:token
+				token:token,
+				role:role
 			})
-		}catch{
-			res.status(401).send("Contraseña incorrecta")
+		}catch(err){
+			res.status(401).send("Error autenticando usuario")
 		}
 	}else{
 		res.status(500).send("Falta usuario o contraseña")
 	}
 }
-export const verificarUsuario=(req:Request,res:Response)=>{
-	// const authorization=req.headers.authorization
-	// if(authorization){
-	// 	const token=authorization.split(" ")[1]
-	// 	const decodificado=jwt.verify(token,secreto,(err:any,decoded:any)=>{
-	// 		res.status(200).send(decoded['user'])
-	// 	})
-	// }else{
-	// 	res.status(500).send("Falta el token\n")
-	// }
+export const verificarUsuarioSolamente=async (req:any,res:Response,next:any)=>{
+	const authorization=req.headers.authorization
+	if(authorization){
+		const token=authorization.split(" ")[1]
+		try{
+			const userRole=await loginService.getUserRole(token);
+			// req.user=userRole
+			res.status(200).json({
+				role: userRole
+			})
+		}catch(err){
+			console.log(err)
+			res.status(401).send("Token inválido")
+		}
+	}else{
+		res.status(500).send("Falta el token\n")
+	}
+}
+export const verificarUsuario=async (req:any,res:Response,next:any)=>{
+	const authorization=req.headers.authorization
+	console.log(authorization)
+	if(authorization){
+		const token=authorization.split(" ")[1]
+		try{
+			const userRole=await loginService.getUserRole(token);
+			req.user=userRole
+			next()
+		}catch(err){
+			res.status(401).send("Token inválido")
+		}
+	}else{
+		res.status(500).send("Falta el token\n")
+	}
 }
 //
 export const estaLogueado=(req:any,res:any,next:any)=>{
