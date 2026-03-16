@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as ImagePicker from 'expo-image-picker';
-import { Alert, Text, Button, Image, View } from 'react-native';
+import { Alert, Text, Button, Image, View, ScrollView } from 'react-native';
 import { TextInput, StyleSheet } from 'react-native';
 import { useEffect, useState } from 'react';
 import {
@@ -163,7 +163,7 @@ export default function FormularioProducto() {
 	}, []);
 
 	return (
-		<View>
+		<ScrollView >
 			<View style={styles2.inputGroup}>
 				<Text style={styles2.label}>Nombre del producto</Text>
 				<TextInput
@@ -246,7 +246,7 @@ export default function FormularioProducto() {
 					}
 				/>
 			</View>
-		</View>
+		</ScrollView>
 	);
 }
 const styles = StyleSheet.create({
