@@ -143,7 +143,9 @@ export default function FormularioProducto() {
 		});
 		if (id) {
 			//Modificar: traer los datos, sino es insertar y los campos quedan en blanco
-			fetch(backendHost + '/api/' + tipoProducto + '/' + id).then(
+			const getPath='http://'+backendHost + '/api/' + tipoProducto + '/' + id;
+			console.log(getPath)
+			fetch(getPath).then(
 				(data) => {
 					if (data.status == 200) {
 						data.json().then((json) => {
@@ -151,7 +153,7 @@ export default function FormularioProducto() {
 							setDescripcion(json.descripcion);
 							setMarca(json.marca);
 							setPrecio(json.precio.toString());
-							setImage({ uri: backendHost + json.pathImagen });
+							setImage({ uri: 'http://'+backendHost + json.pathImagen });
 						});
 					} else {
 						//Si no existe el id, volver
