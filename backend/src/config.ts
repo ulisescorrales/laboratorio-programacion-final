@@ -16,6 +16,7 @@ export const pool:Pool=mysql.createPool({
 //Inicialización
 pool.getConnection((err,connection)=>{
 	if(err){
+		console.log(err)
 		console.log("Error inicializando la conexión a la base de datos")
 		process.exit(1);
 	}else{

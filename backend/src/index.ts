@@ -2,12 +2,10 @@ import express,{Express} from 'express';
 import bodyParser from 'body-parser';
 import {Router} from 'express'
 import cors from 'cors';
-import { backend_path } from './config'
 import { cervezasRouter } from './routes/cervezas_router'
 import { cortesRouter } from './routes/cortes_router'
 import { loginRouter } from './routes/login_router'
 import { turnosRouter } from './routes/turnos_router'
-import env from 'dotenv';
 const port = 3000;
 
 

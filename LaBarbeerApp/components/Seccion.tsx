@@ -1,4 +1,3 @@
-import Svg, { Circle, Path } from 'react-native-svg';
 import Lapiz from './ui/Lapiz';
 import Plus from './ui/Plus';
 import { StyleSheet } from 'react-native';
@@ -39,7 +38,7 @@ export default function Seccion({
 							<View style={{ position: 'relative' }}>
 								<Image
 									source={{
-										uri: backendHost + item.pathImagen
+										uri:'http://'+ backendHost + item.pathImagen
 									}}
 									key={index}
 									style={[styles.image]}
