@@ -77,7 +77,7 @@ export const guardarImagenEnFS = (imagenFile: any) => {
 export const getCervezaBD = (nombre: string) => {
 	return new Promise((resolv, reject) => {
 		pool.query(
-			'SELECT * FROM cerveza WHERE nombre_cerveza=?',
+			'SELECT nombre_cerveza as nombre,descripcion,marca,precio,promocion,pathImagen FROM cerveza WHERE nombre_cerveza=?;',
 			[nombre],
 			(err,result:any) => {
 				if (err) {

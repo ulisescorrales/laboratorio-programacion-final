@@ -72,7 +72,7 @@ export default function HomeScreen() {
 	}, []);
 	useEffect(() => {
 		//Fetch de productos
-		console.log(backendHost + '/api/cervezas')
+		// console.log(backendHost + '/api/cervezas')
 		fetch('http://'+backendHost + '/api/cervezas')
 			.then((data) => data.json())
 			.then((json) => setColCervezas(json));

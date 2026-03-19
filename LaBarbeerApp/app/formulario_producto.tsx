@@ -149,7 +149,7 @@ export default function FormularioProducto() {
 				(data) => {
 					if (data.status == 200) {
 						data.json().then((json) => {
-							setNombre(json.nombre_corte);
+							setNombre(json.nombre);
 							setDescripcion(json.descripcion);
 							setMarca(json.marca);
 							setPrecio(json.precio.toString());

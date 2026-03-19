@@ -77,7 +77,7 @@ export const guardarImagenEnFS = (imagenFile: any) => {
 export const getCorteBD = (nombre: string) => {
 	return new Promise((resolv, reject) => {
 		pool.query(
-			'SELECT * FROM corte WHERE nombre_corte=?',
+			'SELECT nombre_corte as nombre,descripcion,marca,precio,promocion,pathImagen FROM corte WHERE nombre_corte=?;',
 			[nombre],
 			(err,result:any) => {
 				if (err) {
