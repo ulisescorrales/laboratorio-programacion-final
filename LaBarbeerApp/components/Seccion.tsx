@@ -18,10 +18,12 @@ type seccionProps = {
 export default function Seccion({
 	title,
 	colProductos,
-	tipoProducto
+	tipoProducto,
+	rol
 }: seccionProps) {
 	const router = useRouter();
 	const backendHost = process.env.EXPO_PUBLIC_BACKEND_HOST;
+	console.log(rol);
 	return (
 		<View style={styles.containerCenter}>
 			<View style={styles.containerTitle}>
@@ -38,47 +40,58 @@ export default function Seccion({
 							<View style={{ position: 'relative' }}>
 								<Image
 									source={{
-										uri:'http://'+ backendHost + item.pathImagen
+										uri:
+											'http://' +
+											backendHost +
+											item.pathImagen
 									}}
 									key={index}
 									style={[styles.image]}
 									borderRadius={16}
 								/>
-								<Lapiz
-									style={{
-										position: 'absolute',
-										top: '50%',
-										left: '35%',
-										transform: [
-											{ translateX: -30 }, // half of svg width
-											{ translateY: -30 } // half of svg height
-										]
-									}}
-									onPress={() => {
-										router.push({
-											pathname: '/formulario_producto',
-											params: {
-												tipoAccion: 'm',
-												tipoProducto: tipoProducto,
-												id: item.nombre
-											}
-										});
-									}}
-								/>
-								<Trash
-									style={{
-										position: 'absolute',
-										top: '50%',
-										left: '65%',
-										transform: [
-											{ translateX: -30 }, // half of svg width
-											{ translateY: -30 } // half of svg height
-										]
-									}}
-									onPress={() => {
-										router.push('/formulario_producto');
-									}}
-								/>
+								{rol == 'admin' ? (
+									<View>
+										<Lapiz
+											style={{
+												position: 'absolute',
+												top: '50%',
+												left: '35%',
+												transform: [
+													{ translateX: -30 }, // half of svg width
+													{ translateY: -30 } // half of svg height
+												]
+											}}
+											onPress={() => {
+												router.push({
+													pathname:
+														'/formulario_producto',
+													params: {
+														tipoAccion: 'm',
+														tipoProducto:
+															tipoProducto,
+														id: item.nombre
+													}
+												});
+											}}
+										/>
+										<Trash
+											style={{
+												position: 'absolute',
+												top: '50%',
+												left: '65%',
+												transform: [
+													{ translateX: -30 }, // half of svg width
+													{ translateY: -30 } // half of svg height
+												]
+											}}
+											onPress={() => {
+												router.push(
+													'/formulario_producto'
+												);
+											}}
+										/>
+									</View>
+								) : null}
 							</View>
 							<View style={styleItem.itemCard}>
 								<Text style={styleItem.textItem}>
@@ -93,19 +106,21 @@ export default function Seccion({
 				)}
 			/>
 			<View>
-				<Plus
-					style={{}}
-					onPress={() => {
-						router.push({
-							pathname: '/formulario_producto',
-							params: {
-								tipoAccion: 'i',
-								tipoProducto: tipoProducto,
-								id: null
-							}
-						});
-					}}
-				/>
+				{rol == 'admin' ? (
+					<Plus
+						style={{}}
+						onPress={() => {
+							router.push({
+								pathname: '/formulario_producto',
+								params: {
+									tipoAccion: 'i',
+									tipoProducto: tipoProducto,
+									id: null
+								}
+							});
+						}}
+					/>
+				) : null}
 			</View>
 		</View>
 	);
