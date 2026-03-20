@@ -5,37 +5,56 @@ import { View, Button, ScrollView, ImageBackground, Text } from 'react-native';
 import { Image } from 'react-native';
 import { StyleSheet } from 'react-native';
 import { useState, useEffect, useCallback } from 'react';
-// import Cortes from "@/components/cortes";
-// import Cervezas from "@/components/cervezas";
 import Seccion from '@/components/Seccion';
 import Producto from '@/components/interfaces/Producto';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-toast-message';
 export default function HomeScreen() {
 	// const isAdmin=useState<boolean>(false);
-	const { role, mensaje } = useLocalSearchParams();
+	const { role, mensaje, nombreUsuario } = useLocalSearchParams();
 	const [rol, setRol] = useState<string | null>(null);
 	const router = useRouter();
 	// useRouter()
 	const [colCortes, setColCortes] = useState<Producto[]>([]);
 	const [colCervezas, setColCervezas] = useState<Producto[]>([]);
-
+	const [textLogin, setTextLogin] = useState<string>('Login');
 	const latitud = -38.95857;
 	const longitud = -68.0548;
+	const [usuario, setUsuario] = useState<string | null>(null);
+	useEffect(() => {
+		Toast.show({
+			type: 'success',
+			text1: mensaje,
+			position: 'bottom'
+		});
+	}, [mensaje]);
 
-	useFocusEffect(
-		useCallback(() => {
-			if (mensaje) {
-				Toast.show({
-					type: 'success',
-					text1: 'Hol',
-					position: 'bottom'
-				});
-			}
-			return () => {};
-		}, [])
-	);
 	const backendHost = process.env.EXPO_PUBLIC_BACKEND_HOST;
+	const loginButton = () => {
+		if (!rol) {
+			//Ir a la pantalla de login
+			router.push('/login');
+		} else {
+			//Desloguearse
+			setRol(null);
+			setUsuario(null);
+			AsyncStorage.removeItem('token', (err) => {
+				if (!err) {
+					Toast.show({
+						type: 'success',
+						text1: 'Sesión cerrada correctamente',
+						position: 'bottom'
+					});
+				} else {
+					Toast.show({
+						type: 'error',
+						text1: 'Error cerrando sesión',
+						position: 'bottom'
+					});
+				}
+			});
+		}
+	};
 	useEffect(() => {
 		//Fetch de login
 		AsyncStorage.getItem('token', (err, result) => {
@@ -47,36 +66,41 @@ export default function HomeScreen() {
 						Authorization: 'Bearer ' + result
 					}
 				}).then((data) => {
-					// console.log(data.status)
 					if (data.status == 200) {
 						//Rehusar la sesión activa
-						Toast.show({
-							type: 'success',
-							text1: 'Su sesión sigue activa',
-							position: 'bottom'
-						});
+						if (!mensaje) {
+							Toast.show({
+								type: 'success',
+								text1: 'Su sesión sigue activa',
+								position: 'bottom'
+							});
+						}
 						data.json().then((json) => {
 							setRol(json.role);
+							setUsuario(json.user);
+							console.log(json);
+							console.log(usuario);
 						});
 					} else {
 						//Borrar en storage
 						AsyncStorage.removeItem('token', (err) => {});
+						setUsuario(null)
+						setRol(null)
 					}
 				});
 			} else {
-				if (role) {
-					console.log(role);
-				}
+				setUsuario(null)
+				setRol(null)
 			}
 		});
 	}, []);
 	useEffect(() => {
 		//Fetch de productos
 		// console.log(backendHost + '/api/cervezas')
-		fetch('http://'+backendHost + '/api/cervezas')
+		fetch(backendHost + '/api/cervezas')
 			.then((data) => data.json())
 			.then((json) => setColCervezas(json));
-		fetch('http://'+backendHost + '/api/cortes')
+		fetch(backendHost + '/api/cortes')
 			.then((data) => data.json())
 			.then((json) => setColCortes(json));
 	}, []);
@@ -97,9 +121,12 @@ export default function HomeScreen() {
 						source={require('../../assets/images/logo.png')}
 						style={styles.titleContainer}
 					/>
+					{usuario ? (
+						<Text style={styles.usuario}>Usuario: {usuario}</Text>
+					) : null}
 					<Button
-						title={'Login'}
-						onPress={() => router.push('/login')}
+						title={!rol ? 'Login' : 'Cerrar sesión'}
+						onPress={loginButton}
 					/>
 				</View>
 
@@ -147,8 +174,8 @@ export default function HomeScreen() {
 						</MapView>
 					</View>
 				</ScrollView>
-				<Toast />
 			</View>
+			<Toast />
 		</ImageBackground>
 	);
 }
@@ -209,5 +236,10 @@ export const styles = StyleSheet.create({
 		fontSize: 16,
 		marginLeft: 8,
 		backgroundColor: 'black'
+	},
+	usuario: {
+		color: 'white',
+		fontSize: 18,
+		marginLeft: 8
 	}
 });

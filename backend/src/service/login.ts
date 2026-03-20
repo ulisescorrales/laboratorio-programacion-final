@@ -50,7 +50,7 @@ export const generarUsuario=async(user:string,password:string)=>{
 export const generarToken=(user:string,role:string)=>{
 	return 	jwt.sign({
 				user: user,
-				role:'normal'
+				role:role
 			},secreto,{expiresIn:'1h'})
 }
 export const getRole=(token:string)=>{

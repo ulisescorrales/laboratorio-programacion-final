@@ -26,18 +26,31 @@ export default function Login() {
 			})
 		}).then((data: any) => {
 			if (data.status == 200) {
-				Toast.show({
-					type: 'success',
-					text1: 'Logueado correctamente',
-					position: 'bottom'
-				});
+				// TODO: esto se muestra en pantalla principal
+				// Toast.show({
+				// 	type: 'success',
+				// 	text1: 'Logueado correctamente',
+				// 	position: 'bottom'
+				// });
 				data.json().then((json: any) => {
-					// console.log(json)
 					AsyncStorage.setItem('role', json.role);
 					AsyncStorage.setItem('token', json.token);
 					AsyncStorage.setItem('user', user);
-					router.setParams({ role: json.role });
-					router.back();
+					router.replace({
+						pathname:"/",
+						params:{
+							role:json.role,
+							mensaje:"Logueado correctamente",
+							nombreUsuario:user
+						}
+					})
+					// 
+					// router.setParams({
+					// 	role: json.role,
+					// 	mensaje: 'Logueado correctamente',
+					// 	type:'error'
+					// });
+					// router.back();
 				});
 			} else {
 				Toast.show({

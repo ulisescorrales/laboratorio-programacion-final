@@ -48,9 +48,7 @@ export const verificarUsuarioSolamente=async (req:any,res:Response,next:any)=>{
 		try{
 			const userRole=await loginService.getUserRole(token);
 			// req.user=userRole
-			res.status(200).json({
-				role: userRole
-			})
+			res.status(200).json(userRole)
 		}catch(err){
 			console.log(err)
 			res.status(401).send("Token inválido")

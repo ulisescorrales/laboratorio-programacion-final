@@ -23,7 +23,6 @@ export default function Seccion({
 }: seccionProps) {
 	const router = useRouter();
 	const backendHost = process.env.EXPO_PUBLIC_BACKEND_HOST;
-	console.log(rol);
 	return (
 		<View style={styles.containerCenter}>
 			<View style={styles.containerTitle}>
@@ -41,7 +40,6 @@ export default function Seccion({
 								<Image
 									source={{
 										uri:
-											'http://' +
 											backendHost +
 											item.pathImagen
 									}}
