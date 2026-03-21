@@ -48,7 +48,6 @@ export default function Seccion({
 									borderRadius={16}
 								/>
 								{rol == 'admin' ? (
-									<View>
 										<Lapiz
 											style={{
 												position: 'absolute',
@@ -72,6 +71,8 @@ export default function Seccion({
 												});
 											}}
 										/>
+								) : null}
+								{rol == 'admin' ? (
 										<Trash
 											style={{
 												position: 'absolute',
@@ -88,7 +89,6 @@ export default function Seccion({
 												);
 											}}
 										/>
-									</View>
 								) : null}
 							</View>
 							<View style={styleItem.itemCard}>
