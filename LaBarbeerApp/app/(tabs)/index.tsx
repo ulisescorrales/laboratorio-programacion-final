@@ -1,7 +1,14 @@
 import MapView, { Marker } from 'react-native-maps';
 import { useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { useRouter } from 'expo-router';
-import { View, Button, ScrollView, ImageBackground, Text } from 'react-native';
+import {
+	View,
+	Button,
+	ScrollView,
+	ImageBackground,
+	Text,
+	RefreshControl
+} from 'react-native';
 import { Image } from 'react-native';
 import { StyleSheet } from 'react-native';
 import { useState, useEffect, useCallback } from 'react';
@@ -22,11 +29,14 @@ export default function HomeScreen() {
 	const longitud = -68.0548;
 	const [usuario, setUsuario] = useState<string | null>(null);
 	useEffect(() => {
-		Toast.show({
-			type: 'success',
-			text1: mensaje,
-			position: 'bottom'
-		});
+		//Si llega un mensaje a este screen, mostrar en un Toast
+		if (mensaje) {
+			Toast.show({
+				type: 'success',
+				text1: mensaje,
+				position: 'bottom'
+			});
+		}
 	}, [mensaje]);
 
 	const backendHost = process.env.EXPO_PUBLIC_BACKEND_HOST;
@@ -84,25 +94,51 @@ export default function HomeScreen() {
 					} else {
 						//Borrar en storage
 						AsyncStorage.removeItem('token', (err) => {});
-						setUsuario(null)
-						setRol(null)
+						setUsuario(null);
+						setRol(null);
 					}
 				});
 			} else {
-				setUsuario(null)
-				setRol(null)
+				setUsuario(null);
+				setRol(null);
 			}
 		});
 	}, []);
+	const cargarProductos=()=>{
+		fetch(backendHost + '/api/cervezas')
+			.then((data) => data.json())
+			.then((json) => setColCervezas(json))
+			.catch(() => {
+				Toast.show({
+					type: 'error',
+					text1: 'Error de red',
+					position: 'bottom'
+				});
+			});
+		fetch(backendHost + '/api/cortes')
+			.then((data) => data.json())
+			.then((json) => setColCortes(json))
+			.catch(() => {
+				Toast.show({
+					type: 'error',
+					text1: 'Error de red',
+					position: 'bottom'
+				});
+			});
+		setRefrescando(false)
+	}
 	useEffect(() => {
 		//Fetch de productos
 		// console.log(backendHost + '/api/cervezas')
-		fetch(backendHost + '/api/cervezas')
-			.then((data) => data.json())
-			.then((json) => setColCervezas(json));
-		fetch(backendHost + '/api/cortes')
-			.then((data) => data.json())
-			.then((json) => setColCortes(json));
+		cargarProductos();
+	}, []);
+
+	const [refrescando, setRefrescando] = useState(false);
+
+	const alRefrescar = useCallback(() => {
+		setRefrescando(true);
+
+		cargarProductos();
 	}, []);
 	return (
 		<ImageBackground
@@ -130,7 +166,16 @@ export default function HomeScreen() {
 					/>
 				</View>
 
-				<ScrollView>
+				<ScrollView
+					refreshControl={
+						<RefreshControl
+							refreshing={refrescando}
+							onRefresh={alRefrescar}
+							colors={['#9Bd35A', '#689F38']} // Android: colores del círculo
+							tintColor="#689F38" // iOS: color del spinner
+						/>
+					}
+				>
 					<Seccion
 						title={'Nuestros Cortes'}
 						colProductos={colCortes}
