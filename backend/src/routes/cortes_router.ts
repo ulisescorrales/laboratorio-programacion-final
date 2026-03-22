@@ -5,7 +5,9 @@ const multer = require("multer");
 // Configuración de almacenamiento
 const storage = multer.diskStorage({
   destination: (req:any, file:any, cb:any) => {
-    cb(null, "uploads/");
+	console.log(req.body)
+	let carpeta=req.body.tipoProducto;
+    cb(null, "assets/images/"+carpeta+"s");
   },
   filename: (req:any, file:any, cb:any) => {
     cb(null, Date.now() + "-" + file.originalname);

@@ -21,17 +21,14 @@ export const getCortesBD = () => {
 export const insertarCorteBD = (
 	nombre: string,
 	descripcion: string,
-	marca: string,
 	precio: number,
-	imagen: any
+	pathImagen:string 
 ) => {
 	return new Promise(async (resolv, reject) => {
 		try {
-			//TODO:colocar esto en el service
-			const pathImagen = await guardarImagenEnFS(imagen);
 			pool.query(
-				'INSERT INTO corte VALUES(?,?,?,?,?,?)',
-				[nombre, descripcion, marca, precio, null, pathImagen],
+				'INSERT INTO corte(nombre_corte,descripcion,precio,pathImagen) VALUES(?,?,?,?)',
+				[nombre, descripcion, precio.toString(), pathImagen],
 				(err, result) => {
 					if (err) {
 						reject(err);
@@ -166,6 +163,8 @@ export const borrarImagenCortePorId = (id: string) => {
 					if(!result.pathImagen){
 						reject("No existe el id de corte para borrar su imagen")
 					}
+					// console.log(result.pathImagen)
+					// resolv("OK")
 					fs.rm(result.pathImagen,async (err) => {
 						if (err) {
 							console.log(err);

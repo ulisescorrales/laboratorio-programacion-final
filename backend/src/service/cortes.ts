@@ -16,11 +16,10 @@ export const getCorteJSON=async(nombre:string)=>{
 		throw new Error(err)
 	}
 }
-export const registrarCorteService=async(nombre:string,descripcion:string,marca:string,precio:number,imagen:any)=>{
-	let pathImagen:string|null=null;
+export const registrarCorteService=async(nombre:string,descripcion:string,precio:number,pathImagen:string)=>{
 	try{
-		pathImagen=await cortesRepository.guardarImagenEnFS(imagen);
-		await cortesRepository.insertarCorteBD(nombre,descripcion,marca,precio,pathImagen)
+		// pathImagen=await cortesRepository.guardarImagenEnFS(imagen);
+		await cortesRepository.insertarCorteBD(nombre,descripcion,precio,pathImagen)
 	}catch(err:any){
 		if(pathImagen){
 			//Borrar imagen

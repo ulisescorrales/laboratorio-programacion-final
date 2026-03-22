@@ -70,7 +70,7 @@ export const getUserRole=(token:string)=>{
 	return new Promise((resolv,reject)=>{
 		jwt.verify(token,secreto,(err:any,decoded:any)=>{
 			if(err){
-				console.log(err)
+				// console.log(err)
 				reject("Error en jwt")
 			}else{
 				resolv(decoded)

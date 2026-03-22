@@ -28,25 +28,23 @@ export const getCorte = async (req: any, res: any) => {
 
 export const registrarCorte = async (req: any, res: any) => {
 	// console.log(req)
-	console.log("............")
-	console.log(req.file)
-	console.log("---------------")
-	console.log(req.body)
 	const nombre = req.body.nombre;
 	const descripcion = req.body.descripcion;
 	let precio = req.body.precio;
-	const imagen = req.file;
+	let pathImagen = req.file.path;
+	//TODO: si sale mal, borrar la imagen
 	if (precio) {
 		precio = Number(precio);
-		if (nombre && descripcion && precio && imagen) {
-			//TODO: guardar la imagen y obtener el path relativo
-			res.status(404).send('Guardado con éxito');
-			// try{
-			// 		await cortesService.registrarCorteService(nombre,descripcion,marca,precio,imagen)
-			// 		res.status(200).send("Guardado con éxito")
-			// }catch(err){
-			// 		res.status(500).send("No se pudo guardar en la BD")
-			// }
+		if (nombre && descripcion && precio && pathImagen) {
+			pathImagen=pathImagen.replace("assets","")
+			// console.log(pathImagen)
+			// res.status(404).send('Guardado con éxito');
+			try{
+					await cortesService.registrarCorteService(nombre,descripcion,precio,pathImagen)
+					res.status(200).send("Guardado con éxito")
+			}catch(err){
+					res.status(500).send("No se pudo guardar en la BD")
+			}
 		} else {
 			res.status(400).send('Faltan datos en el body');
 		}
