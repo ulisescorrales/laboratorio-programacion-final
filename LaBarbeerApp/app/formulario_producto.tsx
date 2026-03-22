@@ -1,6 +1,14 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as ImagePicker from 'expo-image-picker';
-import { Alert, Text, Button, Image, View, ScrollView, Platform } from 'react-native';
+import {
+	Alert,
+	Text,
+	Button,
+	Image,
+	View,
+	ScrollView,
+	Platform
+} from 'react-native';
 import { TextInput, StyleSheet } from 'react-native';
 import { useEffect, useState } from 'react';
 import {
@@ -9,6 +17,7 @@ import {
 	useLocalSearchParams,
 	useNavigation
 } from 'expo-router';
+import Toast from 'react-native-toast-message';
 
 export default function FormularioProducto() {
 	const { tipoProducto, tipoAccion, id } = useLocalSearchParams();
@@ -38,6 +47,7 @@ export default function FormularioProducto() {
 	const [image, setImage] = useState<any>(
 		require('../assets/images/foto_anonima.jpg')
 	);
+	const [fotoNombre, setFotoNombre] = useState<string>('');
 	const [hayNuevaImagen, setHayNuevaImagen] = useState<boolean>(false);
 	useEffect(() => {
 		setHayNuevaImagen(true);
@@ -59,13 +69,24 @@ export default function FormularioProducto() {
 			aspect: [4, 3],
 			quality: 1
 		});
-		// console.log(result);
+		if (result) {
+			setFotoNombre(result.assets[0].fileName);
+		}
 
 		if (!result.canceled) {
 			setImage({ uri: result.assets[0].uri });
 		}
 	};
 	const submit = () => {
+		console.log("imagen: "+image)
+		if (!image.uri) {
+			Toast.show({
+				type: 'error',
+				text1: "Debe seleccionar una imagen",
+				position: 'bottom'
+			});
+			return;
+		}
 		let method;
 		let path: string = '';
 		let bodyP: any = {
@@ -76,16 +97,21 @@ export default function FormularioProducto() {
 			promocion: null
 		};
 		const formData = new FormData();
-		formData.append("nombre",nombre)
-		formData.append("descripcion",descripcion)
-		formData.append("marca",marca)
-		formData.append("precio",precio)
-		console.log("Subiendo: "+image.uri)
+		formData.append('nombre', nombre);
+		formData.append('descripcion', descripcion);
+		formData.append('marca', marca);
+		formData.append('precio', precio);
+		//Ignorar los warnings
+		formData.append('tipoProducto', tipoProducto);
+		console.log('Subiendo: ' + image.uri);
 		formData.append('image', {
-			uri: Platform.OS === 'android' ? image.uri : image.uri.replace('file://', ''),
+			uri:
+				Platform.OS === 'android'
+					? image.uri
+					: image.uri.replace('file://', ''),
 			// uri: image,
 			type: 'image/png',
-			name: 'foto'
+			name: fotoNombre
 		});
 		if (tipoAccion == 'i') {
 			//Modificar
@@ -98,15 +124,14 @@ export default function FormularioProducto() {
 		} else {
 			throw new Error('Acción no reconocida');
 		}
-		console.log("Fetch")
 		fetch(path, {
 			method: method,
 			headers: {
-				Authorization: 'Bearer ' + token,
+				Authorization: 'Bearer ' + token
 				// 'Accept': 'application/json',
-			    // 'Content-Type': 'multipart/form-data'
+				// 'Content-Type': 'multipart/form-data'
 			},
-			body:formData
+			body: formData
 		}).then((data) => {
 			let mensaje: string = '';
 			switch (data.status) {
@@ -250,6 +275,7 @@ export default function FormularioProducto() {
 					}
 				/>
 			</View>
+			<Toast />
 		</ScrollView>
 	);
 }
