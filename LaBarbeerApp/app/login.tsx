@@ -1,9 +1,17 @@
 import Toast from 'react-native-toast-message';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { TextInput,StyleSheet, Text, Switch, View, Button } from 'react-native';
-import { useRouter } from 'expo-router';
+import {
+	TextInput,
+	StyleSheet,
+	Text,
+	Switch,
+	View,
+	Button
+} from 'react-native';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 export default function Login() {
+	const { mensaje } = useLocalSearchParams();
 	const router = useRouter();
 	const backendHost = process.env.EXPO_PUBLIC_BACKEND_HOST;
 	const [user, setUser] = useState<string>('');
@@ -13,6 +21,16 @@ export default function Login() {
 
 	const toggleSwitch = () =>
 		setIsEnabled((previousState: boolean) => !previousState);
+
+		useEffect(() => {
+			if(mensaje){
+				Toast.show({
+					type: 'info',
+					text1: mensaje,
+					position: 'bottom'
+				})
+			}
+		}, [mensaje]);
 
 	const login = () => {
 		fetch(backendHost + '/api/login/auth', {
@@ -37,14 +55,14 @@ export default function Login() {
 					AsyncStorage.setItem('token', json.token);
 					AsyncStorage.setItem('user', user);
 					router.replace({
-						pathname:"/",
-						params:{
-							role:json.role,
-							mensaje:"Logueado correctamente",
-							nombreUsuario:user
+						pathname: '/',
+						params: {
+							role: json.role,
+							mensaje: 'Logueado correctamente',
+							nombreUsuario: user
 						}
-					})
-					// 
+					});
+					//
 					// router.setParams({
 					// 	role: json.role,
 					// 	mensaje: 'Logueado correctamente',
@@ -65,7 +83,11 @@ export default function Login() {
 	return (
 		<View>
 			<Text style={styles2.label}>Usuario:</Text>
-			<TextInput value={user} onChangeText={setUser} style={styles2.input}/>
+			<TextInput
+				value={user}
+				onChangeText={setUser}
+				style={styles2.input}
+			/>
 			<Text style={styles2.label}>Contraseña:</Text>
 			<TextInput
 				value={password}
@@ -81,7 +103,7 @@ export default function Login() {
 					ios_backgroundColor="#3e3e3e"
 					onValueChange={toggleSwitch}
 					value={isEnabled}
-					style={{alignSelf:'flex-start'}}
+					style={{ alignSelf: 'flex-start' }}
 				/>
 			</View>
 			<Button title={'Login'} onPress={login} />

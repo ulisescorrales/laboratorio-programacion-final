@@ -37,13 +37,14 @@ export const registrarCerveza=async(req:any,res:any)=>{
 		res.send(400).send("Falta el precio")
 	}
 	if( nombre && descripcion && marca && precio && imagen ){
-		//TODO: guardar la imagen y obtener el path relativo
-		try{
-				await cervezasService.registrarCervezaService(nombre,descripcion,marca,precio,imagen)
-				res.status(200).send("Guardado con éxito")
-		}catch(err){
-				res.status(500).send("No se pudo guardar en la BD")
-		}
+		console.log("Ok")
+		res.status(200).send("OK parcial")
+		// try{
+		// 		await cervezasService.registrarCervezaService(nombre,descripcion,marca,precio,imagen)
+		// 		res.status(200).send("Guardado con éxito")
+		// }catch(err){
+		// 		res.status(500).send("No se pudo guardar en la BD")
+		// }
 	}else{
 		res.status(400).send("Faltan datos en el body")
 	}

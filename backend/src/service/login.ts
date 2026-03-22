@@ -55,11 +55,12 @@ export const generarToken=(user:string,role:string)=>{
 }
 export const getRole=(token:string)=>{
 	return new Promise<string>((resolv,reject)=>{
+		console.log("Verificando")
 		jwt.verify(token,secreto,(err:any,decoded:any)=>{
 			if(err){
-				reject(err)
+				reject("Token vencido")
 			}else{
-				resolv(decoded)
+				resolv(decoded.role)
 			}
 		})
 	})

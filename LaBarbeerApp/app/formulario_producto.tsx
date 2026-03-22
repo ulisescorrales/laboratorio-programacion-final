@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as ImagePicker from 'expo-image-picker';
-import { Alert, Text, Button, Image, View, ScrollView } from 'react-native';
+import { Alert, Text, Button, Image, View, ScrollView, Platform } from 'react-native';
 import { TextInput, StyleSheet } from 'react-native';
 import { useEffect, useState } from 'react';
 import {
@@ -12,7 +12,6 @@ import {
 
 export default function FormularioProducto() {
 	const { tipoProducto, tipoAccion, id } = useLocalSearchParams();
-
 	let nombreScreen: string = '';
 	if (tipoAccion == 'm') {
 		nombreScreen = 'Modificar ' + tipoProducto;
@@ -20,6 +19,7 @@ export default function FormularioProducto() {
 		nombreScreen = 'Agregar ' + tipoProducto;
 	}
 	const navigation = useNavigation();
+	// console.log('tipoAccion: '+tipoAccion)
 
 	useEffect(() => {
 		navigation.setOptions({
@@ -59,7 +59,7 @@ export default function FormularioProducto() {
 			aspect: [4, 3],
 			quality: 1
 		});
-		console.log(result);
+		// console.log(result);
 
 		if (!result.canceled) {
 			setImage({ uri: result.assets[0].uri });
@@ -75,37 +75,38 @@ export default function FormularioProducto() {
 			precio: precio,
 			promocion: null
 		};
-		if (hayNuevaImagen) {
-			bodyP['fhoto'] = {
-				uri: image,
-				type: 'image/jpeg',
-				name: 'photo.jpg'
-			};
-		}
-		if (tipoAccion == 'm') {
+		const formData = new FormData();
+		formData.append("nombre",nombre)
+		formData.append("descripcion",descripcion)
+		formData.append("marca",marca)
+		formData.append("precio",precio)
+		console.log("Subiendo: "+image.uri)
+		formData.append('image', {
+			uri: Platform.OS === 'android' ? image.uri : image.uri.replace('file://', ''),
+			// uri: image,
+			type: 'image/png',
+			name: 'foto'
+		});
+		if (tipoAccion == 'i') {
 			//Modificar
 			method = 'POST';
 			path = backendHost + '/api/' + tipoProducto + '/crear';
-		} else if (tipoAccion == 'i') {
+		} else if (tipoAccion == 'm') {
 			//Insertar nuevo
 			method = 'PUT';
-			path = backendHost + '/api/' + tipoProducto + '/' + id;
+			path = backendHost + '/api/' + tipoProducto + '/' + nombre;
 		} else {
 			throw new Error('Acción no reconocida');
 		}
+		console.log("Fetch")
 		fetch(path, {
 			method: method,
 			headers: {
-				'Content-Type': 'application/json',
-				'Autorizathion:': 'Bearer ' + token
+				Authorization: 'Bearer ' + token,
+				// 'Accept': 'application/json',
+			    // 'Content-Type': 'multipart/form-data'
 			},
-			body: JSON.stringify({
-				nombre: nombre,
-				descripcion: descripcion,
-				marca: marca,
-				precio: precio,
-				promocion: null
-			})
+			body:formData
 		}).then((data) => {
 			let mensaje: string = '';
 			switch (data.status) {
@@ -115,7 +116,7 @@ export default function FormularioProducto() {
 					} else if (tipoAccion == 'i') {
 						mensaje = tipoProducto + ' agregado correctamente';
 					}
-					router.push({
+					router.replace({
 						pathname: '/',
 						params: {
 							mensaje: mensaje
@@ -130,6 +131,9 @@ export default function FormularioProducto() {
 							mensaje: mensaje
 						}
 					});
+					break;
+				default:
+					data.text().then((text) => console.log(text));
 			}
 		});
 	};
@@ -143,29 +147,27 @@ export default function FormularioProducto() {
 		});
 		if (id) {
 			//Modificar: traer los datos, sino es insertar y los campos quedan en blanco
-			const getPath=backendHost + '/api/' + tipoProducto + '/' + id;
+			const getPath = backendHost + '/api/' + tipoProducto + '/' + id;
 			// console.log(getPath)
-			fetch(getPath).then(
-				(data) => {
-					if (data.status == 200) {
-						data.json().then((json) => {
-							setNombre(json.nombre);
-							setDescripcion(json.descripcion);
-							setMarca(json.marca);
-							setPrecio(json.precio.toString());
-							setImage({ uri: backendHost + json.pathImagen });
-						});
-					} else {
-						//Si no existe el id, volver
-						router.back();
-					}
+			fetch(getPath).then((data) => {
+				if (data.status == 200) {
+					data.json().then((json) => {
+						setNombre(json.nombre);
+						setDescripcion(json.descripcion);
+						setMarca(json.marca);
+						setPrecio(json.precio.toString());
+						setImage({ uri: backendHost + json.pathImagen });
+					});
+				} else {
+					//Si no existe el id, volver
+					router.back();
 				}
-			);
+			});
 		}
 	}, []);
 
 	return (
-		<ScrollView >
+		<ScrollView>
 			<View style={styles2.inputGroup}>
 				<Text style={styles2.label}>Nombre del producto</Text>
 				<TextInput
