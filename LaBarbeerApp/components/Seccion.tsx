@@ -41,52 +41,57 @@ export default function Seccion({
 							<View style={{ position: 'relative' }}>
 								<Image
 									source={{
-										uri:
-											backendHost +
-											item.pathImagen
+										uri: backendHost + item.pathImagen
 									}}
 									key={index}
 									style={[styles.image]}
 									borderRadius={16}
 								/>
 								{rol == 'admin' ? (
-										<Lapiz
-											style={{
-												position: 'absolute',
-												top: '50%',
-												left: '30%',
-												transform: [
-													{ translateX: -30 }, // half of svg width
-													{ translateY: -30 } // half of svg height
-												]
-											}}
-											onPress={() => {
-												router.push({
-													pathname:
-														'/formulario_producto',
-													params: {
-														tipoAccion: 'm',
-														tipoProducto:
-															tipoProducto,
-														id: item.nombre
-													}
-												});
-											}}
-										/>
+									<Lapiz
+										style={{
+											position: 'absolute',
+											top: '50%',
+											left: '30%',
+											transform: [
+												{ translateX: -30 }, // half of svg width
+												{ translateY: -30 } // half of svg height
+											]
+										}}
+										onPress={() => {
+											router.push({
+												pathname:
+													'/formulario_producto',
+												params: {
+													tipoAccion: 'm',
+													tipoProducto: tipoProducto,
+													id: item.nombre
+												}
+											});
+										}}
+									/>
 								) : null}
 								{rol == 'admin' ? (
-										<Trash
-											style={{
-												position: 'absolute',
-												top: '50%',
-												left: '70%',
-												transform: [
-													{ translateX: -30 }, // half of svg width
-													{ translateY: -30 } // half of svg height
-												]
-											}}
-											onPress={()=>capturarBorrar(item.nombre,tipoProducto)}
-										/>
+									<Trash
+										style={{
+											position: 'absolute',
+											top: '50%',
+											left: '70%',
+											transform: [
+												{ translateX: -30 }, // half of svg width
+												{ translateY: -30 } // half of svg height
+											]
+										}}
+										onPress={() =>
+											router.push({
+												pathname: '/ConfirmarBorrar',
+												params: {
+													tipoProducto: tipoProducto,
+													id: item.nombre
+												}
+											})
+										}
+									/>
 								) : null}
 							</View>
 							<View style={styleItem.itemCard}>

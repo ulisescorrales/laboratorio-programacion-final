@@ -78,89 +78,112 @@ export default function FormularioProducto() {
 		}
 	};
 	const submit = () => {
-		console.log("imagen: "+image)
+		//Verificación inicial de los datos completados
+		//TODO: uri inicial de producto modificado es el que ya tiene, se usa la variable si cambió la imagen y si no se cambió, no se envía
 		if (!image.uri) {
 			Toast.show({
 				type: 'error',
-				text1: "Debe seleccionar una imagen",
+				text1: 'Debe seleccionar una imagen',
 				position: 'bottom'
 			});
-			return;
-		}
-		let method;
-		let path: string = '';
-		let bodyP: any = {
-			nombre: nombre,
-			descripcion: descripcion,
-			marca: marca,
-			precio: precio,
-			promocion: null
-		};
-		const formData = new FormData();
-		formData.append('nombre', nombre);
-		formData.append('descripcion', descripcion);
-		formData.append('marca', marca);
-		formData.append('precio', precio);
-		//Ignorar los warnings
-		formData.append('tipoProducto', tipoProducto);
-		console.log('Subiendo: ' + image.uri);
-		formData.append('image', {
-			uri:
-				Platform.OS === 'android'
-					? image.uri
-					: image.uri.replace('file://', ''),
-			// uri: image,
-			type: 'image/png',
-			name: fotoNombre
-		});
-		if (tipoAccion == 'i') {
-			//Modificar
-			method = 'POST';
-			path = backendHost + '/api/' + tipoProducto + '/crear';
-		} else if (tipoAccion == 'm') {
-			//Insertar nuevo
-			method = 'PUT';
-			path = backendHost + '/api/' + tipoProducto + '/' + nombre;
 		} else {
-			throw new Error('Acción no reconocida');
-		}
-		fetch(path, {
-			method: method,
-			headers: {
-				Authorization: 'Bearer ' + token
-				// 'Accept': 'application/json',
-				// 'Content-Type': 'multipart/form-data'
-			},
-			body: formData
-		}).then((data) => {
-			let mensaje: string = '';
-			switch (data.status) {
-				case 200:
-					if (tipoAccion == 'm') {
-						mensaje = tipoProducto + ' modificado correctamente';
-					} else if (tipoAccion == 'i') {
-						mensaje = tipoProducto + ' agregado correctamente';
+			if (!nombre || !descripcion || !precio) {
+				Toast.show({
+					type: 'error',
+					text1: 'Debe seleccionar una imagen',
+					position: 'bottom'
+				});
+			} else {
+				if (tipoProducto == 'cerveza' && !marca) {
+					Toast.show({
+						type: 'error',
+						text1: 'Marca es obligatorio',
+						position: 'bottom'
+					});
+				} else {
+					//Pasó todas las validaciones
+					let method;
+					let path: string = '';
+					let bodyP: any = {
+						nombre: nombre,
+						descripcion: descripcion,
+						marca: marca,
+						precio: precio,
+						promocion: null
+					};
+					const formData = new FormData();
+					formData.append('nombre', nombre);
+					formData.append('descripcion', descripcion);
+					formData.append('marca', marca);
+					formData.append('precio', precio);
+					//Ignorar los warnings
+					formData.append('tipoProducto', tipoProducto);
+					console.log('Subiendo: ' + image.uri);
+					formData.append('image', {
+						uri:
+							Platform.OS === 'android'
+								? image.uri
+								: image.uri.replace('file://', ''),
+						// uri: image,
+						type: 'image/png',
+						name: fotoNombre
+					});
+					if (tipoAccion == 'i') {
+						//Modificar
+						method = 'POST';
+						path = backendHost + '/api/' + tipoProducto + '/crear';
+					} else if (tipoAccion == 'm') {
+						//Insertar nuevo
+						method = 'PUT';
+						path =
+							backendHost + '/api/' + tipoProducto + '/' + nombre;
+					} else {
+						throw new Error('Acción no reconocida');
 					}
-					router.replace({
-						pathname: '/',
-						params: {
-							mensaje: mensaje
+					fetch(path, {
+						method: method,
+						headers: {
+							Authorization: 'Bearer ' + token
+							// 'Accept': 'application/json',
+							// 'Content-Type': 'multipart/form-data'
+						},
+						body: formData
+					}).then((data) => {
+						let mensaje: string = '';
+						switch (data.status) {
+							case 200:
+								if (tipoAccion == 'm') {
+									mensaje =
+										tipoProducto +
+										' modificado correctamente';
+								} else if (tipoAccion == 'i') {
+									mensaje =
+										tipoProducto +
+										' agregado correctamente';
+								}
+								router.replace({
+									pathname: '/',
+									params: {
+										mensaje: mensaje
+									}
+								});
+								break;
+							case 401:
+								mensaje = 'Sesión caducada, vuelva a loguearse';
+								router.push({
+									pathname: '/login',
+									params: {
+										mensaje: mensaje
+									}
+								});
+								break;
+							default:
+								data.text().then((text) => console.log(text));
 						}
 					});
-					break;
-				case 401:
-					mensaje = 'Sesión caducada, vuelva a loguearse';
-					router.push({
-						pathname: '/login',
-						params: {
-							mensaje: mensaje
-						}
-					});
-					break;
-				default:
-					data.text().then((text) => console.log(text));
+				}
 			}
-		});
+		}
 	};
 	useEffect(() => {
 		AsyncStorage.getItem('token', (err, result: any) => {

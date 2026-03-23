@@ -94,7 +94,7 @@ export const getCorteBD = (nombre: string) => {
 export const borrarCorteBD = (nombre: string) => {
 	return new Promise((resolv, reject) => {
 		pool.query(
-			'DELETE FROM corte WHERE nombre=?',
+			'DELETE FROM corte WHERE nombre_corte=?',
 			[nombre],
 			(err, result: any) => {
 				if (err) {
@@ -160,30 +160,23 @@ export const borrarImagenCortePorId = (id: string) => {
 					console.log(err);
 					reject('Error consultando pathImagen de corte');
 				} else {
-					if(!result.pathImagen){
+					if(result.length==0){
+						resolv(false)//No existe id
+					}
+					if(!result[0].pathImagen){
 						reject("No existe el id de corte para borrar su imagen")
 					}
-					console.log(result.pathImagen)
-					resolv("OK")
-					// fs.rm(result.pathImagen,async (err) => {
-					// 	if (err) {
-					// 		console.log(err);
-					// 		reject('Error');
-					// 	} else {
-					// 		pool.query('UPDATE corte SET pathImagen=null WHERE nombre_corte=?',[id],(err,result:any)=>{
-					// 			if(err){
-					// 				console.log(err)
-					// 				reject("Error actualizando pathImagen en null en corte")
-					// 			}else{
-					// 				if(result.affectedRows==1){
-					// 					resolv("OK")
-					// 				}else{
-					// 					reject("No existe el id especificado para borrar la imagen del corte")
-					// 				}
-					// 			}
-					// 		})
-					// 	}
-					// });
+					result[0].pathImagen="assets"+result[0].pathImagen
+					const path=result[0].pathImagen
+					fs.rm(path,async (err) => {
+						if (err) {
+							console.log(err);
+							reject('Error');
+						} else {
+							console.log("Borrado archivo de imagen")
+							resolv(true)
+						}
+					});
 				}
 			}
 		);

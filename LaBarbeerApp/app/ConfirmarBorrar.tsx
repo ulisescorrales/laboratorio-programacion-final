@@ -1,24 +1,14 @@
+import {useLocalSearchParams} from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
-import { Button, Text, View, StyleSheet } from 'react-native';
+import { Button, Text, View, StyleSheet , ImageBackground} from 'react-native';
 
 // Definimos la interfaz para los props
-interface ConfirmarBorrarProps {
-	id: string;
-	tipoProducto: string;
-	onResponse: any;
-}
+export default function ConfirmarBorrar() {
 
-export default function ConfirmarBorrar({
-	id,
-	tipoProducto,
-	onResponse
-}: ConfirmarBorrarProps) {
 	const backendHost = process.env.EXPO_PUBLIC_BACKEND_HOST;
 	const router = useRouter();
-	const cancelar = () => {
-		onResponse(false);
-	};
+	const { tipoProducto, id }=useLocalSearchParams();
 	const confirmar = () => {
 		//TODO: empaquetar esta lógica en una función común
 		AsyncStorage.getItem('token', (err, result) => {
@@ -32,7 +22,15 @@ export default function ConfirmarBorrar({
 				}).then(data=>{
 					switch(data.status){
 						case 200:
-							onResponse(false)
+							data.text().then(text=>{
+							console.log(text)
+							router.replace({
+							pathname:"/",
+							params:{
+								mensaje:"Elemento eliminado correctamente"
+							}
+						})
+						})
 							break;
 						case 401:
 							router.push({
@@ -43,14 +41,27 @@ export default function ConfirmarBorrar({
 						})
 							break;
 						default:
-							onResponse(false)
+							router.replace({
+							pathname:"/",
+							params:{
+								mensaje:"Error no identificado"
+							}
+						})
 							break;
 					}
 				});
 			}
 		});
 	};
+	const cancelar = () => {
+		router.back()
+		// onResponse(false);
+	};
 	return (
+		<ImageBackground
+			source={require('../assets/images/fondobarberia2.jpg')}
+			style={{ height: '100%',alignItems: 'center' }}
+		>
 		<View style={styles.container}>
 			<Text style={styles.text}>¿Desea borrar el elemento "{id}"?</Text>
 			<View style={styles.buttonContainer}>
@@ -58,6 +69,7 @@ export default function ConfirmarBorrar({
 				<Button title="No" onPress={() => cancelar()} color="gray" />
 			</View>
 		</View>
+		</ImageBackground>
 	);
 }
 
@@ -68,9 +80,8 @@ const styles = StyleSheet.create({
 		borderRadius: 10,
 		alignItems: 'center',
 		position: 'absolute',
-		top: '50%',
-		left: '50%',
-		transform: [{ translateX: -190 }, { translateY: -50 }]
+		top: '30%',
+		margin:'auto'
 	},
 	text: {
 		marginBottom: 15,

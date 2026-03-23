@@ -1,7 +1,7 @@
 import MapView, { Marker } from 'react-native-maps';
 import { useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { useRouter } from 'expo-router';
-import ConfirmarBorrar from '../../components/confirmarBorrar'
+import ConfirmarBorrar from '../../components/confirmarBorrar';
 import {
 	View,
 	Button,
@@ -30,32 +30,32 @@ export default function HomeScreen() {
 	const longitud = -68.0548;
 	const [usuario, setUsuario] = useState<string | null>(null);
 
-	const [ confirmarBorrar, setConfirmarBorrar ]=useState<boolean>(false)
-	const [ idBorrar,setIdBorrar ]=useState<string>("")
-	const [ tipoProductoBorrar,setTipoProductoBorrar ]=useState<string>("")
-	const capturarBorrar=(id:string,tipoProducto:string)=>{
+	const [confirmarBorrar, setConfirmarBorrar] = useState<boolean>(false);
+	const [idBorrar, setIdBorrar] = useState<string>('');
+	const [tipoProductoBorrar, setTipoProductoBorrar] = useState<string>('');
+	const capturarBorrar = (id: string, tipoProducto: string) => {
 		setConfirmarBorrar(true);
 		setIdBorrar(id);
-		setTipoProductoBorrar(tipoProducto)
-	}
-	const [ocultarFondo,setOcultarFondo]=useState('contents')
-	const respuestaBorrar=(resp:boolean)=>{
-		if(!resp){
+		setTipoProductoBorrar(tipoProducto);
+	};
+	const [ocultarFondo, setOcultarFondo] = useState('contents');
+	const respuestaBorrar = (resp: boolean) => {
+		if (!resp) {
 			Toast.show({
 				type: 'success',
-				text1: "Borrado cancelado",
+				text1: 'Borrado cancelado',
 				position: 'bottom'
 			});
-			setConfirmarBorrar(false)
+			setConfirmarBorrar(false);
 		}
-	}
-	useEffect(()=>{
-		if(confirmarBorrar){
-			setOcultarFondo('none')
-		}else{
-			setOcultarFondo('contents')
+	};
+	useEffect(() => {
+		if (confirmarBorrar) {
+			setOcultarFondo('none');
+		} else {
+			setOcultarFondo('contents');
 		}
-	},[confirmarBorrar])
+	}, [confirmarBorrar]);
 
 	useEffect(() => {
 		//Si llega un mensaje a este screen, mostrar en un Toast
@@ -133,7 +133,7 @@ export default function HomeScreen() {
 			}
 		});
 	}, []);
-	const cargarProductos=()=>{
+	const cargarProductos = () => {
 		fetch(backendHost + '/api/cervezas')
 			.then((data) => data.json())
 			.then((json) => setColCervezas(json))
@@ -154,8 +154,8 @@ export default function HomeScreen() {
 					position: 'bottom'
 				});
 			});
-		setRefrescando(false)
-	}
+		setRefrescando(false);
+	};
 	useEffect(() => {
 		//Fetch de productos
 		// console.log(backendHost + '/api/cervezas')
@@ -174,89 +174,88 @@ export default function HomeScreen() {
 			source={require('../../assets/images/fondobarberia2.jpg')}
 			style={{ height: '100%' }}
 		>
-			<View style={{display:ocultarFondo}}>
-			<View>
-				<View
-					style={{
-						flexDirection: 'row',
-						alignItems: 'center',
-						justifyContent: 'space-between'
-					}}
-				>
-					<Image
-						source={require('../../assets/images/logo.png')}
-						style={styles.titleContainer}
-					/>
-					{usuario ? (
-						<Text style={styles.usuario}>Usuario: {usuario}</Text>
-					) : null}
-					<Button
-						title={!rol ? 'Login' : 'Cerrar sesión'}
-						onPress={loginButton}
-					/>
-				</View>
-
-				<ScrollView
-					refreshControl={
-						<RefreshControl
-							refreshing={refrescando}
-							onRefresh={alRefrescar}
-							colors={['#9Bd35A', '#689F38']} // Android: colores del círculo
-							tintColor="#689F38" // iOS: color del spinner
+			<View style={{ display: ocultarFondo }}>
+				<View>
+					<View
+						style={{
+							flexDirection: 'row',
+							alignItems: 'center',
+							justifyContent: 'space-between'
+						}}
+					>
+						<Image
+							source={require('../../assets/images/logo.png')}
+							style={styles.titleContainer}
 						/>
-					}
-				>
-					<Seccion
-						title={'Nuestros Cortes'}
-						colProductos={colCortes}
-						rol={rol}
-						tipoProducto={'corte'}
-						capturarBorrar={capturarBorrar}
-					/>
-					<Seccion
-						title={'Nuestras Cervezas'}
-						colProductos={colCervezas}
-						rol={rol}
-						tipoProducto={'cerveza'}
-						capturarBorrar={capturarBorrar}
-					/>
-
-					<View style={styles.map}>
-						<View style={styles.containerTitle}>
-							<Text style={styles.title}>Dónde estamos</Text>
-						</View>
-						<Text style={styles.textDomicilio}>
-							Chubut 322, Neuquén capital
-						</Text>
-						<Text style={styles.textDomicilio}>
-							Lunea a viernes de 9 a 21 hs.
-						</Text>
-						<MapView
-							style={styles.map}
-							loadingEnabled={true}
-							initialRegion={{
-								latitude: latitud,
-								longitude: longitud,
-								latitudeDelta: 0.01,
-								longitudeDelta: 0.01
-							}}
-						>
-							<Marker
-								coordinate={{
-									latitude: latitud,
-									longitude: longitud
-								}}
-								title="La Barbeer"
-							/>
-						</MapView>
+						{usuario ? (
+							<Text style={styles.usuario}>
+								Usuario: {usuario}
+							</Text>
+						) : null}
+						<Button
+							title={!rol ? 'Login' : 'Cerrar sesión'}
+							onPress={loginButton}
+						/>
 					</View>
-				</ScrollView>
-			</View>
-			</View>
-			// {confirmarBorrar?
 
-			// 	<ConfirmarBorrar id={idBorrar} tipoProducto={tipoProductoBorrar} onResponse={respuestaBorrar}/>:null
-			// }
+					<ScrollView
+						refreshControl={
+							<RefreshControl
+								refreshing={refrescando}
+								onRefresh={alRefrescar}
+								colors={['#9Bd35A', '#689F38']} // Android: colores del círculo
+								tintColor="#689F38" // iOS: color del spinner
+							/>
+						}
+					>
+						<Seccion
+							title={'Nuestros Cortes'}
+							colProductos={colCortes}
+							rol={rol}
+							tipoProducto={'corte'}
+							capturarBorrar={capturarBorrar}
+						/>
+						<Seccion
+							title={'Nuestras Cervezas'}
+							colProductos={colCervezas}
+							rol={rol}
+							tipoProducto={'cerveza'}
+							capturarBorrar={capturarBorrar}
+						/>
+
+						<View style={styles.map}>
+							<View style={styles.containerTitle}>
+								<Text style={styles.title}>Dónde estamos</Text>
+							</View>
+							<Text style={styles.textDomicilio}>
+								Chubut 322, Neuquén capital
+							</Text>
+							<Text style={styles.textDomicilio}>
+								Lunea a viernes de 9 a 21 hs.
+							</Text>
+							<MapView
+								style={styles.map}
+								loadingEnabled={true}
+								initialRegion={{
+									latitude: latitud,
+									longitude: longitud,
+									latitudeDelta: 0.01,
+									longitudeDelta: 0.01
+								}}
+							>
+								<Marker
+									coordinate={{
+										latitude: latitud,
+										longitude: longitud
+									}}
+									title="La Barbeer"
+								/>
+							</MapView>
+						</View>
+					</ScrollView>
+				</View>
+			</View>
+
 			<Toast />
 		</ImageBackground>
 	);
