@@ -1,6 +1,7 @@
 import MapView, { Marker } from 'react-native-maps';
 import { useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { useRouter } from 'expo-router';
+import ConfirmarBorrar from '../../components/confirmarBorrar'
 import {
 	View,
 	Button,
@@ -28,6 +29,34 @@ export default function HomeScreen() {
 	const latitud = -38.95857;
 	const longitud = -68.0548;
 	const [usuario, setUsuario] = useState<string | null>(null);
+
+	const [ confirmarBorrar, setConfirmarBorrar ]=useState<boolean>(false)
+	const [ idBorrar,setIdBorrar ]=useState<string>("")
+	const [ tipoProductoBorrar,setTipoProductoBorrar ]=useState<string>("")
+	const capturarBorrar=(id:string,tipoProducto:string)=>{
+		setConfirmarBorrar(true);
+		setIdBorrar(id);
+		setTipoProductoBorrar(tipoProducto)
+	}
+	const [ocultarFondo,setOcultarFondo]=useState('contents')
+	const respuestaBorrar=(resp:boolean)=>{
+		if(!resp){
+			Toast.show({
+				type: 'success',
+				text1: "Borrado cancelado",
+				position: 'bottom'
+			});
+			setConfirmarBorrar(false)
+		}
+	}
+	useEffect(()=>{
+		if(confirmarBorrar){
+			setOcultarFondo('none')
+		}else{
+			setOcultarFondo('contents')
+		}
+	},[confirmarBorrar])
+
 	useEffect(() => {
 		//Si llega un mensaje a este screen, mostrar en un Toast
 		if (mensaje) {
@@ -145,6 +174,7 @@ export default function HomeScreen() {
 			source={require('../../assets/images/fondobarberia2.jpg')}
 			style={{ height: '100%' }}
 		>
+			<View style={{display:ocultarFondo}}>
 			<View>
 				<View
 					style={{
@@ -181,12 +211,14 @@ export default function HomeScreen() {
 						colProductos={colCortes}
 						rol={rol}
 						tipoProducto={'corte'}
+						capturarBorrar={capturarBorrar}
 					/>
 					<Seccion
 						title={'Nuestras Cervezas'}
 						colProductos={colCervezas}
 						rol={rol}
 						tipoProducto={'cerveza'}
+						capturarBorrar={capturarBorrar}
 					/>
 
 					<View style={styles.map}>
@@ -220,6 +252,11 @@ export default function HomeScreen() {
 					</View>
 				</ScrollView>
 			</View>
+			</View>
+			// {confirmarBorrar?
+
+			// 	<ConfirmarBorrar id={idBorrar} tipoProducto={tipoProductoBorrar} onResponse={respuestaBorrar}/>:null
+			// }
 			<Toast />
 		</ImageBackground>
 	);

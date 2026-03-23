@@ -13,13 +13,15 @@ type seccionProps = {
 	colProductos: Producto[];
 	rol: string | null;
 	tipoProducto: string;
+	capturarBorrar: any;
 };
 
 export default function Seccion({
 	title,
 	colProductos,
 	tipoProducto,
-	rol
+	rol,
+	capturarBorrar
 }: seccionProps) {
 	const router = useRouter();
 	const backendHost = process.env.EXPO_PUBLIC_BACKEND_HOST;
@@ -52,7 +54,7 @@ export default function Seccion({
 											style={{
 												position: 'absolute',
 												top: '50%',
-												left: '35%',
+												left: '30%',
 												transform: [
 													{ translateX: -30 }, // half of svg width
 													{ translateY: -30 } // half of svg height
@@ -77,17 +79,13 @@ export default function Seccion({
 											style={{
 												position: 'absolute',
 												top: '50%',
-												left: '65%',
+												left: '70%',
 												transform: [
 													{ translateX: -30 }, // half of svg width
 													{ translateY: -30 } // half of svg height
 												]
 											}}
-											onPress={() => {
-												router.push(
-													'/formulario_producto'
-												);
-											}}
+											onPress={()=>capturarBorrar(item.nombre,tipoProducto)}
 										/>
 								) : null}
 							</View>

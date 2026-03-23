@@ -163,27 +163,27 @@ export const borrarImagenCortePorId = (id: string) => {
 					if(!result.pathImagen){
 						reject("No existe el id de corte para borrar su imagen")
 					}
-					// console.log(result.pathImagen)
-					// resolv("OK")
-					fs.rm(result.pathImagen,async (err) => {
-						if (err) {
-							console.log(err);
-							reject('Error');
-						} else {
-							pool.query('UPDATE corte SET pathImagen=null WHERE nombre_corte=?',[id],(err,result:any)=>{
-								if(err){
-									console.log(err)
-									reject("Error actualizando pathImagen en null en corte")
-								}else{
-									if(result.affectedRows==1){
-										resolv("OK")
-									}else{
-										reject("No existe el id especificado para borrar la imagen del corte")
-									}
-								}
-							})
-						}
-					});
+					console.log(result.pathImagen)
+					resolv("OK")
+					// fs.rm(result.pathImagen,async (err) => {
+					// 	if (err) {
+					// 		console.log(err);
+					// 		reject('Error');
+					// 	} else {
+					// 		pool.query('UPDATE corte SET pathImagen=null WHERE nombre_corte=?',[id],(err,result:any)=>{
+					// 			if(err){
+					// 				console.log(err)
+					// 				reject("Error actualizando pathImagen en null en corte")
+					// 			}else{
+					// 				if(result.affectedRows==1){
+					// 					resolv("OK")
+					// 				}else{
+					// 					reject("No existe el id especificado para borrar la imagen del corte")
+					// 				}
+					// 			}
+					// 		})
+					// 	}
+					// });
 				}
 			}
 		);
