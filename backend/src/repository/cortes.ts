@@ -31,7 +31,7 @@ export const insertarCorteBD = (
 				[nombre, descripcion, precio.toString(), pathImagen],
 				(err, result) => {
 					if (err) {
-						reject(err);
+						reject(err.errno);
 					} else {
 						resolv(result);
 					}
@@ -112,15 +112,25 @@ export const borrarCorteBD = (nombre: string) => {
 		);
 	});
 };
-export const modificarCorteBD = (id: string, body: any) => {
+export const modificarCorteBD = (nombre:string,descripcion:string,precio:number,pathImagen:any) => {
 	//La carga de imagen se realiza en un método aparte
 	return new Promise<boolean>((resolv, reject) => {
+		let args;
+		let query;
+		if(pathImagen){
+			args=[nombre,descripcion,precio,pathImagen]
+			query=`UPDATE corte
+				   SET nombre_corte=?,descripcion=?,precio=?,pathImagen=?
+				   WHERE nombre_corte=?`
+		}else{
+			args=[nombre,descripcion,precio]
+			query=`UPDATE corte
+				   SET nombre_corte=?,descripcion=?,precio=?
+				   WHERE nombre_corte=?`
+		}
 		pool.query(
-			`UPDATE corte
-				   SET descripcion=?,marca=?,precio=?
-				   WHERE nombre_corte=?
-				   `,
-			[body.descripcion, body.marca, body.precio],
+			query,
+			args,
 			(err, result: any) => {
 				if (err) {
 					console.log(err);
@@ -139,9 +149,8 @@ export const modificarCorteBD = (id: string, body: any) => {
 };
 export const borrarImagenCortePorPath = (pathImagen: string) => {
 	return new Promise((resolv, reject) => {
-		fs.rm(pathImagen, (err) => {
+		fs.rm("assets"+pathImagen, (err) => {
 			if (err) {
-				console.log(err);
 				reject('Error');
 			} else {
 				resolv('OK');

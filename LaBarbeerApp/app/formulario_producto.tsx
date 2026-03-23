@@ -22,13 +22,7 @@ import Toast from 'react-native-toast-message';
 export default function FormularioProducto() {
 	const { tipoProducto, tipoAccion, id } = useLocalSearchParams();
 	let nombreScreen: string = '';
-	if (tipoAccion == 'm') {
-		nombreScreen = 'Modificar ' + tipoProducto;
-	} else if (tipoAccion == 'i') {
-		nombreScreen = 'Agregar ' + tipoProducto;
-	}
 	const navigation = useNavigation();
-	// console.log('tipoAccion: '+tipoAccion)
 
 	useEffect(() => {
 		navigation.setOptions({
@@ -49,6 +43,13 @@ export default function FormularioProducto() {
 	);
 	const [fotoNombre, setFotoNombre] = useState<string>('');
 	const [hayNuevaImagen, setHayNuevaImagen] = useState<boolean>(false);
+
+	if (tipoAccion == 'm') {
+		nombreScreen = 'Modificar ' + tipoProducto;
+	} else if (tipoAccion == 'i') {
+		nombreScreen = 'Agregar ' + tipoProducto;
+	}
+
 	useEffect(() => {
 		setHayNuevaImagen(true);
 	}, [image]);
@@ -69,12 +70,11 @@ export default function FormularioProducto() {
 			aspect: [4, 3],
 			quality: 1
 		});
-		if (result) {
-			setFotoNombre(result.assets[0].fileName);
-		}
 
 		if (!result.canceled) {
+			setFotoNombre(result.assets[0].fileName);
 			setImage({ uri: result.assets[0].uri });
+			setHayNuevaImagen(true);
 		}
 	};
 	const submit = () => {
@@ -90,7 +90,7 @@ export default function FormularioProducto() {
 			if (!nombre || !descripcion || !precio) {
 				Toast.show({
 					type: 'error',
-					text1: 'Debe seleccionar una imagen',
+					text1: 'Todos los campos son obligatorios',
 					position: 'bottom'
 				});
 			} else {
@@ -116,6 +116,10 @@ export default function FormularioProducto() {
 					formData.append('descripcion', descripcion);
 					formData.append('marca', marca);
 					formData.append('precio', precio);
+					formData.append(
+						'hayNuevaImagen',
+						hayNuevaImagen.toString()
+					);
 					//Ignorar los warnings
 					formData.append('tipoProducto', tipoProducto);
 					console.log('Subiendo: ' + image.uri);
@@ -125,15 +129,15 @@ export default function FormularioProducto() {
 								? image.uri
 								: image.uri.replace('file://', ''),
 						// uri: image,
-						type: 'image/png',
+						type: 'image/jpeg',
 						name: fotoNombre
 					});
 					if (tipoAccion == 'i') {
-						//Modificar
+						//Insertar
 						method = 'POST';
 						path = backendHost + '/api/' + tipoProducto + '/crear';
 					} else if (tipoAccion == 'm') {
-						//Insertar nuevo
+						//Modificar
 						method = 'PUT';
 						path =
 							backendHost + '/api/' + tipoProducto + '/' + nombre;
@@ -177,8 +181,20 @@ export default function FormularioProducto() {
 									}
 								});
 								break;
+							case 409:
+								Toast.show({
+									type: 'error',
+									text1: 'Ya existe un producto con el mismo nombre, eliga otro',
+									position: 'bottom'
+								});
+								break;
 							default:
-								data.text().then((text) => console.log(text));
+								Toast.show({
+									type: 'error',
+									text1: 'Error en el servidor',
+									position: 'bottom'
+								});
+								break;
 						}
 					});
 				}

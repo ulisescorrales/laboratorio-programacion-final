@@ -35,6 +35,7 @@ export const registrarCorte = async (req: any, res: any) => {
 	//TODO: si sale mal, borrar la imagen
 	if (precio) {
 		precio = Number(precio);
+		console.log(req.body)
 		if (nombre && descripcion && precio && pathImagen) {
 			pathImagen=pathImagen.replace("assets","")
 			// console.log(pathImagen)
@@ -42,8 +43,12 @@ export const registrarCorte = async (req: any, res: any) => {
 			try{
 					await cortesService.registrarCorteService(nombre,descripcion,precio,pathImagen)
 					res.status(200).send("Guardado con éxito")
-			}catch(err){
+			}catch(err:any){
+				if(err.message=='1062'){
+					res.status(409).send("Ya existe corte con mismo nombre")
+				}else{
 					res.status(500).send("No se pudo guardar en la BD")
+				}
 			}
 		} else {
 			res.status(400).send('Faltan datos en el body');
@@ -69,13 +74,18 @@ export const borrarCorte = async (req: any, res: any) => {
 };
 export const modificarCorte = async (req: any, res: any) => {
 	const nombre = req.params.nombre;
-	const body = req.body;
-	const imagen = req.file;
+	const descripcion = req.body.descripcion;
+	let precio = req.body.precio;
+	let imagenPath;
+	if(req.body.hayNuevaImagen){
+		imagenPath = req.file.path;
+	}
 	try {
 		const exito = await cortesService.modificarCorteService(
 			nombre,
-			body,
-			imagen
+			descripcion,
+			precio,
+			imagenPath
 		);
 		if (exito) {
 			res.status(200).send('OK');
