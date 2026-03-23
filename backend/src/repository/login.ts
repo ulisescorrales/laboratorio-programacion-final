@@ -6,7 +6,7 @@ export const insertarUser = (user: string, hash: string) => {
 		pool.getConnection((err, connection) => {
 			connection.beginTransaction((err) => {
 				if (err) {
-					console.log(err)
+					console.log(err);
 					connection.rollback(() => {
 						connection.release();
 					});
@@ -17,28 +17,34 @@ export const insertarUser = (user: string, hash: string) => {
 						(err, result, fields) => {
 							if (err) {
 								console.log(err);
-								connection.rollback(()=>{
-									connection.release()
+								connection.rollback(() => {
+									connection.release();
 									reject('Error insertando usuario');
-								})
+								});
 							} else {
-								connection.query('INSERT INTO usuario_rol VALUES(?,"normal")',[user],(err,result,fields)=>{
-									if(err){
-										console.log(err)
-										connection.rollback(()=>{
-											connection.release()
-											reject("Error insertando usuario_rol")
-										})
-									}else{
-										connection.commit((err)=>{
-											if(err){
-												console.log(err)
-											}
-											connection.release();
-											resolv("OK");
-										})
+								connection.query(
+									'INSERT INTO usuario_rol VALUES(?,"normal")',
+									[user],
+									(err, result, fields) => {
+										if (err) {
+											console.log(err);
+											connection.rollback(() => {
+												connection.release();
+												reject(
+													'Error insertando usuario_rol'
+												);
+											});
+										} else {
+											connection.commit((err) => {
+												if (err) {
+													console.log(err);
+												}
+												connection.release();
+												resolv('OK');
+											});
+										}
 									}
-								})
+								);
 							}
 						}
 					);
@@ -55,10 +61,13 @@ export const getHash = (user: string) => {
 			[user],
 			(err, result: any, fields) => {
 				if (err) {
-					console.log(err);
 					reject('error en la consulta del hash del usuario');
 				} else {
-					resolv(result[0].hash);
+					if (result.length == 0) {
+						reject('No existe el usuario');
+					} else {
+						resolv(result[0].hash);
+					}
 				}
 			}
 		);

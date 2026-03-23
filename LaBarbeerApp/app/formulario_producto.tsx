@@ -231,91 +231,93 @@ export default function FormularioProducto() {
 	}, []);
 
 	return (
-		<ScrollView>
-			<View style={styles2.inputGroup}>
-				<Text style={styles2.label}>Nombre del producto</Text>
-				<TextInput
-					style={styles2.input}
-					placeholder="Ej: IPA Artesanal o Degradado medio"
-					placeholderTextColor="#999"
-					onChangeText={setNombre}
-					value={nombre}
-				/>
-			</View>
-
-			{/* Campo Marca */}
-			{tipoProducto == 'cerveza' ? (
+		<View style={{ height: '95%'}}>
+			<ScrollView >
 				<View style={styles2.inputGroup}>
-					<Text style={styles2.label}>Marca / Origen</Text>
+					<Text style={styles2.label}>Nombre del producto</Text>
 					<TextInput
 						style={styles2.input}
-						placeholder="Nombre de la marca"
+						placeholder="Ej: IPA Artesanal o Degradado medio"
 						placeholderTextColor="#999"
-						onChangeText={setMarca}
-						value={marca}
+						onChangeText={setNombre}
+						value={nombre}
 					/>
 				</View>
-			) : null}
 
-			{/* Campo Precio */}
-			<View style={styles2.inputGroup}>
-				<Text style={styles2.label}>Precio</Text>
-				<View style={styles2.priceInputWrapper}>
-					<Text style={styles2.currencySymbol}>$</Text>
+				{/* Campo Marca */}
+				{tipoProducto == 'cerveza' ? (
+					<View style={styles2.inputGroup}>
+						<Text style={styles2.label}>Marca / Origen</Text>
+						<TextInput
+							style={styles2.input}
+							placeholder="Nombre de la marca"
+							placeholderTextColor="#999"
+							onChangeText={setMarca}
+							value={marca}
+						/>
+					</View>
+				) : null}
+
+				{/* Campo Precio */}
+				<View style={styles2.inputGroup}>
+					<Text style={styles2.label}>Precio</Text>
+					<View style={styles2.priceInputWrapper}>
+						<Text style={styles2.currencySymbol}>$</Text>
+						<TextInput
+							style={[
+								styles2.input,
+								{
+									flex: 1,
+									borderLeftWidth: 0,
+									borderTopLeftRadius: 0,
+									borderBottomLeftRadius: 0
+								}
+							]}
+							placeholder="0.00"
+							placeholderTextColor="#999"
+							onChangeText={setPrecio}
+							value={precio}
+							keyboardType="numeric"
+						/>
+					</View>
+				</View>
+
+				{/* Campo Descripción */}
+				<View style={styles2.inputGroup}>
+					<Text style={styles2.label}>Descripción</Text>
 					<TextInput
-						style={[
-							styles2.input,
-							{
-								flex: 1,
-								borderLeftWidth: 0,
-								borderTopLeftRadius: 0,
-								borderBottomLeftRadius: 0
-							}
-						]}
-						placeholder="0.00"
+						style={[styles2.input, styles2.textArea]}
+						placeholder="Cuéntanos más sobre esto..."
 						placeholderTextColor="#999"
-						onChangeText={setPrecio}
-						value={precio}
-						keyboardType="numeric"
+						numberOfLines={6}
+						multiline={true}
+						textAlignVertical="top" // Importante para Android
+						onChangeText={setDescripcion}
+						value={descripcion}
 					/>
 				</View>
-			</View>
-
-			{/* Campo Descripción */}
-			<View style={styles2.inputGroup}>
-				<Text style={styles2.label}>Descripción</Text>
-				<TextInput
-					style={[styles2.input, styles2.textArea]}
-					placeholder="Cuéntanos más sobre esto..."
-					placeholderTextColor="#999"
-					numberOfLines={6}
-					multiline={true}
-					textAlignVertical="top" // Importante para Android
-					onChangeText={setDescripcion}
-					value={descripcion}
-				/>
-			</View>
-			<View>
-				<Image source={image} style={styles.image} />
-			</View>
-			<View style={{ margin: 10, width: 200, alignSelf: 'center' }}>
-				<Button title="Seleccionar imagen" onPress={pickImage} />
-			</View>
-			<View style={{ margin: 10, width: 200, alignSelf: 'center' }}>
-				<Button
-					onPress={submit}
-					color="red"
-					title={
-						tipoAccion == 'm'
-							? 'Actualizar'
-							: tipoAccion == 'i'
-								? 'Crear'
-								: 'Error'
-					}
-				/>
-			</View>
-			<Toast />
-		</ScrollView>
+				<View>
+					<Image source={image} style={styles.image} />
+				</View>
+				<View style={{ margin: 10, width: 200, alignSelf: 'center' }}>
+					<Button title="Seleccionar imagen" onPress={pickImage} />
+				</View>
+				<Toast />
+			</ScrollView>
+				<View style={{ margin: 10, width: 200, alignSelf: 'center' }}>
+					<Button
+						onPress={submit}
+						color="red"
+						title={
+							tipoAccion == 'm'
+								? 'Actualizar'
+								: tipoAccion == 'i'
+									? 'Crear'
+									: 'Error'
+						}
+					/>
+				</View>
+		</View>
 	);
 }
 const styles = StyleSheet.create({

@@ -6,7 +6,8 @@ import {
 	Text,
 	Switch,
 	View,
-	Button
+	Button,
+	Keyboard
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
@@ -33,6 +34,24 @@ export default function Login() {
 		}, [mensaje]);
 
 	const login = () => {
+		if(user.length==0){
+			Keyboard.dismiss()
+			Toast.show({
+				type:'error',
+				text1:'Indique usuario',
+				position:'bottom'
+			})
+			return
+		}
+		if(password.length==0){
+			Keyboard.dismiss()
+			Toast.show({
+				type:'error',
+				text1:'Indique la contraseña',
+				position:'bottom'
+			})
+			return
+		}
 		fetch(backendHost + '/api/login/auth', {
 			method: 'POST',
 			headers: {
@@ -81,7 +100,7 @@ export default function Login() {
 	};
 
 	return (
-		<View>
+		<View style={{height:'100%'}}>
 			<Text style={styles2.label}>Usuario:</Text>
 			<TextInput
 				value={user}
