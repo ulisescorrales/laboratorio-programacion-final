@@ -1,7 +1,7 @@
 import * as cervezasService from '../service/cervezas'
 export const getCervezas=async (req:any,res:any)=>{
 	if(!req.query.inicio || !req.query.fin){
-		res.status(400).send("No está las variables inicio o fin")
+		res.status(400).send("No están las variables inicio o fin")
 	}
 	const inicio=Number(req.query.inicio);
 	const fin=Number(req.query.fin);
@@ -22,39 +22,51 @@ export const getCerveza=async(req:any,res:any)=>{
 		res.status(200).json(cerveza)
 	}catch(err:any){
 		//err contiene el código de error
-		const status=Number(err.message)
+		const status = Number(err.message);
 		let mensaje;
-		if(status==404){
-			mensaje="No existe el cerveza especificado"
-		}else{
-			mensaje="Error consultando cerveza"
+		if (status == 404) {
+			mensaje = 'No existe la cerveza especificada';
+		} else {
+			mensaje = 'Error consultando corte';
 		}
-		res.status(status).send(mensaje)
+		res.status(status).send(mensaje);
 	}
 }
 
 export const registrarCerveza=async(req:any,res:any)=>{
-	const nombre=req.body.nombre;
-	const descripcion=req.body.descripcion;
-	const marca = req.body.marca
-	let precio= req.body.precio
-	const imagen = req.file;
-	if(precio){
-		precio=Number(precio)
-	}else{
-		res.send(400).send("Falta el precio")
-	}
-	if( nombre && descripcion && marca && precio && imagen ){
-		console.log("Ok")
-		res.status(200).send("OK parcial")
-		// try{
-		// 		await cervezasService.registrarCervezaService(nombre,descripcion,marca,precio,imagen)
-		// 		res.status(200).send("Guardado con éxito")
-		// }catch(err){
-		// 		res.status(500).send("No se pudo guardar en la BD")
-		// }
-	}else{
-		res.status(400).send("Faltan datos en el body")
+	const nombre = req.body.nombre;
+	const descripcion = req.body.descripcion;
+	const marca=req.body.marca
+	let precio = req.body.precio;
+	let pathImagen = req.file.path;
+	if (precio) {
+		precio = Number(precio);
+		console.log(req.body);
+		if (nombre && descripcion && precio && pathImagen) {
+			try {
+				await cervezasService.registrarCervezaService(
+					nombre,
+					descripcion,
+					marca,
+					precio,
+					pathImagen
+				);
+				res.status(200).send('Guardado con éxito');
+			} catch (err: any) {
+				cervezasService.borrarImagenCerveza(pathImagen);
+				if (err.message == '1062') {
+					res.status(409).send('Ya existe corte con mismo nombre');
+				} else {
+					res.status(500).send('No se pudo guardar en la BD');
+				}
+			}
+		} else {
+			cervezasService.borrarImagenCerveza(pathImagen);
+			res.status(400).send('Faltan datos en el body');
+		}
+	} else {
+		cervezasService.borrarImagenCerveza(pathImagen);
+		res.status(400).send('Falta el precio');
 	}
 }
 export const borrarCerveza=async(req:any,res:any)=>{

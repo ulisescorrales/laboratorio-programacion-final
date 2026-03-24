@@ -1,5 +1,4 @@
 import { pool } from '../config';
-import { writeFile } from 'node:fs';
 import fs from 'node:fs';
 // import {backend_path} from '../config'
 
@@ -7,7 +6,7 @@ export const getCervezasBD = (inicio:number,fin:number) => {
 	return new Promise((resolv, reject) => {
 		const cantidadElementos=fin-inicio;
 		pool.query(
-			'SELECT nombre_cerveza as nombre,descripcion,marca,precio,promocion,pathImagen FROM cerveza LIMIT ? OFFSET ?;',
+			'SELECT nombre_cerveza as nombre,descripcion,marca,precio,promocion,pathImagen FROM cerveza ORDER BY nro_secuencia DESC LIMIT ? OFFSET ?;',
 			[cantidadElementos,inicio],
 			(err, result) => {
 				if (err) {
@@ -25,15 +24,13 @@ export const insertarCervezaBD = (
 	descripcion: string,
 	marca: string,
 	precio: number,
-	imagen: any
+	pathImagen: any
 ) => {
 	return new Promise(async (resolv, reject) => {
 		try {
-			//TODO:colocar esto en el service
-			const pathImagen = await guardarImagenEnFS(imagen);
 			pool.query(
 				'INSERT INTO cerveza VALUES(?,?,?,?,?,?)',
-				[nombre, descripcion, marca, precio, null, pathImagen],
+				[nombre, descripcion, marca, precio.toString(), null, pathImagen],
 				(err, result) => {
 					if (err) {
 						reject(err);
@@ -45,34 +42,6 @@ export const insertarCervezaBD = (
 		} catch (err) {
 			reject(err);
 		}
-	});
-};
-export const guardarImagenEnFS = (imagenFile: any) => {
-	//Se guardará secuencialmente en la carpeta
-	return new Promise<string>((resolv, reject) => {
-		//Consultar en la base de datos el count(*) de la tabla de cervezas y sumarle uno
-		pool.query(
-			'SELECT COUNT(*) as cantidad FROM cerveza',
-			(err, result: any) => {
-				if (err) {
-					console.log(err);
-					reject('Error consultado count de cerveza');
-				} else {
-					console.log('Count de cervezas: ' + result);
-					const nuevoNum = result.cantidad + 1;
-					const path =
-						'assets/images/cervezas/cerveza' + nuevoNum + '.jpg';
-					writeFile(path, imagenFile.buffer, (err) => {
-						if (err) {
-							console.log(err);
-							reject('Error guardando imagen de cerveza');
-						} else {
-							resolv(path);
-						}
-					});
-				}
-			}
-		);
 	});
 };
 
@@ -140,18 +109,6 @@ export const modificarCervezaBD = (id: string, body: any) => {
 				}
 			}
 		);
-	});
-};
-export const borrarImagenCervezaPorPath = (pathImagen: string) => {
-	return new Promise((resolv, reject) => {
-		fs.rm(pathImagen, (err) => {
-			if (err) {
-				console.log(err);
-				reject('Error');
-			} else {
-				resolv('OK');
-			}
-		});
 	});
 };
 export const borrarImagenCervezaPorId = (id: string) => {

@@ -7,7 +7,7 @@ export const getCortesBD = (inicio:number,fin:number) => {
 	return new Promise((resolv, reject) => {
 		const cantidadElementos=fin-inicio;
 		pool.query(
-			'SELECT nombre_corte as nombre,descripcion,marca,precio,promocion,pathImagen FROM corte LIMIT ? OFFSET ?;',
+			'SELECT nombre_corte as nombre,descripcion,marca,precio,promocion,pathImagen FROM corte ORDER BY nro_secuencia DESC LIMIT ? OFFSET ?;',
 			[cantidadElementos,inicio]
 			,
 			(err, result) => {
@@ -152,17 +152,6 @@ export const modificarCorteBD = (nombre:string,descripcion:string,precio:number,
 				}
 			}
 		);
-	});
-};
-export const borrarImagenCortePorPath = (pathImagen: string) => {
-	return new Promise((resolv, reject) => {
-		fs.rm("assets"+pathImagen, (err) => {
-			if (err) {
-				reject('Error');
-			} else {
-				resolv('OK');
-			}
-		});
 	});
 };
 export const borrarImagenCortePorId = (id: string) => {

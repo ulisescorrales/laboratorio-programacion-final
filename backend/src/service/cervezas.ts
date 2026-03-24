@@ -1,4 +1,5 @@
 import * as cervezasRepository from '../repository/cervezas'
+import *  as fileSystem from '../repository/filesystem'
 
 export const getCervezasJSON=async (inicio:number,fin:number)=>{
 	try{
@@ -16,16 +17,12 @@ export const getCervezaJSON=async(nombre:string)=>{
 		throw new Error(err)
 	}
 }
-export const registrarCervezaService=async(nombre:string,descripcion:string,marca:string,precio:number,imagen:any)=>{
-	let pathImagen:string|null=null;
+export const registrarCervezaService=async(nombre:string,descripcion:string,marca:string,precio:number,pathImagen:string)=>{
+	pathImagen = pathImagen.replace('assets', '');
 	try{
-		pathImagen=await cervezasRepository.guardarImagenEnFS(imagen);
 		await cervezasRepository.insertarCervezaBD(nombre,descripcion,marca,precio,pathImagen)
 	}catch(err:any){
-		if(pathImagen){
-			//Borrar imagen
-			cervezasRepository.borrarImagenCervezaPorPath(pathImagen)
-		}
+		//El controller borra la imagen
 		throw new Error(err.message)
 	}
 }
@@ -47,8 +44,6 @@ export const  modificarCervezaService=async (id:string,body:any,imagen:any)=>{
 		let pathImagen;
 		if(imagen){
 			await cervezasRepository.borrarImagenCervezaPorId(id)
-			pathImagen=await cervezasRepository.guardarImagenEnFS(imagen)
-			await cervezasRepository.guardarImagenEnBD(id,pathImagen)
 		}
 		return exito;
 	}catch(err){
@@ -56,5 +51,5 @@ export const  modificarCervezaService=async (id:string,body:any,imagen:any)=>{
 	}
 }
 export const borrarImagenCerveza=async (pathImagen:string)=>{
-	await cervezasRepository.borrarImagenCervezaPorPath(pathImagen)
+	await fileSystem.borrarImagenPorPath(pathImagen)
 }

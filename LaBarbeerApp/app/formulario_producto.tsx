@@ -199,7 +199,7 @@ export default function FormularioProducto() {
 								});
 								break;
 						}
-					});
+					}).catch((err)=>console.log(err));
 				}
 			}
 		}
@@ -229,7 +229,8 @@ export default function FormularioProducto() {
 					//Si no existe el id, volver
 					router.back();
 				}
-			}).catch(()=>{
+			}).catch((err)=>{
+				console.log(err)
 				router.replace({
 					pathname:"/",
 					params:{

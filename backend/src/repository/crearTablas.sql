@@ -170,3 +170,5 @@ INSERT INTO cerveza VALUES
 
 
  INSERT INTO usuario_rol VALUES('ulisescorrales','admin')
+ALTER TABLE corte ADD COLUMN nro_secuencia INT NOT NULL AUTO_INCREMENT,ADD UNIQUE (nro_secuencia);
+ALTER TABLE cerveza ADD COLUMN nro_secuencia INT NOT NULL AUTO_INCREMENT,ADD UNIQUE (nro_secuencia);

@@ -3,16 +3,16 @@ import * as cortesService from '../service/cortes';
 export const getCortes = async (req: any, res: any) => {
 	//Aplica paginación
 	//El 0 es el primer elemento
-	if(!req.query.inicio || !req.query.fin){
-		res.status(400).send("No está las variables inicio o fin")
+	if (!req.query.inicio || !req.query.fin) {
+		res.status(400).send('No está las variables inicio o fin');
 	}
-	const inicio=Number(req.query.inicio);
-	const fin=Number(req.query.fin);
-	if(inicio>fin){
-		res.status(400).send("inicio no puede ser mayor a fin")
+	const inicio = Number(req.query.inicio);
+	const fin = Number(req.query.fin);
+	if (inicio > fin) {
+		res.status(400).send('inicio no puede ser mayor a fin');
 	}
 	try {
-		const cortes = await cortesService.getCortesJSON(inicio,fin);
+		const cortes = await cortesService.getCortesJSON(inicio, fin);
 		res.status(200).json(cortes);
 	} catch (err) {
 		res.status(500).send('Error obteniendo cortes');
@@ -37,33 +37,36 @@ export const getCorte = async (req: any, res: any) => {
 };
 
 export const registrarCorte = async (req: any, res: any) => {
-	// console.log(req)
 	const nombre = req.body.nombre;
 	const descripcion = req.body.descripcion;
 	let precio = req.body.precio;
 	let pathImagen = req.file.path;
-	//TODO: si sale mal, borrar la imagen
 	if (precio) {
 		precio = Number(precio);
-		console.log(req.body)
+		console.log(req.body);
 		if (nombre && descripcion && precio && pathImagen) {
-			pathImagen=pathImagen.replace("assets","")
-			// console.log(pathImagen)
-			// res.status(404).send('Guardado con éxito');
-			try{
-					await cortesService.registrarCorteService(nombre,descripcion,precio,pathImagen)
-					res.status(200).send("Guardado con éxito")
-			}catch(err:any){
-				if(err.message=='1062'){
-					res.status(409).send("Ya existe corte con mismo nombre")
-				}else{
-					res.status(500).send("No se pudo guardar en la BD")
+			try {
+				await cortesService.registrarCorteService(
+					nombre,
+					descripcion,
+					precio,
+					pathImagen
+				);
+				res.status(200).send('Guardado con éxito');
+			} catch (err: any) {
+				cortesService.borrarImagenCorte(pathImagen);
+				if (err.message == '1062') {
+					res.status(409).send('Ya existe corte con mismo nombre');
+				} else {
+					res.status(500).send('No se pudo guardar en la BD');
 				}
 			}
 		} else {
+			cortesService.borrarImagenCorte(pathImagen);
 			res.status(400).send('Faltan datos en el body');
 		}
 	} else {
+		cortesService.borrarImagenCorte(pathImagen);
 		res.status(400).send('Falta el precio');
 	}
 };
@@ -87,8 +90,8 @@ export const modificarCorte = async (req: any, res: any) => {
 	const descripcion = req.body.descripcion;
 	let precio = req.body.precio;
 	let imagenPath;
-	const nombreOrigen=req.body.nombreOrigen
-	if(req.body.hayNuevaImagen=='true'){
+	const nombreOrigen = req.body.nombreOrigen;
+	if (req.body.hayNuevaImagen == 'true') {
 		imagenPath = req.file.path;
 	}
 	try {

@@ -1,4 +1,5 @@
 import * as cortesRepository from '../repository/cortes';
+import * as fileSystem from '../repository/filesystem'
 
 export const getCortesJSON = async (inicio:number,fin:number) => {
 	try {
@@ -23,6 +24,7 @@ export const registrarCorteService = async (
 	precio: number,
 	pathImagen: string
 ) => {
+	pathImagen = pathImagen.replace('assets', '');
 	try {
 		// pathImagen=await cortesRepository.guardarImagenEnFS(imagen);
 		await cortesRepository.insertarCorteBD(
@@ -32,10 +34,7 @@ export const registrarCorteService = async (
 			pathImagen
 		);
 	} catch (err: any) {
-		if (pathImagen) {
-			//Borrar imagen
-			cortesRepository.borrarImagenCortePorPath(pathImagen);
-		}
+		//El controller borra la imagen
 		throw new Error(err);
 	}
 };
@@ -59,24 +58,24 @@ export const modificarCorteService = async (
 ) => {
 	//si no se cargó una imagen desde el frontend, ignorar
 	try {
-		const exito = await cortesRepository.modificarCorteBD(nombre,descripcion,precio,imagenPath,nombreOrigen);
 		if (imagenPath) {
 			//Borrar imagen anterior
 			try{
-			await cortesRepository.borrarImagenCortePorPath(imagenPath)
-			}catch{}
+			await cortesRepository.borrarImagenCortePorId(nombreOrigen)
+			}catch{console.log("No se pudo borrar imagen")}
 		}
+		const exito = await cortesRepository.modificarCorteBD(nombre,descripcion,precio,imagenPath,nombreOrigen);
 		return exito;
 	} catch (err) {
 		if (imagenPath) {
 			//Borrar imagen anterior
 			try{
-			await cortesRepository.borrarImagenCortePorPath(imagenPath)
-			}catch{}
+			await fileSystem.borrarImagenPorPath(imagenPath)
+			}catch{ console.log("No se pudo borrar imagen") }
 		}
 		throw new Error('Error en cortes service');
 	}
 };
 export const borrarImagenCorte = async (pathImagen: string) => {
-	await cortesRepository.borrarImagenCortePorPath(pathImagen);
+	await fileSystem.borrarImagenPorPath(pathImagen);
 };

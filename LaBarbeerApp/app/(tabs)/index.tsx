@@ -133,41 +133,13 @@ export default function HomeScreen() {
 			}
 		});
 	}, []);
-	const cargarProductos = () => {
-		fetch(backendHost + '/api/cervezas')
-			.then((data) => data.json())
-			.then((json) => setColCervezas(json))
-			.catch(() => {
-				Toast.show({
-					type: 'error',
-					text1: 'Error de red',
-					position: 'bottom'
-				});
-			});
-		fetch(backendHost + '/api/cortes')
-			.then((data) => data.json())
-			.then((json) => setColCortes(json))
-			.catch(() => {
-				Toast.show({
-					type: 'error',
-					text1: 'Error de red',
-					position: 'bottom'
-				});
-			});
-		setRefrescando(false);
-	};
-	useEffect(() => {
-		//Fetch de productos
-		// console.log(backendHost + '/api/cervezas')
-		// cargarProductos();
-	}, []);
 
 	const [refrescando, setRefrescando] = useState(false);
 
 	const alRefrescar = useCallback(() => {
 		setRefrescando(true);
 
-		cargarProductos();
+		// cargarProductos();
 	}, []);
 	return (
 		<ImageBackground
@@ -212,13 +184,11 @@ export default function HomeScreen() {
 							title={'Nuestros Cortes'}
 							rol={rol}
 							tipoProducto={'corte'}
-							capturarBorrar={capturarBorrar}
 						/>
 						<Seccion
 							title={'Nuestras Cervezas'}
 							rol={rol}
 							tipoProducto={'cerveza'}
-							capturarBorrar={capturarBorrar}
 						/>
 
 						<View style={styles.map}>

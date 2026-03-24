@@ -12,7 +12,6 @@ import Toast from 'react-native-toast-message';
 
 type seccionProps = {
 	title: string;
-	colProductos: Producto[];
 	rol: string | null;
 	tipoProducto: string;
 };
@@ -35,7 +34,7 @@ export default function Seccion({ title, tipoProducto, rol }: seccionProps) {
 			'&fin=' +
 			(ultimo +
 			cantidadVer);
-		console.log(path);
+		console.log(path)
 		fetch(path)
 			.then((data) => {
 				return data.json();
@@ -45,6 +44,7 @@ export default function Seccion({ title, tipoProducto, rol }: seccionProps) {
 					colProductos.push(...json);
 					setUltimoProducto(ultimo + cantidadVer);
 					setColProductos([...colProductos]);
+					// console.log(colProductos)
 				}
 			})
 			.catch((err) => {
