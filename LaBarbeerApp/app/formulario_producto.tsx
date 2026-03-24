@@ -112,7 +112,10 @@ export default function FormularioProducto() {
 						promocion: null
 					};
 					const formData = new FormData();
+					//nombreOrigen es para saber si se modificará el nombre que es clave
 					formData.append('nombre', nombre);
+					formData.append('nombreOrigen', id);
+
 					formData.append('descripcion', descripcion);
 					formData.append('marca', marca);
 					formData.append('precio', precio);

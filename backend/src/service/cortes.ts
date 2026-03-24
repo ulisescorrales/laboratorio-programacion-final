@@ -53,23 +53,22 @@ export const modificarCorteService = async (
 	nombre: string,
 	descripcion: string,
 	precio: number,
-	imagenPath: string | undefined | null
+	imagenPath: string | undefined | null,
+	nombreOrigen:string
 ) => {
 	//si no se cargó una imagen desde el frontend, ignorar
 	try {
-		const exito=true
-		console.log(nombre)
-		console.log(descripcion)
-		console.log(precio)
-		console.log(imagenPath)
-
-		//const exito = await cortesRepository.modificarCorteBD(nombre,descripcion,precio,imagenPath);
-		//if (imagenPath) {
-		//	//Borrar imagen anterior
-		//	await cortesRepository.borrarImagenCortePorId(nombre);
-		//}
+		const exito = await cortesRepository.modificarCorteBD(nombre,descripcion,precio,imagenPath,nombreOrigen);
+		if (imagenPath) {
+			//Borrar imagen anterior
+			await cortesRepository.borrarImagenCortePorPath('assets'+imagenPath)
+		}
 		return exito;
 	} catch (err) {
+		if (imagenPath) {
+			//Borrar imagen anterior
+			await cortesRepository.borrarImagenCortePorPath('assets'+imagenPath)
+		}
 		throw new Error('Error en cortes service');
 	}
 };

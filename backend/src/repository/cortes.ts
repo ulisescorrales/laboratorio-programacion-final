@@ -112,21 +112,22 @@ export const borrarCorteBD = (nombre: string) => {
 		);
 	});
 };
-export const modificarCorteBD = (nombre:string,descripcion:string,precio:number,pathImagen:any) => {
+export const modificarCorteBD = (nombre:string,descripcion:string,precio:number,pathImagen:any,nombreOrigen:any) => {
 	//La carga de imagen se realiza en un método aparte
 	return new Promise<boolean>((resolv, reject) => {
 		let args;
 		let query;
+		console.log('pathImagen: '+ pathImagen )
 		if(pathImagen){
-			args=[nombre,descripcion,precio,pathImagen]
+			args=[nombre,descripcion,precio,pathImagen,nombreOrigen]
 			query=`UPDATE corte
 				   SET nombre_corte=?,descripcion=?,precio=?,pathImagen=?
-				   WHERE nombre_corte=?`
+				   WHERE nombre_corte=?;`
 		}else{
-			args=[nombre,descripcion,precio]
+			args=[nombre,descripcion,precio,nombreOrigen]
 			query=`UPDATE corte
 				   SET nombre_corte=?,descripcion=?,precio=?
-				   WHERE nombre_corte=?`
+				   WHERE nombre_corte=?;`
 		}
 		pool.query(
 			query,
@@ -136,6 +137,8 @@ export const modificarCorteBD = (nombre:string,descripcion:string,precio:number,
 					console.log(err);
 					reject(false);
 				}
+				console.log(result)
+				console.log(err)
 				if (result.affectedRows == 0) {
 					resolv(false);
 				} else if (result.affectedRows == 1) {

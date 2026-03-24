@@ -1,3 +1,5 @@
+*.jpeg
+*.png
 uploads
 assets.tar
 .nvim.lua
