@@ -49,10 +49,6 @@ export default function FormularioProducto() {
 	} else if (tipoAccion == 'i') {
 		nombreScreen = 'Agregar ' + tipoProducto;
 	}
-
-	useEffect(() => {
-		setHayNuevaImagen(true);
-	}, [image]);
 	const pickImage = async () => {
 		const permissionResult =
 			await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -104,13 +100,6 @@ export default function FormularioProducto() {
 					//Pasó todas las validaciones
 					let method;
 					let path: string = '';
-					let bodyP: any = {
-						nombre: nombre,
-						descripcion: descripcion,
-						marca: marca,
-						precio: precio,
-						promocion: null
-					};
 					const formData = new FormData();
 					//nombreOrigen es para saber si se modificará el nombre que es clave
 					formData.append('nombre', nombre);
@@ -119,10 +108,8 @@ export default function FormularioProducto() {
 					formData.append('descripcion', descripcion);
 					formData.append('marca', marca);
 					formData.append('precio', precio);
-					formData.append(
-						'hayNuevaImagen',
-						hayNuevaImagen.toString()
-					);
+					formData.append('hayNuevaImagen',hayNuevaImagen.toString());
+					console.log("Nuevaimagen: "+hayNuevaImagen)
 					//Ignorar los warnings
 					formData.append('tipoProducto', tipoProducto);
 					console.log('Subiendo: ' + image.uri);

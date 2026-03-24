@@ -73,7 +73,7 @@ export const registrarCorte = async (req: any, res: any) => {
 export const borrarCorte = async (req: any, res: any) => {
 	const nombre = req.params.nombre;
 	try {
-		const exito = await cortesService.borrarCorte(nombre);
+		const exito = await cortesService.borrarCorteService(nombre);
 		if (exito) {
 			res.status(200).send('Elemento borrado correctamente');
 		} else {

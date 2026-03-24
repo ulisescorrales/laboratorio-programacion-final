@@ -2,12 +2,12 @@ import { pool } from '../config';
 import fs from 'node:fs';
 // import {backend_path} from '../config'
 
-export const getCervezasBD = (inicio:number,fin:number) => {
+export const getCervezasBD = (inicio: number, fin: number) => {
 	return new Promise((resolv, reject) => {
-		const cantidadElementos=fin-inicio;
+		const cantidadElementos = fin - inicio;
 		pool.query(
 			'SELECT nombre_cerveza as nombre,descripcion,marca,precio,promocion,pathImagen FROM cerveza ORDER BY nro_secuencia DESC LIMIT ? OFFSET ?;',
-			[cantidadElementos,inicio],
+			[cantidadElementos, inicio],
 			(err, result) => {
 				if (err) {
 					console.log(err);
@@ -29,8 +29,15 @@ export const insertarCervezaBD = (
 	return new Promise(async (resolv, reject) => {
 		try {
 			pool.query(
-				'INSERT INTO cerveza VALUES(?,?,?,?,?,?)',
-				[nombre, descripcion, marca, precio.toString(), null, pathImagen],
+				'INSERT INTO cerveza(nombre_cerveza,descripcion,marca,precio,promocion,pathImagen) VALUES(?,?,?,?,?,?)',
+				[
+					nombre,
+					descripcion,
+					marca,
+					precio.toString(),
+					null,
+					pathImagen
+				],
 				(err, result) => {
 					if (err) {
 						reject(err);
@@ -50,14 +57,14 @@ export const getCervezaBD = (nombre: string) => {
 		pool.query(
 			'SELECT nombre_cerveza as nombre,descripcion,marca,precio,promocion,pathImagen FROM cerveza WHERE nombre_cerveza=?;',
 			[nombre],
-			(err,result:any) => {
+			(err, result: any) => {
 				if (err) {
-					console.log(err)
+					console.log(err);
 					reject('500');
 				} else {
-					if(result.length==0){
-						reject('404')
-					}else{
+					if (result.length == 0) {
+						reject('404');
+					} else {
 						resolv(result[0]);
 					}
 				}
@@ -68,7 +75,7 @@ export const getCervezaBD = (nombre: string) => {
 export const borrarCervezaBD = (nombre: string) => {
 	return new Promise((resolv, reject) => {
 		pool.query(
-			'DELETE FROM cerveza WHERE nombre=?',
+			'DELETE FROM cerveza WHERE nombre_cerveza=?',
 			[nombre],
 			(err, result: any) => {
 				if (err) {
@@ -86,20 +93,41 @@ export const borrarCervezaBD = (nombre: string) => {
 		);
 	});
 };
-export const modificarCervezaBD = (id: string, body: any) => {
+export const modificarCervezaBD = (
+	nombre: string,
+	descripcion: string,
+	marca: string,
+	precio: number,
+	pathImagen: string,
+	nombreOrigen: string
+) => {
 	//La carga de imagen se realiza en un método aparte
 	return new Promise<boolean>((resolv, reject) => {
+		let args;
+		let query;
+		console.log("nombre origen: "+nombreOrigen)
+		if(pathImagen){
+			pathImagen=pathImagen.replace("assets","" )
+			query=`UPDATE cerveza 
+				   SET nombre_cerveza=?,descripcion=?,marca=?,precio=?,pathImagen=?
+				   WHERE nombre_cerveza=?;`
+			args=[nombre,descripcion,marca,precio,pathImagen,nombreOrigen]
+		}else{
+			query=`UPDATE cerveza
+				   SET nombre_cerveza=?,descripcion=?,marca=?,precio=?
+				   WHERE nombre_cerveza=?;`
+			args=[nombre,descripcion,marca,precio,nombreOrigen]
+		}
 		pool.query(
-			`UPDATE cerveza
-				   SET descripcion=?,marca=?,precio=?
-				   WHERE nombre_cerveza=?
-				   `,
-			[body.descripcion, body.marca, body.precio],
+			query,
+			args,
 			(err, result: any) => {
 				if (err) {
 					console.log(err);
 					reject(false);
 				}
+				console.log(result)
+				console.log(err)
 				if (result.affectedRows == 0) {
 					resolv(false);
 				} else if (result.affectedRows == 1) {
@@ -112,36 +140,33 @@ export const modificarCervezaBD = (id: string, body: any) => {
 	});
 };
 export const borrarImagenCervezaPorId = (id: string) => {
-	//Elimina el cerveza 
+	//Elimina el cerveza
 	return new Promise((resolv, reject) => {
 		pool.query(
 			'SELECT pathImagen from cerveza WHERE nombre_cerveza=?',
 			[id],
-			(err, result:any) => {
+			(err, result: any) => {
 				if (err) {
 					console.log(err);
 					reject('Error consultando pathImagen de cerveza');
 				} else {
-					if(!result.pathImagen){
-						reject("No existe el id de cerveza para borrar su imagen")
+					if (result.length == 0) {
+						resolv(false); //No existe id
 					}
-					fs.rm(result.pathImagen,async (err) => {
+					if (!result[0].pathImagen) {
+						reject(
+							'No existe el id de cerveza para borrar su imagen'
+						);
+					}
+					result[0].pathImagen = 'assets' + result[0].pathImagen;
+					const path = result[0].pathImagen;
+					fs.rm(path, async (err) => {
 						if (err) {
 							console.log(err);
-							reject('Error');
+							resolv(true);
 						} else {
-							pool.query('UPDATE cerveza SET pathImagen=null WHERE nombre_cerveza=?',[id],(err,result:any)=>{
-								if(err){
-									console.log(err)
-									reject("Error actualizando pathImagen en null en cerveza")
-								}else{
-									if(result.affectedRows==1){
-										resolv("OK")
-									}else{
-										reject("No existe el id especificado para borrar la imagen del cerveza")
-									}
-								}
-							})
+							console.log('Borrado archivo de imagen');
+							resolv(true);
 						}
 					});
 				}
@@ -149,19 +174,23 @@ export const borrarImagenCervezaPorId = (id: string) => {
 		);
 	});
 };
-export const guardarImagenEnBD=(id:string,path:string)=>{
-	return new Promise((resolv,reject)=>{
-		pool.query('UPDATE cerveza SET pathImagen=? WHERE nombre_cerveza=?',[path,id],(err,result:any)=>{
-			if(err){
-				console.log(err)
-				reject("Error actualizando pathImagen en la BD en cerveza")
-			}else{
-				if(result.affectedRows==1){
-					resolv("OK")
-				}else{
-					reject("No existe el id en cerveza")
+export const guardarImagenEnBD = (id: string, path: string) => {
+	return new Promise((resolv, reject) => {
+		pool.query(
+			'UPDATE cerveza SET pathImagen=? WHERE nombre_cerveza=?',
+			[path, id],
+			(err, result: any) => {
+				if (err) {
+					console.log(err);
+					reject('Error actualizando pathImagen en la BD en cerveza');
+				} else {
+					if (result.affectedRows == 1) {
+						resolv('OK');
+					} else {
+						reject('No existe el id en cerveza');
+					}
 				}
 			}
-		})
-	})
-}
+		);
+	});
+};

@@ -53,6 +53,7 @@ export const registrarCerveza=async(req:any,res:any)=>{
 				);
 				res.status(200).send('Guardado con éxito');
 			} catch (err: any) {
+				console.log(err.message)
 				cervezasService.borrarImagenCerveza(pathImagen);
 				if (err.message == '1062') {
 					res.status(409).send('Ya existe corte con mismo nombre');
@@ -72,7 +73,7 @@ export const registrarCerveza=async(req:any,res:any)=>{
 export const borrarCerveza=async(req:any,res:any)=>{
 	const nombre=req.params.nombre
 	try{
-		const exito=await cervezasService.borrarCerveza(nombre);
+		const exito=await cervezasService.borrarCervezaService(nombre);
 		if(exito){
 			res.status(200).send("Elemento borrado correctamente")
 		}else{
@@ -83,17 +84,32 @@ export const borrarCerveza=async(req:any,res:any)=>{
 	}
 }
 export const modificarCerveza=async(req:any,res:any)=>{
-	const nombre=req.params.nombre
-	const body=req.body
-	const imagen = req.file;
-	try{
-		const exito= await cervezasService.modificarCervezaService(nombre,body,imagen)
-		if(exito){
-			res.status(200).send("OK")
-		}else{
-			res.status(404).send("Corte no encontrado")
+	const nombre = req.params.nombre;
+	const descripcion = req.body.descripcion;
+	let precio = req.body.precio;
+	let imagenPath;
+	const nombreOrigen = req.body.nombreOrigen;
+	const marca=req.body.marca;
+	console.log("Path: "+req.file)
+	console.log("NuevaImagen: "+req.body.hayNuevaImagen)
+	if (req.body.hayNuevaImagen == 'true') {
+		imagenPath = req.file.path;
+	}
+	try {
+		const exito = await cervezasService.modificarCervezaService(
+			nombre,
+			descripcion,
+			marca,
+			precio,
+			imagenPath,
+			nombreOrigen
+		);
+		if (exito) {
+			res.status(200).send('OK');
+		} else {
+			res.status(404).send('Cerveza no encontrado');
 		}
-	}catch(err){
-		res.status(500).send("Error en el server")
+	} catch (err) {
+		res.status(500).send('Error en el server');
 	}
 }

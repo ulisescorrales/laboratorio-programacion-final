@@ -38,7 +38,7 @@ export const registrarCorteService = async (
 		throw new Error(err);
 	}
 };
-export const borrarCorte = async (nombre: string) => {
+export const borrarCorteService = async (nombre: string) => {
 	try {
 		let exito = await cortesRepository.borrarImagenCortePorId(nombre);
 		if (exito) {

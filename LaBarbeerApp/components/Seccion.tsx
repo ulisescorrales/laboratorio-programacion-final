@@ -5,7 +5,6 @@ import { useRouter } from 'expo-router';
 import { Text, Pressable, View, FlatList } from 'react-native';
 import { Image } from 'react-native';
 import { styles } from '../app/(tabs)/index';
-import Producto from '@/components/interfaces/Producto';
 import Trash from './ui/Trash';
 import { useEffect, useState } from 'react';
 import Toast from 'react-native-toast-message';

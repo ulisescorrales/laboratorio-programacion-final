@@ -26,7 +26,7 @@ export const registrarCervezaService=async(nombre:string,descripcion:string,marc
 		throw new Error(err.message)
 	}
 }
-export const borrarCerveza=async(nombre:string)=>{
+export const borrarCervezaService=async(nombre:string)=>{
 	try{
 	let exito=await cervezasRepository.borrarImagenCervezaPorId(nombre)
 	if(exito){
@@ -37,17 +37,31 @@ export const borrarCerveza=async(nombre:string)=>{
 		throw new Error(err.message)
 	}
 }
-export const  modificarCervezaService=async (id:string,body:any,imagen:any)=>{
+export const  modificarCervezaService=async (
+			nombre:string,
+			descripcion:string,
+			marca:string,
+			precio:number,
+			imagenPath: string,
+			nombreOrigen:string)=>{
 	//si no se cargó una imagen desde el frontend, ignorar
-	try{
-		const exito= await cervezasRepository.modificarCervezaBD(id,body)
-		let pathImagen;
-		if(imagen){
-			await cervezasRepository.borrarImagenCervezaPorId(id)
+	try {
+		if (imagenPath) {
+			//Borrar imagen anterior
+			try{
+			await cervezasRepository.borrarImagenCervezaPorId(nombreOrigen)
+			}catch{console.log("No se pudo borrar imagen")}
 		}
+		const exito = await cervezasRepository.modificarCervezaBD(nombre,descripcion,marca,precio,imagenPath,nombreOrigen);
 		return exito;
-	}catch(err){
-		throw new Error("Error en cervezas service");
+	} catch (err) {
+		if (imagenPath) {
+			//Borrar imagen anterior
+			try{
+			await fileSystem.borrarImagenPorPath(imagenPath)
+			}catch{ console.log("No se pudo borrar imagen") }
+		}
+		throw new Error('Error en cortes service');
 	}
 }
 export const borrarImagenCerveza=async (pathImagen:string)=>{
