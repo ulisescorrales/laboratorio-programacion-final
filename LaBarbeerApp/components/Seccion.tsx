@@ -7,24 +7,61 @@ import { Image } from 'react-native';
 import { styles } from '../app/(tabs)/index';
 import Producto from '@/components/interfaces/Producto';
 import Trash from './ui/Trash';
+import { useEffect, useState } from 'react';
+import Toast from 'react-native-toast-message';
 
 type seccionProps = {
 	title: string;
 	colProductos: Producto[];
 	rol: string | null;
 	tipoProducto: string;
-	capturarBorrar: any;
 };
 
-export default function Seccion({
-	title,
-	colProductos,
-	tipoProducto,
-	rol,
-	capturarBorrar
-}: seccionProps) {
+export default function Seccion({ title, tipoProducto, rol }: seccionProps) {
 	const router = useRouter();
 	const backendHost = process.env.EXPO_PUBLIC_BACKEND_HOST;
+	const [colProductos, setColProductos] = useState<any>([]);
+	const [ultimo, setUltimoProducto] = useState<number>(0);
+	const [ultimaFila, setUltimaFila] = useState<number>(0);
+	const cantidadVer = 2;
+
+	const cargarProductos = () => {
+		const path =
+			backendHost +
+			'/api/' +
+			tipoProducto +
+			's?inicio=' +
+			ultimo +
+			'&fin=' +
+			(ultimo +
+			cantidadVer);
+		console.log(path);
+		fetch(path)
+			.then((data) => {
+				return data.json();
+			})
+			.then((json) => {
+				if (json.length > 0) {
+					colProductos.push(...json);
+					setUltimoProducto(ultimo + cantidadVer);
+					setColProductos([...colProductos]);
+				}
+			})
+			.catch((err) => {
+				Toast.show({
+					type: 'error',
+					text1: 'Error de red',
+					position: 'bottom'
+				});
+			});
+	};
+	useEffect(() => {
+		// cargarProductos();
+	}, []);
+	const onViewableItemsChanged = ({ viewableItems,changed }) => {
+		console.log(changed);
+		cargarProductos();
+	};
 	return (
 		<View style={styles.containerCenter}>
 			<View style={styles.containerTitle}>
@@ -34,6 +71,8 @@ export default function Seccion({
 				key="flatListCortes"
 				numColumns={2}
 				scrollEnabled={false}
+				onEndReached={cargarProductos()}
+				onEndReachedThreshold={1}
 				data={colProductos}
 				renderItem={({ item, index }) => (
 					<View style={{ margin: 10 }}>
@@ -137,3 +176,7 @@ const styleItem = StyleSheet.create({
 		borderRadius: 15
 	}
 });
+
+function setColCervezas(json: any): any {
+	throw new Error('Function not implemented.');
+}

@@ -3,10 +3,13 @@ import { writeFile } from 'node:fs';
 import fs from 'node:fs';
 // import {backend_path} from '../config'
 
-export const getCortesBD = () => {
+export const getCortesBD = (inicio:number,fin:number) => {
 	return new Promise((resolv, reject) => {
+		const cantidadElementos=fin-inicio;
 		pool.query(
-			'SELECT nombre_corte as nombre,descripcion,marca,precio,promocion,pathImagen FROM corte;',
+			'SELECT nombre_corte as nombre,descripcion,marca,precio,promocion,pathImagen FROM corte LIMIT ? OFFSET ?;',
+			[cantidadElementos,inicio]
+			,
 			(err, result) => {
 				if (err) {
 					console.log(err);

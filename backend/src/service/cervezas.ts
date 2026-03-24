@@ -1,8 +1,8 @@
 import * as cervezasRepository from '../repository/cervezas'
 
-export const getCervezasJSON=async ()=>{
+export const getCervezasJSON=async (inicio:number,fin:number)=>{
 	try{
-		const cervezas=await cervezasRepository.getCervezasBD()
+		const cervezas=await cervezasRepository.getCervezasBD(inicio,fin)
 		return cervezas
 	}catch(err:any){
 		throw new Error(err.message)

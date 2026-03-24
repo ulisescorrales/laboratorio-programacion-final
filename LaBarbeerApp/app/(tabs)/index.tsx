@@ -159,7 +159,7 @@ export default function HomeScreen() {
 	useEffect(() => {
 		//Fetch de productos
 		// console.log(backendHost + '/api/cervezas')
-		cargarProductos();
+		// cargarProductos();
 	}, []);
 
 	const [refrescando, setRefrescando] = useState(false);
@@ -210,14 +210,12 @@ export default function HomeScreen() {
 					>
 						<Seccion
 							title={'Nuestros Cortes'}
-							colProductos={colCortes}
 							rol={rol}
 							tipoProducto={'corte'}
 							capturarBorrar={capturarBorrar}
 						/>
 						<Seccion
 							title={'Nuestras Cervezas'}
-							colProductos={colCervezas}
 							rol={rol}
 							tipoProducto={'cerveza'}
 							capturarBorrar={capturarBorrar}

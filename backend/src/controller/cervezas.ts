@@ -1,7 +1,15 @@
 import * as cervezasService from '../service/cervezas'
 export const getCervezas=async (req:any,res:any)=>{
+	if(!req.query.inicio || !req.query.fin){
+		res.status(400).send("No está las variables inicio o fin")
+	}
+	const inicio=Number(req.query.inicio);
+	const fin=Number(req.query.fin);
+	if(inicio>fin){
+		res.status(400).send("inicio no puede ser mayor a fin")
+	}
 	try{
-		const cervezas=await cervezasService.getCervezasJSON();
+		const cervezas=await cervezasService.getCervezasJSON(inicio,fin);
 		res.status(200).json(cervezas);
 	}catch(err){
 		res.status(500).send("Error obteniendo cervezas")

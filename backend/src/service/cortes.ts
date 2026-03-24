@@ -1,14 +1,15 @@
 import * as cortesRepository from '../repository/cortes';
 
-export const getCortesJSON = async () => {
+export const getCortesJSON = async (inicio:number,fin:number) => {
 	try {
-		const cortes = await cortesRepository.getCortesBD();
+		const cortes = await cortesRepository.getCortesBD(inicio,fin);
 		return cortes;
 	} catch (err: any) {
 		throw new Error(err.message);
 	}
 };
 export const getCorteJSON = async (nombre: string) => {
+
 	try {
 		const corte = await cortesRepository.getCorteBD(nombre);
 		return corte;

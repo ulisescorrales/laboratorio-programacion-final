@@ -1,8 +1,18 @@
 import * as cortesService from '../service/cortes';
 
 export const getCortes = async (req: any, res: any) => {
+	//Aplica paginación
+	//El 0 es el primer elemento
+	if(!req.query.inicio || !req.query.fin){
+		res.status(400).send("No está las variables inicio o fin")
+	}
+	const inicio=Number(req.query.inicio);
+	const fin=Number(req.query.fin);
+	if(inicio>fin){
+		res.status(400).send("inicio no puede ser mayor a fin")
+	}
 	try {
-		const cortes = await cortesService.getCortesJSON();
+		const cortes = await cortesService.getCortesJSON(inicio,fin);
 		res.status(200).json(cortes);
 	} catch (err) {
 		res.status(500).send('Error obteniendo cortes');
