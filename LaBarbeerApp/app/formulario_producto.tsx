@@ -229,6 +229,13 @@ export default function FormularioProducto() {
 					//Si no existe el id, volver
 					router.back();
 				}
+			}).catch(()=>{
+				router.replace({
+					pathname:"/",
+					params:{
+						mensaje:"Error de red"
+					}
+				})
 			});
 		}
 	}, []);

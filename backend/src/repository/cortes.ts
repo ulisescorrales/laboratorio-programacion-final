@@ -120,7 +120,8 @@ export const modificarCorteBD = (nombre:string,descripcion:string,precio:number,
 	return new Promise<boolean>((resolv, reject) => {
 		let args;
 		let query;
-		console.log('pathImagen: '+ pathImagen )
+		pathImagen=pathImagen.replace("assets","" )
+		console.log(pathImagen)
 		if(pathImagen){
 			args=[nombre,descripcion,precio,pathImagen,nombreOrigen]
 			query=`UPDATE corte

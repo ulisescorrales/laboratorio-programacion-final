@@ -88,7 +88,7 @@ export const modificarCorte = async (req: any, res: any) => {
 	let precio = req.body.precio;
 	let imagenPath;
 	const nombreOrigen=req.body.nombreOrigen
-	if(req.body.hayNuevaImagen==true){
+	if(req.body.hayNuevaImagen=='true'){
 		imagenPath = req.file.path;
 	}
 	try {

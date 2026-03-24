@@ -62,13 +62,17 @@ export const modificarCorteService = async (
 		const exito = await cortesRepository.modificarCorteBD(nombre,descripcion,precio,imagenPath,nombreOrigen);
 		if (imagenPath) {
 			//Borrar imagen anterior
-			await cortesRepository.borrarImagenCortePorPath('assets'+imagenPath)
+			try{
+			await cortesRepository.borrarImagenCortePorPath(imagenPath)
+			}catch{}
 		}
 		return exito;
 	} catch (err) {
 		if (imagenPath) {
 			//Borrar imagen anterior
-			await cortesRepository.borrarImagenCortePorPath('assets'+imagenPath)
+			try{
+			await cortesRepository.borrarImagenCortePorPath(imagenPath)
+			}catch{}
 		}
 		throw new Error('Error en cortes service');
 	}
