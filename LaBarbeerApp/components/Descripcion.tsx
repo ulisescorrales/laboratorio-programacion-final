@@ -20,6 +20,7 @@ export default function Descripcion({ item, open }: Props) {
 				<View style={styles.infoContainer}>
 					<Text style={styles.title}>{item.nombre}</Text>
 					<Text style={styles.price}>${item.precio}</Text>
+					<Text style={styles.marca}>{item.marca}</Text>
 					<Text style={styles.description}>{item.descripcion}</Text>
 				</View>
 				<TouchableOpacity
@@ -39,7 +40,8 @@ const styles = StyleSheet.create({
 		backgroundColor: 'rgba(0, 0, 0, 0.6)',
 		justifyContent: 'center',
 		alignItems: 'center',
-		zIndex: 1000
+		zIndex: 1000,
+		top:'-20%'
 	},
 	container: {
 		width: '85%',
@@ -56,7 +58,7 @@ const styles = StyleSheet.create({
 	},
 	image: {
 		width: '100%',
-		height: 200, // Ajusta según prefieras
+		height:350  , // Ajusta según prefieras
 		marginBottom: 15
 	},
 	infoContainer: {
@@ -94,5 +96,8 @@ const styles = StyleSheet.create({
 		color: 'white',
 		fontWeight: 'bold',
 		fontSize: 16
+	},
+	marca:{
+		fontSize: 20
 	}
 });

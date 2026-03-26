@@ -87,7 +87,7 @@ export default function Login() {
 	};
 
 	return (
-		<View style={{height:'100%'}}>
+		<View style={{height:'100%',top:'25%'}}>
 			<Text style={styles2.label}>Usuario:</Text>
 			<TextInput
 				value={user}

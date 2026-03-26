@@ -145,10 +145,6 @@ export default function Seccion({ title, tipoProducto, rol ,actualizar, setDescr
 									/>
 								) : null}
 							</View>
-							{
-								item.marca!=undefined?
-								<Text>item.marca</Text>:null
-							}
 							<View style={styleItem.itemCard}>
 								<Text style={styleItem.textItem}>
 									{item.nombre}
@@ -190,5 +186,13 @@ const styleItem = StyleSheet.create({
 	itemCard: {
 		backgroundColor: 'white',
 		borderRadius: 15
-	}
+	},
+	title: {
+		fontSize: 32,
+		fontWeight: 'bold',
+		backgroundColor: '#000000c0',
+		color: 'white',
+		width: '100%',
+		textAlign: 'center'
+	},
 });
