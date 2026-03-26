@@ -6,7 +6,7 @@ import { useLocalSearchParams } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
 import { View } from 'react-native';
 
-export default function Cortes() {
+export default function Cervezas() {
 	const { mensaje } = useLocalSearchParams();
 	const [rol, setRol] = useState<string | null>(null);
 	const backendHost = process.env.EXPO_PUBLIC_BACKEND_HOST;
@@ -30,7 +30,7 @@ export default function Cortes() {
 	return (
 		<SafeAreaView style={{ flex: 1 }}>
 			<Seccion
-				title={'Nuestras '}
+				title={'Nuestras Cervezas'}
 				rol={rol}
 				tipoProducto={'cerveza'}
 				setDescripcion={Descripcion}

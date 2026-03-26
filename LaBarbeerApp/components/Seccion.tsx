@@ -1,7 +1,7 @@
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Lapiz from './ui/Lapiz';
 import Plus from './ui/Plus';
-import { StyleSheet } from 'react-native';
+import { ActivityIndicator, Dimensions, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Text, Pressable, View, FlatList } from 'react-native';
 import { Image } from 'react-native';
@@ -14,12 +14,19 @@ type seccionProps = {
 	title: string;
 	rol: string | null;
 	tipoProducto: string;
-	setDescripcion:any,
-	setMostrarDescripcion:any,
-	setItemSeleccionado:any
+	setDescripcion: any;
+	setMostrarDescripcion: any;
+	setItemSeleccionado: any;
 };
 
-export default function Seccion({ title, tipoProducto, rol, setDescripcion,setMostrarDescripcion,setItemSeleccionado }: seccionProps) {
+export default function Seccion({
+	title,
+	tipoProducto,
+	rol,
+	setDescripcion,
+	setMostrarDescripcion,
+	setItemSeleccionado
+}: seccionProps) {
 	const router = useRouter();
 	const backendHost = process.env.EXPO_PUBLIC_BACKEND_HOST;
 	const [colProductos, setColProductos] = useState<any>([]);
@@ -27,7 +34,7 @@ export default function Seccion({ title, tipoProducto, rol, setDescripcion,setMo
 	const cantidadVer = 2;
 
 	const cargarProductos = () => {
-		console.log(tipoProducto+" - "+ultimo )
+		console.log(tipoProducto + ' - ' + ultimo);
 		const path =
 			backendHost +
 			'/api/' +
@@ -35,8 +42,7 @@ export default function Seccion({ title, tipoProducto, rol, setDescripcion,setMo
 			's?inicio=' +
 			ultimo +
 			'&fin=' +
-			(ultimo +
-			cantidadVer);
+			(ultimo + cantidadVer);
 		fetch(path)
 			.then((data) => {
 				return data.json();
@@ -54,41 +60,63 @@ export default function Seccion({ title, tipoProducto, rol, setDescripcion,setMo
 					text1: 'Error de red',
 					position: 'bottom'
 				});
-			}).finally(()=>{
+			})
+			.finally(() => {
 				// actualizar(false)
 			});
 	};
 	useEffect(() => {
-		cargarProductos();
+		// cargarProductos();
 	}, []);
 	// const onViewableItemsChanged = ({ viewableItems,changed }) => {
 	// 	cargarProductos();
 	// };
-	const actualizarDescripcion=(item:any)=>{
-		if(rol!='admin'){
+	const actualizarDescripcion = (item: any) => {
+		if (rol != 'admin') {
 			// setDescripcion(descripcion)
-			setMostrarDescripcion(true)
-			setItemSeleccionado(item)
+			setMostrarDescripcion(true);
+			setItemSeleccionado(item);
 		}
-	}
+	};
+	const { height } = Dimensions.get('window');
+	const [layoutHeight, setLayoutHeight] = useState(0); // Altura de la "ventana"
+	const [contentHeight, setContentHeight] = useState(0); // Altura total de los items
+
 	return (
-		<View style={styles.containerCenter}>
+		<View style={{height:'100%'}}>
 			<View style={styles.containerTitle}>
 				<Text style={styles.title}>{title}</Text>
 			</View>
 			<FlatList
 				key="flatListCortes"
+				onLayout={(e) => {
+					console.log("layoutHeight: "+e.nativeEvent.layout.height);
+					setLayoutHeight(e.nativeEvent.layout.height);
+				}}
+				onContentSizeChange={(w, h) => {
+					console.log('parcial height: ' + h);
+					setContentHeight(h);
+					if (h < layoutHeight) {
+						cargarProductos();
+					}
+				}}
 				numColumns={2}
+				initialNumToRender={2}
 				scrollEnabled={true}
-				onEndReached={()=>cargarProductos()}
-				onEndReachedThreshold={1}
+				onEndReached={({ distanceFromEnd }) => {
+					console.log('end');
+					// cargarProductos();
+					// if (distanceFromEnd < 0) return;
+				}}
+				onEndReachedThreshold={0.01}
+				keyExtractor={(item) => item.nombre}
+				ListFooterComponent={
+					<ActivityIndicator size="large" color="#aaa" />
+				}
 				data={colProductos}
 				renderItem={({ item, index }) => (
 					<View style={{ margin: 10 }}>
-						<Pressable
-							onPress={()=>actualizarDescripcion(item)}
-
-						>
+						<Pressable onPress={() => actualizarDescripcion(item)}>
 							<View style={{ position: 'relative' }}>
 								<Image
 									source={{
@@ -97,7 +125,7 @@ export default function Seccion({ title, tipoProducto, rol, setDescripcion,setMo
 									key={index}
 									style={[styles.image]}
 									borderRadius={16}
-																	/>
+								/>
 								{rol == 'admin' ? (
 									<Lapiz
 										style={{
@@ -194,5 +222,5 @@ const styleItem = StyleSheet.create({
 		color: 'white',
 		width: '100%',
 		textAlign: 'center'
-	},
+	}
 });
