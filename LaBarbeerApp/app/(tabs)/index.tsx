@@ -15,6 +15,8 @@ import { useState, useEffect, useCallback } from 'react';
 import Seccion from '@/components/Seccion';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-toast-message';
+import Descripcion from '@/components/Descripcion';
+import Producto from '@/components/interfaces/Producto';
 export default function HomeScreen() {
 	// const isAdmin=useState<boolean>(false);
 	const { mensaje } = useLocalSearchParams();
@@ -35,6 +37,8 @@ export default function HomeScreen() {
 			});
 		}
 	}, [mensaje]);
+
+	const [ mostrarDescripcion, setMostrarDescripcion ] = useState<boolean>(false)
 
 	const backendHost = process.env.EXPO_PUBLIC_BACKEND_HOST;
 	const loginButton = () => {
@@ -100,6 +104,7 @@ export default function HomeScreen() {
 		});
 	}, []);
 
+	const [ itemSeleccionado, setItemSeleccionado ] = useState<Producto|null>(null)
 	const [refrescando, setRefrescando] = useState(false);
 
 	const alRefrescar = useCallback(() => {
@@ -107,7 +112,12 @@ export default function HomeScreen() {
 
 		// cargarProductos();
 	}, []);
-)
+
+	useEffect(()=>{
+		if(itemSeleccionado){
+			setMostrarDescripcion(true)
+		}
+	},[itemSeleccionado])
 	return (
 		<ImageBackground
 			source={require('../../assets/images/fondobarberia2.jpg')}
@@ -178,11 +188,19 @@ export default function HomeScreen() {
 							title={'Nuestros Cortes'}
 							rol={rol}
 							tipoProducto={'corte'}
+							actualizar={setRefrescando}
+							setDescripcion={Descripcion}
+							setMostrarDescripcion={setMostrarDescripcion}
+							setItemSeleccionado={setItemSeleccionado}
 						/>
 						<Seccion
 							title={'Nuestras Cervezas'}
 							rol={rol}
 							tipoProducto={'cerveza'}
+							actualizar={setRefrescando}
+							setDescripcion={Descripcion}
+							setMostrarDescripcion={setMostrarDescripcion}
+							setItemSeleccionado={setItemSeleccionado}
 						/>
 
 						<View style={styles.map}>
@@ -215,6 +233,10 @@ export default function HomeScreen() {
 							</MapView>
 						</View>
 					</ScrollView>
+					{
+						mostrarDescripcion?
+						<Descripcion item={itemSeleccionado} open={setMostrarDescripcion}/>:null
+					}
 				</View>
 			</View>
 
@@ -227,7 +249,8 @@ export const styles = StyleSheet.create({
 	map: {
 		// ...StyleSheet.absoluteFillObject
 		width: '100%',
-		height: 500
+		height: 500,
+		marginBottom:300
 	},
 	titleContainer: {
 		alignItems: 'center',

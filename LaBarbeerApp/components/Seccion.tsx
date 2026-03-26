@@ -13,9 +13,13 @@ type seccionProps = {
 	title: string;
 	rol: string | null;
 	tipoProducto: string;
+	actualizar:any;
+	setDescripcion:any,
+	setMostrarDescripcion:any,
+	setItemSeleccionado:any
 };
 
-export default function Seccion({ title, tipoProducto, rol }: seccionProps) {
+export default function Seccion({ title, tipoProducto, rol ,actualizar, setDescripcion,setMostrarDescripcion,setItemSeleccionado }: seccionProps) {
 	const router = useRouter();
 	const backendHost = process.env.EXPO_PUBLIC_BACKEND_HOST;
 	const [colProductos, setColProductos] = useState<any>([]);
@@ -50,6 +54,8 @@ export default function Seccion({ title, tipoProducto, rol }: seccionProps) {
 					text1: 'Error de red',
 					position: 'bottom'
 				});
+			}).finally(()=>{
+				actualizar(false)
 			});
 	};
 	// useEffect(() => {
@@ -58,6 +64,13 @@ export default function Seccion({ title, tipoProducto, rol }: seccionProps) {
 	// const onViewableItemsChanged = ({ viewableItems,changed }) => {
 	// 	cargarProductos();
 	// };
+	const actualizarDescripcion=(item:any)=>{
+		if(rol!='admin'){
+			// setDescripcion(descripcion)
+			setMostrarDescripcion(true)
+			setItemSeleccionado(item)
+		}
+	}
 	return (
 		<View style={styles.containerCenter}>
 			<View style={styles.containerTitle}>
@@ -72,7 +85,10 @@ export default function Seccion({ title, tipoProducto, rol }: seccionProps) {
 				data={colProductos}
 				renderItem={({ item, index }) => (
 					<View style={{ margin: 10 }}>
-						<Pressable>
+						<Pressable
+							onPress={()=>actualizarDescripcion(item)}
+
+						>
 							<View style={{ position: 'relative' }}>
 								<Image
 									source={{
@@ -81,7 +97,7 @@ export default function Seccion({ title, tipoProducto, rol }: seccionProps) {
 									key={index}
 									style={[styles.image]}
 									borderRadius={16}
-								/>
+																	/>
 								{rol == 'admin' ? (
 									<Lapiz
 										style={{
