@@ -1,3 +1,4 @@
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Lapiz from './ui/Lapiz';
 import Plus from './ui/Plus';
 import { StyleSheet } from 'react-native';
@@ -6,28 +7,27 @@ import { Text, Pressable, View, FlatList } from 'react-native';
 import { Image } from 'react-native';
 import { styles } from '../app/(tabs)/index';
 import Trash from './ui/Trash';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Toast from 'react-native-toast-message';
 
 type seccionProps = {
 	title: string;
 	rol: string | null;
 	tipoProducto: string;
-	actualizar:any;
 	setDescripcion:any,
 	setMostrarDescripcion:any,
 	setItemSeleccionado:any
 };
 
-export default function Seccion({ title, tipoProducto, rol ,actualizar, setDescripcion,setMostrarDescripcion,setItemSeleccionado }: seccionProps) {
+export default function Seccion({ title, tipoProducto, rol, setDescripcion,setMostrarDescripcion,setItemSeleccionado }: seccionProps) {
 	const router = useRouter();
 	const backendHost = process.env.EXPO_PUBLIC_BACKEND_HOST;
 	const [colProductos, setColProductos] = useState<any>([]);
 	const [ultimo, setUltimoProducto] = useState<number>(0);
-	const [ultimaFila, setUltimaFila] = useState<number>(0);
 	const cantidadVer = 2;
 
 	const cargarProductos = () => {
+		console.log(tipoProducto+" - "+ultimo )
 		const path =
 			backendHost +
 			'/api/' +
@@ -55,12 +55,12 @@ export default function Seccion({ title, tipoProducto, rol ,actualizar, setDescr
 					position: 'bottom'
 				});
 			}).finally(()=>{
-				actualizar(false)
+				// actualizar(false)
 			});
 	};
-	// useEffect(() => {
-	// 	// cargarProductos();
-	// }, []);
+	useEffect(() => {
+		cargarProductos();
+	}, []);
 	// const onViewableItemsChanged = ({ viewableItems,changed }) => {
 	// 	cargarProductos();
 	// };
@@ -79,8 +79,8 @@ export default function Seccion({ title, tipoProducto, rol ,actualizar, setDescr
 			<FlatList
 				key="flatListCortes"
 				numColumns={2}
-				scrollEnabled={false}
-				onEndReached={cargarProductos()}
+				scrollEnabled={true}
+				onEndReached={()=>cargarProductos()}
 				onEndReachedThreshold={1}
 				data={colProductos}
 				renderItem={({ item, index }) => (

@@ -38,8 +38,6 @@ export default function HomeScreen() {
 		}
 	}, [mensaje]);
 
-	const [mostrarDescripcion, setMostrarDescripcion] =
-		useState<boolean>(false);
 
 	const backendHost = process.env.EXPO_PUBLIC_BACKEND_HOST;
 	const loginButton = () => {
@@ -105,22 +103,7 @@ export default function HomeScreen() {
 		});
 	}, []);
 
-	const [itemSeleccionado, setItemSeleccionado] = useState<Producto | null>(
-		null
-	);
-	const [refrescando, setRefrescando] = useState(false);
 
-	const alRefrescar = useCallback(() => {
-		setRefrescando(true);
-
-		// cargarProductos();
-	}, []);
-
-	useEffect(() => {
-		if (itemSeleccionado) {
-			setMostrarDescripcion(true);
-		}
-	}, [itemSeleccionado]);
 	return (
 		<ImageBackground
 			source={require('../../assets/images/fondobarberia2.jpg')}
@@ -151,14 +134,6 @@ export default function HomeScreen() {
 					</View>
 
 					<ScrollView
-						refreshControl={
-							<RefreshControl
-								refreshing={refrescando}
-								onRefresh={alRefrescar}
-								colors={['#9Bd35A', '#689F38']} // Android: colores del círculo
-								tintColor="#689F38" // iOS: color del spinner
-							/>
-						}
 					>
 						<View style={styles2.container}>
 							{/* Título con estilo tipográfico */}
@@ -200,24 +175,6 @@ export default function HomeScreen() {
 								</View>
 							</View>
 						</View>
-						<Seccion
-							title={'Nuestros Cortes'}
-							rol={rol}
-							tipoProducto={'corte'}
-							actualizar={setRefrescando}
-							setDescripcion={Descripcion}
-							setMostrarDescripcion={setMostrarDescripcion}
-							setItemSeleccionado={setItemSeleccionado}
-						/>
-						<Seccion
-							title={'Nuestras Cervezas'}
-							rol={rol}
-							tipoProducto={'cerveza'}
-							actualizar={setRefrescando}
-							setDescripcion={Descripcion}
-							setMostrarDescripcion={setMostrarDescripcion}
-							setItemSeleccionado={setItemSeleccionado}
-						/>
 
 						<View style={styles.map}>
 							<View style={styles.containerTitle}>
@@ -249,12 +206,6 @@ export default function HomeScreen() {
 							</MapView>
 						</View>
 					</ScrollView>
-					{mostrarDescripcion ? (
-						<Descripcion
-							item={itemSeleccionado}
-							open={setMostrarDescripcion}
-						/>
-					) : null}
 				</View>
 			</View>
 
