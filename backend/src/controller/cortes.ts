@@ -43,7 +43,6 @@ export const registrarCorte = async (req: any, res: any) => {
 	let pathImagen = req.file.path;
 	if (precio) {
 		precio = Number(precio);
-		console.log(req.body);
 		if (nombre && descripcion && precio && pathImagen) {
 			try {
 				await cortesService.registrarCorteService(

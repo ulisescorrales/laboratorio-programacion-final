@@ -27,7 +27,6 @@ export default function FormularioProducto() {
 	useEffect(() => {
 		navigation.setOptions({
 			title: nombreScreen,
-			// Aquí también puedes arreglar colores si el rojo persiste
 			headerStyle: { backgroundColor: '#fff' }
 		});
 	}, [navigation]);
@@ -75,7 +74,6 @@ export default function FormularioProducto() {
 	};
 	const submit = () => {
 		//Verificación inicial de los datos completados
-		//TODO: uri inicial de producto modificado es el que ya tiene, se usa la variable si cambió la imagen y si no se cambió, no se envía
 		if (!image.uri) {
 			Toast.show({
 				type: 'error',
@@ -109,10 +107,8 @@ export default function FormularioProducto() {
 					formData.append('marca', marca);
 					formData.append('precio', precio);
 					formData.append('hayNuevaImagen',hayNuevaImagen.toString());
-					console.log("Nuevaimagen: "+hayNuevaImagen)
 					//Ignorar los warnings
 					formData.append('tipoProducto', tipoProducto);
-					console.log('Subiendo: ' + image.uri);
 					formData.append('image', {
 						uri:
 							Platform.OS === 'android'
@@ -202,7 +198,6 @@ export default function FormularioProducto() {
 		if (id) {
 			//Modificar: traer los datos, sino es insertar y los campos quedan en blanco
 			const getPath = backendHost + '/api/' + tipoProducto + '/' + id;
-			// console.log(getPath)
 			fetch(getPath).then((data) => {
 				if (data.status == 200) {
 					data.json().then((json) => {

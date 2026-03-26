@@ -30,7 +30,6 @@ export const autenticarUsuario = async (req: Request, res: Response) => {
 			await loginService.compararContrasenias(user, password);
 			const role = await loginService.getRoleUser(user);
 			const token = loginService.generarToken(user, role);
-			console.log('Nuevo token: ' + token);
 			res.status(200).json({
 				token: token,
 				role: role
@@ -64,7 +63,6 @@ export const verificarUsuarioSolamente = async (
 };
 export const verificarUsuario = async (req: any, res: Response, next: any) => {
 	const authorization = req.headers.authorization;
-	console.log(authorization);
 	if (authorization) {
 		const token = authorization.split(' ')[1];
 		try {
@@ -89,11 +87,9 @@ export const estaLogueado = (req: any, res: any, next: any) => {
 export const esAdmin = async (req: any, res: any, next: any) => {
 	const token = req.headers.authorization.split(' ')[1];
 	if (token != undefined) {
-		console.log('Verificar token admin: ' + token);
 		try {
 			const role = await loginService.getRole(token);
 			if (role === 'admin') {
-				console.log('es admin');
 				next();
 			} else {
 				console.log('no es admin');

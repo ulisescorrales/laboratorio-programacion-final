@@ -45,34 +45,6 @@ export const insertarCorteBD = (
 		}
 	});
 };
-export const guardarImagenEnFS = (imagenFile: any) => {
-	//Se guardará secuencialmente en la carpeta
-	return new Promise<string>((resolv, reject) => {
-		//Consultar en la base de datos el count(*) de la tabla de cortes y sumarle uno
-		pool.query(
-			'SELECT COUNT(*) as cantidad FROM corte',
-			(err, result: any) => {
-				if (err) {
-					console.log(err);
-					reject('Error consultado count de corte');
-				} else {
-					console.log('Count de cortes: ' + result);
-					const nuevoNum = result.cantidad + 1;
-					const path =
-						'assets/images/cortes/corte' + nuevoNum + '.jpg';
-					writeFile(path, imagenFile.buffer, (err) => {
-						if (err) {
-							console.log(err);
-							reject('Error guardando imagen de corte');
-						} else {
-							resolv(path);
-						}
-					});
-				}
-			}
-		);
-	});
-};
 
 export const getCorteBD = (nombre: string) => {
 	return new Promise((resolv, reject) => {
@@ -121,7 +93,6 @@ export const modificarCorteBD = (nombre:string,descripcion:string,precio:number,
 		let args;
 		let query;
 		pathImagen=pathImagen.replace("assets","" )
-		console.log(pathImagen)
 		if(pathImagen){
 			args=[nombre,descripcion,precio,pathImagen,nombreOrigen]
 			query=`UPDATE corte
@@ -141,8 +112,6 @@ export const modificarCorteBD = (nombre:string,descripcion:string,precio:number,
 					console.log(err);
 					reject(false);
 				}
-				console.log(result)
-				console.log(err)
 				if (result.affectedRows == 0) {
 					resolv(false);
 				} else if (result.affectedRows == 1) {
@@ -178,7 +147,6 @@ export const borrarImagenCortePorId = (id: string) => {
 							console.log(err);
 							reject('Error');
 						} else {
-							console.log("Borrado archivo de imagen")
 							resolv(true)
 						}
 					});

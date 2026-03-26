@@ -105,7 +105,6 @@ export const modificarCervezaBD = (
 	return new Promise<boolean>((resolv, reject) => {
 		let args;
 		let query;
-		console.log("nombre origen: "+nombreOrigen)
 		if(pathImagen){
 			pathImagen=pathImagen.replace("assets","" )
 			query=`UPDATE cerveza 
@@ -126,8 +125,6 @@ export const modificarCervezaBD = (
 					console.log(err);
 					reject(false);
 				}
-				console.log(result)
-				console.log(err)
 				if (result.affectedRows == 0) {
 					resolv(false);
 				} else if (result.affectedRows == 1) {
@@ -165,7 +162,6 @@ export const borrarImagenCervezaPorId = (id: string) => {
 							console.log(err);
 							resolv(true);
 						} else {
-							console.log('Borrado archivo de imagen');
 							resolv(true);
 						}
 					});

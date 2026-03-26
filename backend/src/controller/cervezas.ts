@@ -41,7 +41,6 @@ export const registrarCerveza=async(req:any,res:any)=>{
 	let pathImagen = req.file.path;
 	if (precio) {
 		precio = Number(precio);
-		console.log(req.body);
 		if (nombre && descripcion && precio && pathImagen) {
 			try {
 				await cervezasService.registrarCervezaService(
@@ -90,8 +89,6 @@ export const modificarCerveza=async(req:any,res:any)=>{
 	let imagenPath;
 	const nombreOrigen = req.body.nombreOrigen;
 	const marca=req.body.marca;
-	console.log("Path: "+req.file)
-	console.log("NuevaImagen: "+req.body.hayNuevaImagen)
 	if (req.body.hayNuevaImagen == 'true') {
 		imagenPath = req.file.path;
 	}

@@ -6,7 +6,7 @@ import { Text, Pressable, View, FlatList } from 'react-native';
 import { Image } from 'react-native';
 import { styles } from '../app/(tabs)/index';
 import Trash from './ui/Trash';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Toast from 'react-native-toast-message';
 
 type seccionProps = {
@@ -33,7 +33,6 @@ export default function Seccion({ title, tipoProducto, rol }: seccionProps) {
 			'&fin=' +
 			(ultimo +
 			cantidadVer);
-		console.log(path)
 		fetch(path)
 			.then((data) => {
 				return data.json();
@@ -43,7 +42,6 @@ export default function Seccion({ title, tipoProducto, rol }: seccionProps) {
 					colProductos.push(...json);
 					setUltimoProducto(ultimo + cantidadVer);
 					setColProductos([...colProductos]);
-					// console.log(colProductos)
 				}
 			})
 			.catch((err) => {
@@ -54,13 +52,12 @@ export default function Seccion({ title, tipoProducto, rol }: seccionProps) {
 				});
 			});
 	};
-	useEffect(() => {
-		// cargarProductos();
-	}, []);
-	const onViewableItemsChanged = ({ viewableItems,changed }) => {
-		console.log(changed);
-		cargarProductos();
-	};
+	// useEffect(() => {
+	// 	// cargarProductos();
+	// }, []);
+	// const onViewableItemsChanged = ({ viewableItems,changed }) => {
+	// 	cargarProductos();
+	// };
 	return (
 		<View style={styles.containerCenter}>
 			<View style={styles.containerTitle}>
@@ -132,12 +129,16 @@ export default function Seccion({ title, tipoProducto, rol }: seccionProps) {
 									/>
 								) : null}
 							</View>
+							{
+								item.marca!=undefined?
+								<Text>item.marca</Text>:null
+							}
 							<View style={styleItem.itemCard}>
 								<Text style={styleItem.textItem}>
 									{item.nombre}
 								</Text>
 								<Text style={styleItem.textItem}>
-									{item.precio}$
+									{item.precio}
 								</Text>
 							</View>
 						</Pressable>
@@ -175,7 +176,3 @@ const styleItem = StyleSheet.create({
 		borderRadius: 15
 	}
 });
-
-function setColCervezas(json: any): any {
-	throw new Error('Function not implemented.');
-}

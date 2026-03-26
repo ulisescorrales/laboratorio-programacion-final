@@ -23,7 +23,6 @@ export default function ConfirmarBorrar() {
 					switch(data.status){
 						case 200:
 							data.text().then(text=>{
-							console.log(text)
 							router.replace({
 							pathname:"/",
 							params:{
@@ -55,7 +54,6 @@ export default function ConfirmarBorrar() {
 	};
 	const cancelar = () => {
 		router.back()
-		// onResponse(false);
 	};
 	return (
 		<ImageBackground

@@ -18,9 +18,6 @@ export const getTurnosDia=(req:any,res:any)=>{
 		const mesActual=today.getMonth();
 
 		const entradaDate=new Date(anio,mes,dia)
-		
-		// console.log(entradaDate)
-
 		if(anioActual!=anio){
 			res.status(400).send("Año fuera de rango")
 		}else if((mesActual+1)<mes || mes<mesActual){

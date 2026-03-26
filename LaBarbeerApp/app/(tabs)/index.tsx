@@ -1,7 +1,6 @@
 import MapView, { Marker } from 'react-native-maps';
-import { useFocusEffect, useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
 import { useRouter } from 'expo-router';
-import ConfirmarBorrar from '../../components/confirmarBorrar';
 import {
 	View,
 	Button,
@@ -14,49 +13,18 @@ import { Image } from 'react-native';
 import { StyleSheet } from 'react-native';
 import { useState, useEffect, useCallback } from 'react';
 import Seccion from '@/components/Seccion';
-import Producto from '@/components/interfaces/Producto';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-toast-message';
 export default function HomeScreen() {
 	// const isAdmin=useState<boolean>(false);
-	const { role, mensaje, nombreUsuario } = useLocalSearchParams();
+	const { mensaje } = useLocalSearchParams();
 	const [rol, setRol] = useState<string | null>(null);
+	//Datos para el Map
 	const router = useRouter();
-	// useRouter()
-	const [colCortes, setColCortes] = useState<Producto[]>([]);
-	const [colCervezas, setColCervezas] = useState<Producto[]>([]);
-	const [textLogin, setTextLogin] = useState<string>('Login');
 	const latitud = -38.95857;
 	const longitud = -68.0548;
+
 	const [usuario, setUsuario] = useState<string | null>(null);
-
-	const [confirmarBorrar, setConfirmarBorrar] = useState<boolean>(false);
-	const [idBorrar, setIdBorrar] = useState<string>('');
-	const [tipoProductoBorrar, setTipoProductoBorrar] = useState<string>('');
-	const capturarBorrar = (id: string, tipoProducto: string) => {
-		setConfirmarBorrar(true);
-		setIdBorrar(id);
-		setTipoProductoBorrar(tipoProducto);
-	};
-	const [ocultarFondo, setOcultarFondo] = useState('contents');
-	const respuestaBorrar = (resp: boolean) => {
-		if (!resp) {
-			Toast.show({
-				type: 'success',
-				text1: 'Borrado cancelado',
-				position: 'bottom'
-			});
-			setConfirmarBorrar(false);
-		}
-	};
-	useEffect(() => {
-		if (confirmarBorrar) {
-			setOcultarFondo('none');
-		} else {
-			setOcultarFondo('contents');
-		}
-	}, [confirmarBorrar]);
-
 	useEffect(() => {
 		//Si llega un mensaje a este screen, mostrar en un Toast
 		if (mensaje) {
@@ -117,8 +85,6 @@ export default function HomeScreen() {
 						data.json().then((json) => {
 							setRol(json.role);
 							setUsuario(json.user);
-							console.log(json);
-							console.log(usuario);
 						});
 					} else {
 						//Borrar en storage
@@ -141,12 +107,13 @@ export default function HomeScreen() {
 
 		// cargarProductos();
 	}, []);
+)
 	return (
 		<ImageBackground
 			source={require('../../assets/images/fondobarberia2.jpg')}
 			style={{ height: '100%' }}
 		>
-			<View style={{ display: ocultarFondo }}>
+			<View>
 				<View>
 					<View
 						style={{
@@ -180,6 +147,33 @@ export default function HomeScreen() {
 							/>
 						}
 					>
+						<View>
+							<Text style={styles.title}>La BarBeer</Text>
+							<View >
+								<Text
+									style={{
+										color: 'white',
+										fontSize: 18,
+										backgroundColor: 'black'
+									}}
+								>
+									Bienvenidos a La BarBeer, donde el arte del
+									corte de pelo se encuentra con el placer de
+									una buena cerveza. No solo te ofrecemos un
+									corte de pelo impecable, sino una
+									experiencia única diseñada para que
+									disfrutes del tiempo que pasas con nosotros.
+								</Text>
+								<View style={{alignItems:'center'}}>
+									<Image
+										source={{
+											uri: backendHost+ '/images/local_frente.jpg'}}
+
+									style={[styles.image]}
+									/>
+								</View>
+							</View>
+						</View>
 						<Seccion
 							title={'Nuestros Cortes'}
 							rol={rol}
