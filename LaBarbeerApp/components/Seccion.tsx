@@ -43,6 +43,8 @@ export default function Seccion({
 			ultimo +
 			'&fin=' +
 			(ultimo + cantidadVer);
+		setCargando(true)
+		console.log(path)
 		fetch(path)
 			.then((data) => {
 				return data.json();
@@ -52,6 +54,9 @@ export default function Seccion({
 					colProductos.push(...json);
 					setUltimoProducto(ultimo + cantidadVer);
 					setColProductos([...colProductos]);
+				}else{
+					setCargando(false)
+					setFinCarga(true)
 				}
 			})
 			.catch((err) => {
@@ -82,6 +87,9 @@ export default function Seccion({
 	const [layoutHeight, setLayoutHeight] = useState(0); // Altura de la "ventana"
 	const [contentHeight, setContentHeight] = useState(0); // Altura total de los items
 
+	const [cargando,setCargando]=useState(true)
+
+	const [finCarga,setFinCarga]=useState(false)
 	return (
 		<View style={{height:'100%'}}>
 			<View style={styles.containerTitle}>
@@ -94,24 +102,29 @@ export default function Seccion({
 					setLayoutHeight(e.nativeEvent.layout.height);
 				}}
 				onContentSizeChange={(w, h) => {
-					console.log('parcial height: ' + h);
+					// console.log('parcial height: ' + h);
 					setContentHeight(h);
 					if (h < layoutHeight) {
 						cargarProductos();
 					}
 				}}
+				refreshing={false}
 				numColumns={2}
 				initialNumToRender={2}
 				scrollEnabled={true}
 				onEndReached={({ distanceFromEnd }) => {
-					console.log('end');
-					// cargarProductos();
 					// if (distanceFromEnd < 0) return;
-				}}
-				onEndReachedThreshold={0.01}
+					if(!finCarga){
+						if(contentHeight> layoutHeight){
+								cargarProductos();
+						}	
+					}
+				}
+				}
+				onEndReachedThreshold={0.1}
 				keyExtractor={(item) => item.nombre}
 				ListFooterComponent={
-					<ActivityIndicator size="large" color="#aaa" />
+					cargando?<ActivityIndicator size="large" color="#aaa" />:null
 				}
 				data={colProductos}
 				renderItem={({ item, index }) => (

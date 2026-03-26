@@ -28,7 +28,7 @@ export default function Cervezas() {
 	const [mostrarDescripcion, setMostrarDescripcion] =
 		useState<boolean>(false);
 	return (
-		<SafeAreaView style={{ flex: 1 }}>
+		<SafeAreaView style={{ flex: 1 ,height:'100%'}}>
 			<Seccion
 				title={'Nuestras Cervezas'}
 				rol={rol}
