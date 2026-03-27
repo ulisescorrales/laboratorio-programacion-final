@@ -4,22 +4,17 @@ import Descripcion from '@/components/Descripcion';
 import Seccion from '@/components/Seccion';
 import { useLocalSearchParams } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
-import { View } from 'react-native';
+import { ImageBackground, View } from 'react-native';
+import {useBarber} from '@/components/BarBeerContext';
 
 export default function Cervezas() {
+	const context = useBarber();
 	const { mensaje } = useLocalSearchParams();
 	const [rol, setRol] = useState<string | null>(null);
-	const backendHost = process.env.EXPO_PUBLIC_BACKEND_HOST;
 	const [itemSeleccionado, setItemSeleccionado] = useState<Producto | null>(
 		null
 	);
-	const [refrescando, setRefrescando] = useState(false);
 
-	const alRefrescar = useCallback(() => {
-		setRefrescando(true);
-
-		// cargarProductos();
-	}, []);
 	useEffect(() => {
 		if (itemSeleccionado) {
 			setMostrarDescripcion(true);
@@ -28,6 +23,10 @@ export default function Cervezas() {
 	const [mostrarDescripcion, setMostrarDescripcion] =
 		useState<boolean>(false);
 	return (
+		<ImageBackground
+			source={require('../../assets/images/fondobarberia2.jpg')}
+			style={{ height: '100%' }}
+		>
 		<SafeAreaView style={{ flex: 1 ,height:'100%'}}>
 			<Seccion
 				title={'Nuestras Cervezas'}
@@ -44,9 +43,6 @@ export default function Cervezas() {
 				/>
 			) : null}
 		</SafeAreaView>
+		</ImageBackground>
 	);
-}
-
-function setMostrarDescripcion(arg0: boolean) {
-	throw new Error('Function not implemented.');
 }

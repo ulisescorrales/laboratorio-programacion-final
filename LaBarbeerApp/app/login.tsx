@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
+import { useBarber } from '@/components/BarBeerContext';
 export default function Login() {
 	const { mensaje } = useLocalSearchParams();
 	const router = useRouter();
@@ -19,6 +20,7 @@ export default function Login() {
 	const [password, setPassword] = useState<string>('');
 	// const [showPassword, setShowPassword] = useState<boolean>(false);
 	const [isEnabled, setIsEnabled] = useState<boolean>(false);
+	const context = useBarber();
 
 	const toggleSwitch = () =>
 		setIsEnabled((previousState: boolean) => !previousState);
@@ -64,9 +66,16 @@ export default function Login() {
 		}).then((data: any) => {
 			if (data.status == 200) {
 				data.json().then((json: any) => {
-					AsyncStorage.setItem('role', json.role);
+					// AsyncStorage.setItem('role', json.role);
+					if(context){
+						context.setSesion({
+							token:json.token,
+							usuario:user,
+							rol:json.role
+						})
+					}
 					AsyncStorage.setItem('token', json.token);
-					AsyncStorage.setItem('user', user);
+					// AsyncStorage.setItem('user', user);
 					router.replace({
 						pathname: '/',
 						params: {

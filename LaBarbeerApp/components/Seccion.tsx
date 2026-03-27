@@ -9,6 +9,7 @@ import { styles } from '../app/(tabs)/index';
 import Trash from './ui/Trash';
 import { useEffect, useState } from 'react';
 import Toast from 'react-native-toast-message';
+import {useBarber} from './BarBeerContext';
 
 type seccionProps = {
 	title: string;
@@ -28,6 +29,7 @@ export default function Seccion({
 	setItemSeleccionado
 }: seccionProps) {
 	const router = useRouter();
+	const context = useBarber();
 	const backendHost = process.env.EXPO_PUBLIC_BACKEND_HOST;
 	const [colProductos, setColProductos] = useState<any>([]);
 	const [ultimo, setUltimoProducto] = useState<number>(0);
@@ -44,7 +46,6 @@ export default function Seccion({
 			'&fin=' +
 			(ultimo + cantidadVer);
 		setCargando(true)
-		console.log(path)
 		fetch(path)
 			.then((data) => {
 				return data.json();
@@ -70,14 +71,8 @@ export default function Seccion({
 				// actualizar(false)
 			});
 	};
-	useEffect(() => {
-		// cargarProductos();
-	}, []);
-	// const onViewableItemsChanged = ({ viewableItems,changed }) => {
-	// 	cargarProductos();
-	// };
 	const actualizarDescripcion = (item: any) => {
-		if (rol != 'admin') {
+		if (context && (!context.sesion || context.sesion.rol != 'admin')) {
 			// setDescripcion(descripcion)
 			setMostrarDescripcion(true);
 			setItemSeleccionado(item);
@@ -104,7 +99,7 @@ export default function Seccion({
 				onContentSizeChange={(w, h) => {
 					// console.log('parcial height: ' + h);
 					setContentHeight(h);
-					if (h < layoutHeight) {
+					if (h < layoutHeight && cargando) {
 						cargarProductos();
 					}
 				}}
@@ -139,7 +134,7 @@ export default function Seccion({
 									style={[styles.image]}
 									borderRadius={16}
 								/>
-								{rol == 'admin' ? (
+								{context && context.sesion && context.sesion.rol == 'admin' ? (
 									<Lapiz
 										style={{
 											position: 'absolute',
@@ -163,7 +158,7 @@ export default function Seccion({
 										}}
 									/>
 								) : null}
-								{rol == 'admin' ? (
+								{context && context.sesion && context.sesion.rol == 'admin' ? (
 									<Trash
 										style={{
 											position: 'absolute',
@@ -198,8 +193,8 @@ export default function Seccion({
 					</View>
 				)}
 			/>
-			<View>
-				{rol == 'admin' ? (
+			<View style={{alignItems:'center'}}>
+				{context && context.sesion && context.sesion.rol == 'admin' ? (
 					<Plus
 						style={{}}
 						onPress={() => {

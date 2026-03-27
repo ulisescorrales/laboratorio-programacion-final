@@ -1,32 +1,22 @@
 import MapView, { Marker } from 'react-native-maps';
 import { useLocalSearchParams } from 'expo-router';
 import { useRouter } from 'expo-router';
-import {
-	View,
-	Button,
-	ScrollView,
-	ImageBackground,
-	Text,
-	RefreshControl
-} from 'react-native';
+import { View, Button, ScrollView, ImageBackground, Text } from 'react-native';
 import { Image } from 'react-native';
 import { StyleSheet } from 'react-native';
 import { useState, useEffect, useCallback } from 'react';
-import Seccion from '@/components/Seccion';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-toast-message';
-import Descripcion from '@/components/Descripcion';
-import Producto from '@/components/interfaces/Producto';
+import { useBarber } from '@/components/BarBeerContext';
 export default function HomeScreen() {
 	// const isAdmin=useState<boolean>(false);
+	const context = useBarber();
 	const { mensaje } = useLocalSearchParams();
-	const [rol, setRol] = useState<string | null>(null);
 	//Datos para el Map
 	const router = useRouter();
 	const latitud = -38.95857;
 	const longitud = -68.0548;
 
-	const [usuario, setUsuario] = useState<string | null>(null);
 	useEffect(() => {
 		//Si llega un mensaje a este screen, mostrar en un Toast
 		if (mensaje) {
@@ -38,16 +28,16 @@ export default function HomeScreen() {
 		}
 	}, [mensaje]);
 
-
 	const backendHost = process.env.EXPO_PUBLIC_BACKEND_HOST;
 	const loginButton = () => {
-		if (!rol) {
+		if (!context || !context.sesion || !context.session.rol) {
 			//Ir a la pantalla de login
 			router.push('/login');
 		} else {
 			//Desloguearse
-			setRol(null);
-			setUsuario(null);
+			if (context) {
+				context.setSesion(null);
+			}
 			AsyncStorage.removeItem('token', (err) => {
 				if (!err) {
 					Toast.show({
@@ -86,23 +76,29 @@ export default function HomeScreen() {
 							});
 						}
 						data.json().then((json) => {
-							setRol(json.role);
-							setUsuario(json.user);
+							if(context){
+								context.setSesion({
+									rol:json.role,
+									usuario:json.user,
+									token:json.token
+								})
+							}
 						});
 					} else {
 						//Borrar en storage
 						AsyncStorage.removeItem('token', (err) => {});
-						setUsuario(null);
-						setRol(null);
+						if (context) {
+							context.setSesion(null);
+						}
 					}
 				});
 			} else {
-				setUsuario(null);
-				setRol(null);
+				if (context) {
+					context.setSesion(null);
+				}
 			}
 		});
 	}, []);
-
 
 	return (
 		<ImageBackground
@@ -122,19 +118,18 @@ export default function HomeScreen() {
 							source={require('../../assets/images/logo.png')}
 							style={styles.titleContainer}
 						/>
-						{usuario ? (
+						{context && context.sesion && context.sesion.usuario ? (
 							<Text style={styles.usuario}>
-								Usuario: {usuario}
+								Usuario: {context.sesion.usuario}
 							</Text>
 						) : null}
 						<Button
-							title={!rol ? 'Login' : 'Cerrar sesión'}
+							title={context && context.sesion && context.sesion.rol ? 'Cerrar Sesión' : 'Login'}
 							onPress={loginButton}
 						/>
 					</View>
 
-					<ScrollView
-					>
+					<ScrollView>
 						<View style={styles2.container}>
 							{/* Título con estilo tipográfico */}
 							<View style={styles2.headerContainer}>

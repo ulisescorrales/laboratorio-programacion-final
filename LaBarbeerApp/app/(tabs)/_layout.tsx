@@ -5,7 +5,10 @@ import { Platform } from 'react-native';
 import { HapticTab } from '@/components/HapticTab';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import TabBarBackground from '@/components/ui/TabBarBackground';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { useColorScheme } from '@/hooks/useColorScheme';
+import Entypo from '@expo/vector-icons/Entypo';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -31,38 +34,34 @@ export default function TabLayout() {
         name="index"
         options={{
           title: 'Inicio',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="turnos"
-        options={{
-          title: 'Turno',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
-        }}
+          tabBarIcon: ({ color }) => <Entypo name="shop" size={24} color="black" />,
+ 		tabBarActiveBackgroundColor: 'lightblue',
+		}}
       />
       <Tabs.Screen
         name="cortes"
         options={{
           title: 'Cortes',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          tabBarIcon: ({ color }) => <Ionicons name="cut" size={24} color="black" />,
+ 		tabBarActiveBackgroundColor: 'lightblue',
         }}
       />
       <Tabs.Screen
         name="cervezas"
         options={{
           title: 'Cervezas',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          tabBarIcon: ({ color }) => <FontAwesome5 name="beer" size={24} color="black" />,
+ 		tabBarActiveBackgroundColor: 'lightblue',
         }}
       />
     </Tabs>
   );
 }
-
       // <Tabs.Screen
-      //   name="explore"
+      //   name="turnos"
       //   options={{
-      //     title: 'Explore',
-      //     tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+      //     title: 'Turno',
+      //     tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+ 		// tabBarActiveBackgroundColor: 'lightblue',
       //   }}
       // />
