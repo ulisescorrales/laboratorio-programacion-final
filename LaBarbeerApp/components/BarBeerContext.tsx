@@ -4,9 +4,10 @@ const BarberContext = createContext(null);
 
 export default function BarbeerProvider({ children }) {
 	const [sesion, setSesion] = useState(null);
+	const [mensajeHome,setMensajeHome]=useState(null)
 
 	return (
-		<BarberContext.Provider value={{ sesion, setSesion }}>
+		<BarberContext.Provider value={{ sesion, setSesion,mensajeHome,setMensajeHome }}>
 			{children}
 		</BarberContext.Provider>
 	);

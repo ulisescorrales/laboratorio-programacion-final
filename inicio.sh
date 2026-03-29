@@ -23,6 +23,7 @@ tmux send-keys -t $SESSION:0.0 "cd LaBarbeerApp && npm run start" C-m
 tmux send-keys -t $SESSION:0.1 "cd backend && npm run dev" C-m
 # tmux send-keys -t $SESSION:0.1 "npm run dev" C-m
 
+tmux resize-pane -t $SESSION:0.2 -y 1
 # Dejar el cursor en el pane 0.0
 tmux select-pane -t $SESSION:0.2
 

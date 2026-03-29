@@ -1,4 +1,3 @@
-import Toast from 'react-native-toast-message';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
 	TextInput,
@@ -22,6 +21,8 @@ export default function Login() {
 	const [isEnabled, setIsEnabled] = useState<boolean>(false);
 	const context = useBarber();
 
+	const [error,setError]=useState("");
+
 	const toggleSwitch = () =>
 		setIsEnabled((previousState: boolean) => !previousState);
 
@@ -36,22 +37,15 @@ export default function Login() {
 		}, [mensaje]);
 
 	const login = () => {
+		setError("")
 		if(user.length==0){
 			Keyboard.dismiss()
-			Toast.show({
-				type:'error',
-				text1:'Indique usuario',
-				position:'bottom'
-			})
+			setError("Indique el usuario")
 			return
 		}
 		if(password.length==0){
 			Keyboard.dismiss()
-			Toast.show({
-				type:'error',
-				text1:'Indique la contraseña',
-				position:'bottom'
-			})
+			setError("Indique la contraseña")
 			return
 		}
 		fetch(backendHost + '/api/login/auth', {
@@ -86,17 +80,13 @@ export default function Login() {
 					});
 				});
 			} else {
-				Toast.show({
-					type: 'error',
-					text1: 'Error, usuario o contraseña incorrecta',
-					position: 'bottom'
-				});
+				setError("Usuario y contraseña incorrecta")
 			}
 		});
 	};
 
 	return (
-		<View style={{height:'100%',top:'25%'}}>
+		<View style={{margin:10,padding:10,height:'40%',top:'20%',borderWidth:2,borderRadius:10}}>
 			<Text style={styles2.label}>Usuario:</Text>
 			<TextInput
 				value={user}
@@ -121,8 +111,8 @@ export default function Login() {
 					style={{ alignSelf: 'flex-start' }}
 				/>
 			</View>
+			<Text style={{color:'red',fontSize:14}}>{error}</Text>
 			<Button title={'Login'} onPress={login} />
-			<Toast />
 		</View>
 	);
 }

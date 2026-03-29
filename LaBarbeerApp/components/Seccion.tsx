@@ -36,7 +36,6 @@ export default function Seccion({
 	const cantidadVer = 2;
 
 	const cargarProductos = () => {
-		console.log(tipoProducto + ' - ' + ultimo);
 		const path =
 			backendHost +
 			'/api/' +
@@ -46,6 +45,7 @@ export default function Seccion({
 			'&fin=' +
 			(ultimo + cantidadVer);
 		setCargando(true)
+		console.log(path)
 		fetch(path)
 			.then((data) => {
 				return data.json();
@@ -93,13 +93,12 @@ export default function Seccion({
 			<FlatList
 				key="flatListCortes"
 				onLayout={(e) => {
-					console.log("layoutHeight: "+e.nativeEvent.layout.height);
 					setLayoutHeight(e.nativeEvent.layout.height);
 				}}
-				onContentSizeChange={(w, h) => {
+				onContentSizeChange={(w, heightContent) => {
 					// console.log('parcial height: ' + h);
-					setContentHeight(h);
-					if (h < layoutHeight && cargando) {
+					setContentHeight(heightContent);
+					if (heightContent < layoutHeight && cargando) {
 						cargarProductos();
 					}
 				}}
@@ -108,7 +107,6 @@ export default function Seccion({
 				initialNumToRender={2}
 				scrollEnabled={true}
 				onEndReached={({ distanceFromEnd }) => {
-					// if (distanceFromEnd < 0) return;
 					if(!finCarga){
 						if(contentHeight> layoutHeight){
 								cargarProductos();

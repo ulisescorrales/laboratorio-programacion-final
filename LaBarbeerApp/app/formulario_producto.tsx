@@ -18,8 +18,10 @@ import {
 	useNavigation
 } from 'expo-router';
 import Toast from 'react-native-toast-message';
+import { useBarber } from '@/components/BarBeerContext';
 
 export default function FormularioProducto() {
+	const context = useBarber();
 	const { tipoProducto, tipoAccion, id } = useLocalSearchParams();
 	let nombreScreen: string = '';
 	const navigation = useNavigation();
