@@ -1,16 +1,15 @@
 import * as cortesRepository from '../repository/cortes';
-import * as fileSystem from '../repository/filesystem'
+import * as fileSystem from '../repository/filesystem';
 
-export const getCortesJSON = async (inicio:number,fin:number) => {
+export const getCortesJSON = async (inicio: number, fin: number) => {
 	try {
-		const cortes = await cortesRepository.getCortesBD(inicio,fin);
+		const cortes = await cortesRepository.getCortesBD(inicio, fin);
 		return cortes;
 	} catch (err: any) {
 		throw new Error(err.message);
 	}
 };
 export const getCorteJSON = async (nombre: string) => {
-
 	try {
 		const corte = await cortesRepository.getCorteBD(nombre);
 		return corte;
@@ -54,24 +53,45 @@ export const modificarCorteService = async (
 	descripcion: string,
 	precio: number,
 	imagenPath: string | undefined | null,
-	nombreOrigen:string
+	nombreOrigen: string
 ) => {
 	//si no se cargó una imagen desde el frontend, ignorar
 	try {
 		if (imagenPath) {
 			//Borrar imagen anterior
-			try{
-			await cortesRepository.borrarImagenCortePorId(nombreOrigen)
-			}catch{console.log("No se pudo borrar imagen")}
+			try {
+				await cortesRepository.borrarImagenCortePorId(nombreOrigen);
+			} catch {
+				console.log('No se pudo borrar imagen');
+			}
 		}
-		const exito = await cortesRepository.modificarCorteBD(nombre,descripcion,precio,imagenPath,nombreOrigen);
+		let exito;
+		if (imagenPath) {
+			exito = await cortesRepository.modificarCorteBD(
+				nombre,
+				descripcion,
+				precio,
+				imagenPath,
+				nombreOrigen
+			);
+		} else {
+			exito = await cortesRepository.modificarCorteBDSinImagen(
+				nombre,
+				descripcion,
+				precio,
+				nombreOrigen
+			);
+		}
 		return exito;
 	} catch (err) {
+		console.log(err);
 		if (imagenPath) {
 			//Borrar imagen anterior
-			try{
-			await fileSystem.borrarImagenPorPath(imagenPath)
-			}catch{ console.log("No se pudo borrar imagen") }
+			try {
+				await fileSystem.borrarImagenPorPath(imagenPath);
+			} catch {
+				console.log('No se pudo borrar imagen');
+			}
 		}
 		throw new Error('Error en cortes service');
 	}

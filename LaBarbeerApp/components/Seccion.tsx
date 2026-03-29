@@ -1,13 +1,13 @@
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Lapiz from './ui/Lapiz';
 import Plus from './ui/Plus';
-import { ActivityIndicator, Dimensions, StyleSheet } from 'react-native';
+import { ActivityIndicator, Dimensions, RefreshControl, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Text, Pressable, View, FlatList } from 'react-native';
 import { Image } from 'react-native';
 import { styles } from '../app/(tabs)/index';
 import Trash from './ui/Trash';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import Toast from 'react-native-toast-message';
 import {useBarber} from './BarBeerContext';
 
@@ -36,6 +36,7 @@ export default function Seccion({
 	const cantidadVer = 2;
 
 	const cargarProductos = () => {
+    setRefreshing(true);
 		const path =
 			backendHost +
 			'/api/' +
@@ -69,6 +70,7 @@ export default function Seccion({
 			})
 			.finally(() => {
 				// actualizar(false)
+				setRefreshing(false)
 			});
 	};
 	const actualizarDescripcion = (item: any) => {
@@ -78,13 +80,22 @@ export default function Seccion({
 			setItemSeleccionado(item);
 		}
 	};
-	const { height } = Dimensions.get('window');
 	const [layoutHeight, setLayoutHeight] = useState(0); // Altura de la "ventana"
 	const [contentHeight, setContentHeight] = useState(0); // Altura total de los items
 
 	const [cargando,setCargando]=useState(true)
 
 	const [finCarga,setFinCarga]=useState(false)
+
+	const [refreshing, setRefreshing] = useState(false);
+	const onRefresh = () => {
+    setRefreshing(true);
+	setContentHeight(0);
+	setFinCarga(false)
+	setCargando(true) 
+	setUltimoProducto(0)
+	setColProductos([])
+  };
 	return (
 		<View style={{height:'100%'}}>
 			<View style={styles.containerTitle}>
@@ -97,6 +108,7 @@ export default function Seccion({
 				}}
 				onContentSizeChange={(w, heightContent) => {
 					// console.log('parcial height: ' + h);
+					console.log(heightContent)
 					setContentHeight(heightContent);
 					if (heightContent < layoutHeight && cargando) {
 						cargarProductos();
@@ -115,6 +127,15 @@ export default function Seccion({
 				}
 				}
 				onEndReachedThreshold={0.1}
+				refreshControl={
+        <RefreshControl 
+          refreshing={refreshing} 
+          onRefresh={onRefresh} 
+          // Opcional: Personalización de colores
+          colors={['#9Bd35A', '#689F38']} // Android
+          tintColor="#689F38" // iOS
+        />
+      }
 				keyExtractor={(item) => item.nombre}
 				ListFooterComponent={
 					cargando?<ActivityIndicator size="large" color="#aaa" />:null
@@ -230,3 +251,4 @@ const styleItem = StyleSheet.create({
 		textAlign: 'center'
 	}
 });
+

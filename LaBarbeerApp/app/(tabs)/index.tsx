@@ -19,6 +19,7 @@ export default function HomeScreen() {
 
 	useEffect(() => {
 		//Si llega un mensaje a este screen, mostrar en un Toast
+		console.log(mensaje)
 		if (mensaje) {
 			Toast.show({
 				type: 'success',

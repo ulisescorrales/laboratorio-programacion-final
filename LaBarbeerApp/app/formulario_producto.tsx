@@ -20,6 +20,12 @@ import {
 import Toast from 'react-native-toast-message';
 import { useBarber } from '@/components/BarBeerContext';
 
+type FormProps={
+	tipoProducto:string;
+	tipoAccion:string[1];
+	id:string;
+}
+
 export default function FormularioProducto() {
 	const context = useBarber();
 	const { tipoProducto, tipoAccion, id } = useLocalSearchParams();
@@ -153,12 +159,18 @@ export default function FormularioProducto() {
 										tipoProducto +
 										' agregado correctamente';
 								}
-								router.replace({
-									pathname: '/',
-									params: {
+								router.dismissTo({
+									pathname:"/",
+									params:{
 										mensaje: mensaje
 									}
-								});
+								})
+								// router.navigate({
+								// 	pathname: '/',
+								// 	params: {
+								// 		mensaje: mensaje
+								// 	}
+								// });
 								break;
 							case 401:
 								mensaje = 'Sesión caducada, vuelva a loguearse';
