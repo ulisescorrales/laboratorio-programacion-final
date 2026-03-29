@@ -11,6 +11,7 @@ import 'react-native-reanimated';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import React from 'react';
 import BarBeerProvider from '../components/BarBeerContext'
+import Toast from 'react-native-toast-message';
 
 export default function RootLayout() {
 	const colorScheme = useColorScheme();
@@ -36,6 +37,7 @@ export default function RootLayout() {
 					<Stack.Screen name="+not-found" />
 				</Stack>
 			</BarBeerProvider>
+			<Toast/>
 		</ThemeProvider>
 	);
 }

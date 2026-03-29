@@ -1,7 +1,12 @@
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Lapiz from './ui/Lapiz';
 import Plus from './ui/Plus';
-import { ActivityIndicator, Dimensions, RefreshControl, StyleSheet } from 'react-native';
+import {
+	ActivityIndicator,
+	Dimensions,
+	RefreshControl,
+	StyleSheet
+} from 'react-native';
 import { useRouter } from 'expo-router';
 import { Text, Pressable, View, FlatList } from 'react-native';
 import { Image } from 'react-native';
@@ -9,34 +14,48 @@ import { styles } from '../app/(tabs)/index';
 import Trash from './ui/Trash';
 import { useCallback, useEffect, useState } from 'react';
 import Toast from 'react-native-toast-message';
-import {useBarber} from './BarBeerContext';
+import { useBarber } from './BarBeerContext';
 
 type seccionProps = {
 	title: string;
-	rol: string | null;
 	tipoProducto: string;
 	setDescripcion: any;
 	setMostrarDescripcion: any;
 	setItemSeleccionado: any;
+	setMostrarFormulario: any;
+	setMensaje: any;
+	mensaje: string;
+	refrescar: boolean;
 };
 
 export default function Seccion({
 	title,
 	tipoProducto,
-	rol,
-	setDescripcion,
 	setMostrarDescripcion,
-	setItemSeleccionado
+	setItemSeleccionado,
+	setMostrarFormulario,
+	setMensaje,
+	mensaje,
+	refrescar
 }: seccionProps) {
 	const router = useRouter();
 	const context = useBarber();
 	const backendHost = process.env.EXPO_PUBLIC_BACKEND_HOST;
 	const [colProductos, setColProductos] = useState<any>([]);
 	const [ultimo, setUltimoProducto] = useState<number>(0);
+	const [layoutHeight, setLayoutHeight] = useState(0); // Altura de la "ventana"
+	const [contentHeight, setContentHeight] = useState(0); // Altura total de los items
+
+	const [cargando, setCargando] = useState(true);
+
+	const [refreshing, setRefreshing] = useState(false);
 	const cantidadVer = 2;
 
+	const [espacioOcupado, setEspacioOcupado] = useState<boolean>(false);
+	const [finCarga, setFinCarga] = useState(false);
+
 	const cargarProductos = () => {
-    setRefreshing(true);
+		setRefreshing(true);
 		const path =
 			backendHost +
 			'/api/' +
@@ -45,8 +64,8 @@ export default function Seccion({
 			ultimo +
 			'&fin=' +
 			(ultimo + cantidadVer);
-		setCargando(true)
-		console.log(path)
+		setCargando(true);
+		console.log(path);
 		fetch(path)
 			.then((data) => {
 				return data.json();
@@ -56,21 +75,22 @@ export default function Seccion({
 					colProductos.push(...json);
 					setUltimoProducto(ultimo + cantidadVer);
 					setColProductos([...colProductos]);
-				}else{
-					setCargando(false)
-					setFinCarga(true)
+				} else {
+					setCargando(false);
+					setFinCarga(true);
 				}
 			})
 			.catch((err) => {
-				Toast.show({
+				setRefreshing(false);
+				setFinCarga(false);
+				setMensaje({
 					type: 'error',
-					text1: 'Error de red',
-					position: 'bottom'
+					mensaje: 'Error de red'
 				});
 			})
 			.finally(() => {
 				// actualizar(false)
-				setRefreshing(false)
+				setRefreshing(false);
 			});
 	};
 	const actualizarDescripcion = (item: any) => {
@@ -80,24 +100,37 @@ export default function Seccion({
 			setItemSeleccionado(item);
 		}
 	};
-	const [layoutHeight, setLayoutHeight] = useState(0); // Altura de la "ventana"
-	const [contentHeight, setContentHeight] = useState(0); // Altura total de los items
 
-	const [cargando,setCargando]=useState(true)
-
-	const [finCarga,setFinCarga]=useState(false)
-
-	const [refreshing, setRefreshing] = useState(false);
+	useEffect(() => {
+		console.log("onRefersh: "+mensaje)
+		if (refrescar[0]) {
+			onRefresh();
+		}
+	}, [refrescar]);
 	const onRefresh = () => {
-    setRefreshing(true);
-	setContentHeight(0);
-	setFinCarga(false)
-	setCargando(true) 
-	setUltimoProducto(0)
-	setColProductos([])
-  };
+		setRefreshing(true);
+		setEspacioOcupado(false);
+		setContentHeight(0);
+		setFinCarga(false);
+		setCargando(true);
+		setUltimoProducto(0);
+		setColProductos([]);
+	};
+	const editarItem = (item: any) => {
+		setMostrarFormulario({
+			tipoAccion: 'm',
+			tipoProducto: tipoProducto,
+			id: item.nombre
+		});
+	};
+	useEffect(() => {
+		//Revisar si hay un mensaje para el toast
+		if (mensaje) {
+			setMensaje(mensaje);
+		}
+	}, [espacioOcupado]);
 	return (
-		<View style={{height:'100%'}}>
+		<View style={{ height: '100%' }}>
 			<View style={styles.containerTitle}>
 				<Text style={styles.title}>{title}</Text>
 			</View>
@@ -108,10 +141,12 @@ export default function Seccion({
 				}}
 				onContentSizeChange={(w, heightContent) => {
 					// console.log('parcial height: ' + h);
-					console.log(heightContent)
+					console.log(heightContent);
 					setContentHeight(heightContent);
 					if (heightContent < layoutHeight && cargando) {
 						cargarProductos();
+					} else {
+						setEspacioOcupado(true);
 					}
 				}}
 				refreshing={false}
@@ -119,26 +154,27 @@ export default function Seccion({
 				initialNumToRender={2}
 				scrollEnabled={true}
 				onEndReached={({ distanceFromEnd }) => {
-					if(!finCarga){
-						if(contentHeight> layoutHeight){
-								cargarProductos();
-						}	
+					if (!finCarga) {
+						if (contentHeight > layoutHeight) {
+							cargarProductos();
+						}
 					}
-				}
-				}
+				}}
 				onEndReachedThreshold={0.1}
 				refreshControl={
-        <RefreshControl 
-          refreshing={refreshing} 
-          onRefresh={onRefresh} 
-          // Opcional: Personalización de colores
-          colors={['#9Bd35A', '#689F38']} // Android
-          tintColor="#689F38" // iOS
-        />
-      }
+					<RefreshControl
+						refreshing={refreshing}
+						onRefresh={onRefresh}
+						// Opcional: Personalización de colores
+						colors={['#9Bd35A', '#689F38']} // Android
+						tintColor="#689F38" // iOS
+					/>
+				}
 				keyExtractor={(item) => item.nombre}
 				ListFooterComponent={
-					cargando?<ActivityIndicator size="large" color="#aaa" />:null
+					cargando ? (
+						<ActivityIndicator size="large" color="#aaa" />
+					) : null
 				}
 				data={colProductos}
 				renderItem={({ item, index }) => (
@@ -153,7 +189,9 @@ export default function Seccion({
 									style={[styles.image]}
 									borderRadius={16}
 								/>
-								{context && context.sesion && context.sesion.rol == 'admin' ? (
+								{context &&
+								context.sesion &&
+								context.sesion.rol == 'admin' ? (
 									<Lapiz
 										style={{
 											position: 'absolute',
@@ -165,19 +203,13 @@ export default function Seccion({
 											]
 										}}
 										onPress={() => {
-											router.push({
-												pathname:
-													'/formulario_producto',
-												params: {
-													tipoAccion: 'm',
-													tipoProducto: tipoProducto,
-													id: item.nombre
-												}
-											});
+											editarItem(item);
 										}}
 									/>
 								) : null}
-								{context && context.sesion && context.sesion.rol == 'admin' ? (
+								{context &&
+								context.sesion &&
+								context.sesion.rol == 'admin' ? (
 									<Trash
 										style={{
 											position: 'absolute',
@@ -212,7 +244,7 @@ export default function Seccion({
 					</View>
 				)}
 			/>
-			<View style={{alignItems:'center'}}>
+			<View style={{ alignItems: 'center' }}>
 				{context && context.sesion && context.sesion.rol == 'admin' ? (
 					<Plus
 						style={{}}
@@ -251,4 +283,3 @@ const styleItem = StyleSheet.create({
 		textAlign: 'center'
 	}
 });
-

@@ -13,22 +13,18 @@ import { TextInput, StyleSheet } from 'react-native';
 import { useEffect, useState } from 'react';
 import {
 	router,
-	Stack,
-	useLocalSearchParams,
 	useNavigation
 } from 'expo-router';
 import Toast from 'react-native-toast-message';
-import { useBarber } from '@/components/BarBeerContext';
 
 type FormProps={
 	tipoProducto:string;
-	tipoAccion:string[1];
+	tipoAccion:string;
 	id:string;
+	onEndFormulario:any
 }
 
-export default function FormularioProducto() {
-	const context = useBarber();
-	const { tipoProducto, tipoAccion, id } = useLocalSearchParams();
+export default function FormularioProducto({tipoProducto,tipoAccion,id,onEndFormulario}:FormProps) {
 	let nombreScreen: string = '';
 	const navigation = useNavigation();
 
@@ -147,7 +143,8 @@ export default function FormularioProducto() {
 						},
 						body: formData
 					}).then((data) => {
-						let mensaje: string = '';
+						let mensaje: string = ''
+						let exito=false;
 						switch (data.status) {
 							case 200:
 								if (tipoAccion == 'm') {
@@ -159,43 +156,19 @@ export default function FormularioProducto() {
 										tipoProducto +
 										' agregado correctamente';
 								}
-								router.dismissTo({
-									pathname:"/",
-									params:{
-										mensaje: mensaje
-									}
-								})
-								// router.navigate({
-								// 	pathname: '/',
-								// 	params: {
-								// 		mensaje: mensaje
-								// 	}
-								// });
+								exito=true;
 								break;
 							case 401:
 								mensaje = 'Sesión caducada, vuelva a loguearse';
-								router.push({
-									pathname: '/login',
-									params: {
-										mensaje: mensaje
-									}
-								});
 								break;
 							case 409:
-								Toast.show({
-									type: 'error',
-									text1: 'Ya existe un producto con el mismo nombre, eliga otro',
-									position: 'bottom'
-								});
+								mensaje='Ya existe un producto con el mismo nombre, eliga otro'
 								break;
 							default:
-								Toast.show({
-									type: 'error',
-									text1: 'Error en el servidor',
-									position: 'bottom'
-								});
+								mensaje='Error en el servidor'
 								break;
 						}
+						onEndFormulario(exito,mensaje);
 					}).catch((err)=>console.log(err));
 				}
 			}

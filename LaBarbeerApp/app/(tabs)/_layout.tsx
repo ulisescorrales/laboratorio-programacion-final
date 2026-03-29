@@ -9,6 +9,7 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import Entypo from '@expo/vector-icons/Entypo';
+import Toast from 'react-native-toast-message';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();

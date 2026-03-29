@@ -204,11 +204,10 @@ export default function HomeScreen() {
 					</ScrollView>
 				</View>
 			</View>
-
-			<Toast />
 		</ImageBackground>
 	);
 }
+
 //Link Ubicación: https://maps.app.goo.gl/pSSUrBqiBw8YBsNG7
 export const styles = StyleSheet.create({
 	map: {

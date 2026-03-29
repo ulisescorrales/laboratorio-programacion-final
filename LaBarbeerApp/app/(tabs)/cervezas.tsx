@@ -2,8 +2,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Producto from '@/components/interfaces/Producto';
 import Descripcion from '@/components/Descripcion';
 import Seccion from '@/components/Seccion';
-import { useLocalSearchParams } from 'expo-router';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
 	Button,
 	StyleSheet,
@@ -12,24 +11,54 @@ import {
 	Modal,
 	View
 } from 'react-native';
-import { useBarber } from '@/components/BarBeerContext';
+import FormularioProducto from '../formulario_producto';
+import Toast from 'react-native-toast-message';
 
 export default function Cervezas() {
-	const context = useBarber();
-	const { mensaje } = useLocalSearchParams();
-	const [rol, setRol] = useState<string | null>(null);
+	const [mensaje,setMensaje]=useState<any>(null);
+	const [mensajeMostrar,setMensajeMostrar]=useState<any>(null);
+	useEffect(()=>{
+		if(mensajeMostrar){
+			Toast.show({
+				text1:mensajeMostrar.mensaje,
+				type:mensajeMostrar.type,
+				position:'top'
+			})
+		}
+	},[mensajeMostrar])
 	const [itemSeleccionado, setItemSeleccionado] = useState<Producto | null>(
 		null
 	);
 	const [mostrarDescripcion, setMostrarDescripcion] =
 		useState<boolean>(false);
 
-	const [mostrarFormulario, setMostrarFomulario] = useState(null);
+	const [mostrarFormulario, setMostrarFormulario] = useState<any>(null);
 	useEffect(() => {
 		if (itemSeleccionado) {
 			setMostrarDescripcion(true);
 		}
 	}, [itemSeleccionado]);
+
+	const [refrescar,setRefrescar]=useState<any>([]);
+	const onEndFormulario = (exito: boolean, mensaje: string) => {
+		console.log('onEndFormulario');
+		setMostrarFormulario(null);
+		if (!exito) {
+			//si no hubo cambios, mostrar directamente el toast
+			setMensaje({
+				mensaje:mensaje,
+				type:'error',
+			})
+		}else{
+			//Si hubo cambios, refrescar la seccion y cuando termine mostrar el toast
+			setMensaje({
+				mensaje:mensaje,
+				type:'success'
+			})
+			console.log(mensaje)
+			setRefrescar([true])
+		}
+	};
 
 	return (
 		<ImageBackground
@@ -39,11 +68,14 @@ export default function Cervezas() {
 			<SafeAreaView style={{ flex: 1, height: '100%' }}>
 				<Seccion
 					title={'Nuestras Cervezas'}
-					rol={rol}
 					tipoProducto={'cerveza'}
 					setDescripcion={Descripcion}
 					setMostrarDescripcion={setMostrarDescripcion}
 					setItemSeleccionado={setItemSeleccionado}
+					setMostrarFormulario={setMostrarFormulario}
+					setMensaje={setMensajeMostrar}
+					mensaje={mensaje}
+					refrescar={refrescar}
 				/>
 				{mostrarDescripcion ? (
 					<Descripcion
@@ -53,11 +85,13 @@ export default function Cervezas() {
 				) : null}
 			</SafeAreaView>
 			{mostrarFormulario ? (
-				<Modal
-					animationType="fade"
-					transparent={true}
-					visible={true}
-				>
+				<Modal animationType="fade" transparent={false} visible={true}>
+					<FormularioProducto
+						tipoProducto={mostrarFormulario.tipoProducto}
+						tipoAccion={mostrarFormulario.tipoAccion}
+						id={mostrarFormulario.id}
+						onEndFormulario={onEndFormulario}
+					/>
 				</Modal>
 			) : null}
 		</ImageBackground>
@@ -66,7 +100,7 @@ export default function Cervezas() {
 const styles = StyleSheet.create({
 	overlay: {
 		flex: 1,
-		backgroundColor: 'rgba(0,0,0,0.5)', // Fondo semi-transparente
+		backgroundColor: 'white',
 		justifyContent: 'center',
 		alignItems: 'center'
 	},
