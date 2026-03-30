@@ -19,11 +19,11 @@ export default function HomeScreen() {
 
 	useEffect(() => {
 		//Si llega un mensaje a este screen, mostrar en un Toast
-		console.log(mensaje);
+		console.log(mensaje)
 		if (mensaje) {
 			Toast.show({
 				type: 'success',
-				text1: mensaje
+				text1: mensaje,
 			});
 		}
 	}, [mensaje]);
@@ -42,12 +42,12 @@ export default function HomeScreen() {
 				if (!err) {
 					Toast.show({
 						type: 'success',
-						text1: 'Sesión cerrada correctamente'
+						text1: 'Sesión cerrada correctamente',
 					});
 				} else {
 					Toast.show({
 						type: 'error',
-						text1: 'Error cerrando sesión'
+						text1: 'Error cerrando sesión',
 					});
 				}
 			});
@@ -69,16 +69,16 @@ export default function HomeScreen() {
 						if (!mensaje) {
 							Toast.show({
 								type: 'success',
-								text1: 'Su sesión sigue activa'
+								text1: 'Su sesión sigue activa',
 							});
 						}
 						data.json().then((json) => {
-							if (context) {
+							if(context){
 								context.setSesion({
-									rol: json.role,
-									usuario: json.user,
-									token: json.token
-								});
+									rol:json.role,
+									usuario:json.user,
+									token:json.token
+								})
 							}
 						});
 					} else {
@@ -121,23 +121,21 @@ export default function HomeScreen() {
 							</Text>
 						) : null}
 						<Button
-							title={
-								context && context.sesion && context.sesion.rol
-									? 'Cerrar Sesión'
-									: 'Login'
-							}
+							title={context && context.sesion && context.sesion.rol ? 'Cerrar Sesión' : 'Login'}
 							onPress={loginButton}
 						/>
 					</View>
 
 					<ScrollView>
 						<View style={styles2.container}>
+							{/* Título con estilo tipográfico */}
 							<View style={styles2.headerContainer}>
 								<Text style={styles2.title}>LA BARBEER</Text>
 								<View style={styles2.underline} />
 							</View>
 
 							<View style={styles2.card}>
+								{/* Imagen del local con bordes estilizados */}
 								<View style={styles2.imageWrapper}>
 									<Image
 										source={{
@@ -146,9 +144,11 @@ export default function HomeScreen() {
 										style={styles2.image}
 										resizeMode="cover"
 									/>
+									{/* Overlay sutil sobre la imagen */}
 									<View style={styles2.imageOverlay} />
 								</View>
 
+								{/* Texto de bienvenida con mejor legibilidad */}
 								<View style={styles2.textContainer}>
 									<Text style={styles2.welcomeText}>
 										Bienvenidos a{' '}
@@ -167,38 +167,35 @@ export default function HomeScreen() {
 								</View>
 							</View>
 						</View>
-						<View style={styles2.container}>
-							<View style={styles2.card}>
-								<View style={styles.containerTitle}>
-									<Text style={styles.title}>
-										Dónde estamos
-									</Text>
-								</View>
-								<Text style={styles2.welcomeText}>
-									Chubut 322, Neuquén capital
-								</Text>
-								<Text style={styles2.welcomeText}>
-									Lunea a viernes de 9 a 21 hs.
-								</Text>
-								<MapView
-									style={styles.map}
-									loadingEnabled={true}
-									initialRegion={{
-										latitude: latitud,
-										longitude: longitud,
-										latitudeDelta: 0.01,
-										longitudeDelta: 0.01
-									}}
-								>
-									<Marker
-										coordinate={{
-											latitude: latitud,
-											longitude: longitud
-										}}
-										title="La Barbeer"
-									/>
-								</MapView>
+
+						<View style={styles.map}>
+							<View style={styles.containerTitle}>
+								<Text style={styles.title}>Dónde estamos</Text>
 							</View>
+							<Text style={styles.textDomicilio}>
+								Chubut 322, Neuquén capital
+							</Text>
+							<Text style={styles.textDomicilio}>
+								Lunea a viernes de 9 a 21 hs.
+							</Text>
+							<MapView
+								style={styles.map}
+								loadingEnabled={true}
+								initialRegion={{
+									latitude: latitud,
+									longitude: longitud,
+									latitudeDelta: 0.01,
+									longitudeDelta: 0.01
+								}}
+							>
+								<Marker
+									coordinate={{
+										latitude: latitud,
+										longitude: longitud
+									}}
+									title="La Barbeer"
+								/>
+							</MapView>
 						</View>
 					</ScrollView>
 				</View>
@@ -234,7 +231,7 @@ export const styles = StyleSheet.create({
 	title: {
 		fontSize: 32,
 		fontWeight: 'bold',
-		backgroundColor: '#1E1E1E',
+		backgroundColor: '#000000c0',
 		color: 'white',
 		width: '100%',
 		textAlign: 'center'
@@ -272,22 +269,22 @@ export const styles = StyleSheet.create({
 		marginLeft: 8
 	}
 });
-export const styles2 = StyleSheet.create({
+const styles2 = StyleSheet.create({
 	container: {
 		padding: 20,
 		// backgroundColor: '#121212' // Fondo oscuro premium
-		height:'auto',
-		backgroundColor: 'rgba(0, 0, 0, 0.6)'
+		backgroundColor: 'rgba(0, 0, 0, 0.4)'
 	},
 	headerContainer: {
 		alignItems: 'center',
 		marginBottom: 25
 	},
 	title: {
-		fontSize: 34,
+		fontSize: 4,
 		fontWeight: '900',
-		color: '#face5a', // Color dorado/ambarino
-		letterSpacing: 4
+		color: '#D4AF49', // Color dorado/ambarino
+		letterSpacing: 3,
+		textTransform: 'uppercase'
 	},
 	underline: {
 		height: 2,

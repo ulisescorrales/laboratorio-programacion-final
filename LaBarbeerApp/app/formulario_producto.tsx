@@ -7,26 +7,40 @@ import {
 	Image,
 	View,
 	ScrollView,
-	Platform
+	Platform,
+	BackHandler
 } from 'react-native';
 import { TextInput, StyleSheet } from 'react-native';
 import { useEffect, useState } from 'react';
-import {
-	router,
-	useNavigation
-} from 'expo-router';
+import { router, useNavigation } from 'expo-router';
 import Toast from 'react-native-toast-message';
 
-type FormProps={
-	tipoProducto:string;
-	tipoAccion:string;
-	id:string;
-	onEndFormulario:any
-}
+type FormProps = {
+	tipoProducto: string;
+	tipoAccion: string;
+	id: string;
+	onEndFormulario: any;
+};
 
-export default function FormularioProducto({tipoProducto,tipoAccion,id,onEndFormulario}:FormProps) {
+export default function FormularioProducto({
+	tipoProducto,
+	tipoAccion,
+	id,
+	onEndFormulario
+}: FormProps) {
 	let nombreScreen: string = '';
 	const navigation = useNavigation();
+
+	useEffect(() => {
+
+		const backHandler = BackHandler.addEventListener(
+			'hardwareBackPress',
+			onEndFormulario(false,null)	
+		);
+
+		// IMPORTANTE: Limpiar el listener para evitar fugas de memoria
+		return () => backHandler.remove();
+	}, []);
 
 	useEffect(() => {
 		navigation.setOptions({
@@ -110,7 +124,10 @@ export default function FormularioProducto({tipoProducto,tipoAccion,id,onEndForm
 					formData.append('descripcion', descripcion);
 					formData.append('marca', marca);
 					formData.append('precio', precio);
-					formData.append('hayNuevaImagen',hayNuevaImagen.toString());
+					formData.append(
+						'hayNuevaImagen',
+						hayNuevaImagen.toString()
+					);
 					//Ignorar los warnings
 					formData.append('tipoProducto', tipoProducto);
 					formData.append('image', {
@@ -142,34 +159,38 @@ export default function FormularioProducto({tipoProducto,tipoAccion,id,onEndForm
 							// 'Content-Type': 'multipart/form-data'
 						},
 						body: formData
-					}).then((data) => {
-						let mensaje: string = ''
-						let exito=false;
-						switch (data.status) {
-							case 200:
-								if (tipoAccion == 'm') {
+					})
+						.then((data) => {
+							let mensaje: string = '';
+							let exito = false;
+							switch (data.status) {
+								case 200:
+									if (tipoAccion == 'm') {
+										mensaje =
+											tipoProducto +
+											' modificado correctamente';
+									} else if (tipoAccion == 'i') {
+										mensaje =
+											tipoProducto +
+											' agregado correctamente';
+									}
+									exito = true;
+									break;
+								case 401:
 									mensaje =
-										tipoProducto +
-										' modificado correctamente';
-								} else if (tipoAccion == 'i') {
+										'Sesión caducada, vuelva a loguearse';
+									break;
+								case 409:
 									mensaje =
-										tipoProducto +
-										' agregado correctamente';
-								}
-								exito=true;
-								break;
-							case 401:
-								mensaje = 'Sesión caducada, vuelva a loguearse';
-								break;
-							case 409:
-								mensaje='Ya existe un producto con el mismo nombre, eliga otro'
-								break;
-							default:
-								mensaje='Error en el servidor'
-								break;
-						}
-						onEndFormulario(exito,mensaje);
-					}).catch((err)=>console.log(err));
+										'Ya existe un producto con el mismo nombre, eliga otro';
+									break;
+								default:
+									mensaje = 'Error en el servidor';
+									break;
+							}
+							onEndFormulario(exito, mensaje);
+						})
+						.catch((err) => console.log(err));
 				}
 			}
 		}
@@ -185,34 +206,39 @@ export default function FormularioProducto({tipoProducto,tipoAccion,id,onEndForm
 		if (id) {
 			//Modificar: traer los datos, sino es insertar y los campos quedan en blanco
 			const getPath = backendHost + '/api/' + tipoProducto + '/' + id;
-			fetch(getPath).then((data) => {
-				if (data.status == 200) {
-					data.json().then((json) => {
-						setNombre(json.nombre);
-						setDescripcion(json.descripcion);
-						setMarca(json.marca);
-						setPrecio(json.precio.toString());
-						setImage({ uri: backendHost + json.pathImagen });
-					});
-				} else {
-					//Si no existe el id, volver
-					router.back();
-				}
-			}).catch((err)=>{
-				console.log(err)
-				router.replace({
-					pathname:"/",
-					params:{
-						mensaje:"Error de red"
+			fetch(getPath)
+				.then((data) => {
+					if (data.status == 200) {
+						data.json().then((json) => {
+							setNombre(json.nombre);
+							setDescripcion(json.descripcion);
+							setMarca(json.marca);
+							setPrecio(json.precio.toString());
+							setImage({ uri: backendHost + json.pathImagen });
+						});
+					} else {
+						//Si no existe el id, volver
+						router.back();
 					}
 				})
-			});
+				.catch((err) => {
+					console.log(err);
+					router.replace({
+						pathname: '/',
+						params: {
+							mensaje: 'Error de red'
+						}
+					});
+				});
 		}
 	}, []);
 
+	const cancelar = () => {
+		onEndFormulario(false, null);
+	};
 	return (
-		<View style={{ height: '95%'}}>
-			<ScrollView >
+		<View style={{ height: '95%' }}>
+			<ScrollView>
 				<View style={styles2.inputGroup}>
 					<Text style={styles2.label}>Nombre del producto</Text>
 					<TextInput
@@ -284,10 +310,17 @@ export default function FormularioProducto({tipoProducto,tipoAccion,id,onEndForm
 				</View>
 				<Toast />
 			</ScrollView>
-				<View style={{ margin: 10, width: 200, alignSelf: 'center' }}>
+			<View
+				style={{
+					width: '100%',
+					flexDirection: 'row',
+					gap: 10
+				}}
+			>
+				<View style={{ flex: 1 }}>
 					<Button
 						onPress={submit}
-						color="red"
+						color="blue"
 						title={
 							tipoAccion == 'm'
 								? 'Actualizar'
@@ -297,6 +330,11 @@ export default function FormularioProducto({tipoProducto,tipoAccion,id,onEndForm
 						}
 					/>
 				</View>
+
+				<View style={{ flex: 1 }}>
+					<Button onPress={cancelar} color="red" title={'Cancelar'} />
+				</View>
+			</View>
 		</View>
 	);
 }

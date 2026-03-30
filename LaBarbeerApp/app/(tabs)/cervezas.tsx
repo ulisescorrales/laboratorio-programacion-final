@@ -15,17 +15,17 @@ import FormularioProducto from '../formulario_producto';
 import Toast from 'react-native-toast-message';
 
 export default function Cervezas() {
-	const [mensaje,setMensaje]=useState<any>(null);
-	const [mensajeMostrar,setMensajeMostrar]=useState<any>(null);
-	useEffect(()=>{
-		if(mensajeMostrar){
+	const [mensaje, setMensaje] = useState<any>(null);
+	const [mensajeMostrar, setMensajeMostrar] = useState<any>(null);
+	useEffect(() => {
+		if (mensajeMostrar) {
 			Toast.show({
-				text1:mensajeMostrar.mensaje,
-				type:mensajeMostrar.type,
-				position:'top'
-			})
+				text1: mensajeMostrar.mensaje,
+				type: mensajeMostrar.type,
+				position: 'top'
+			});
 		}
-	},[mensajeMostrar])
+	}, [mensajeMostrar]);
 	const [itemSeleccionado, setItemSeleccionado] = useState<Producto | null>(
 		null
 	);
@@ -39,24 +39,25 @@ export default function Cervezas() {
 		}
 	}, [itemSeleccionado]);
 
-	const [refrescar,setRefrescar]=useState<any>([]);
+	const [refrescar, setRefrescar] = useState<any>([]);
 	const onEndFormulario = (exito: boolean, mensaje: string) => {
-		console.log('onEndFormulario');
 		setMostrarFormulario(null);
-		if (!exito) {
-			//si no hubo cambios, mostrar directamente el toast
-			setMensaje({
-				mensaje:mensaje,
-				type:'error',
-			})
-		}else{
-			//Si hubo cambios, refrescar la seccion y cuando termine mostrar el toast
-			setMensaje({
-				mensaje:mensaje,
-				type:'success'
-			})
-			console.log(mensaje)
-			setRefrescar([true])
+		if (mensaje) {
+			if (!exito) {
+				//si no hubo cambios, mostrar directamente el toast
+				setMensaje({
+					mensaje: mensaje,
+					type: 'error'
+				});
+			} else {
+				//Si hubo cambios, refrescar la seccion y cuando termine mostrar el toast
+				setMensaje({
+					mensaje: mensaje,
+					type: 'success'
+				});
+				console.log(mensaje);
+				setRefrescar([true]);
+			}
 		}
 	};
 

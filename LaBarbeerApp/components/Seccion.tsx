@@ -10,7 +10,7 @@ import {
 import { useRouter } from 'expo-router';
 import { Text, Pressable, View, FlatList } from 'react-native';
 import { Image } from 'react-native';
-import { styles } from '../app/(tabs)/index';
+import { styles2,styles } from '../app/(tabs)/index';
 import Trash from './ui/Trash';
 import { useCallback, useEffect, useState } from 'react';
 import Toast from 'react-native-toast-message';
@@ -131,7 +131,7 @@ export default function Seccion({
 	}, [espacioOcupado]);
 	return (
 		<View style={{ height: '100%' }}>
-			<View style={styles.containerTitle}>
+			<View >
 				<Text style={styles.title}>{title}</Text>
 			</View>
 			<FlatList

@@ -1,25 +1,24 @@
-
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Producto from '@/components/interfaces/Producto';
 import Descripcion from '@/components/Descripcion';
 import Seccion from '@/components/Seccion';
-import {  useEffect, useState } from 'react';
-import { ImageBackground, Modal, View,StyleSheet } from 'react-native';
+import { useEffect, useState } from 'react';
+import { ImageBackground, Modal, View, StyleSheet } from 'react-native';
 import Toast from 'react-native-toast-message';
 import FormularioProducto from '../formulario_producto';
 
 export default function Cortes() {
-	const [mensaje,setMensaje]=useState<any>(null);
-	const [mensajeMostrar,setMensajeMostrar]=useState<any>(null);
-	useEffect(()=>{
-		if(mensajeMostrar){
+	const [mensaje, setMensaje] = useState<any>(null);
+	const [mensajeMostrar, setMensajeMostrar] = useState<any>(null);
+	useEffect(() => {
+		if (mensajeMostrar) {
 			Toast.show({
-				text1:mensajeMostrar.mensaje,
-				type:mensajeMostrar.type,
-				position:'top'
-			})
+				text1: mensajeMostrar.mensaje,
+				type: mensajeMostrar.type,
+				position: 'top'
+			});
 		}
-	},[mensajeMostrar])
+	}, [mensajeMostrar]);
 	const [itemSeleccionado, setItemSeleccionado] = useState<Producto | null>(
 		null
 	);
@@ -33,15 +32,26 @@ export default function Cortes() {
 		}
 	}, [itemSeleccionado]);
 
-	const [refrescar,setRefrescar]=useState(false);
+	const [refrescar, setRefrescar] = useState<any>([]);
 	const onEndFormulario = (exito: boolean, mensaje: string) => {
-		console.log('onEndFormulario');
-		setMostrarFormulario(null);
-		let info = 'success';
-		if (!exito) {
-			info = 'error';
+		if (mensaje) {
+			setMostrarFormulario(null);
+			if (!exito) {
+				//si no hubo cambios, mostrar directamente el toast
+				setMensaje({
+					mensaje: mensaje,
+					type: 'error'
+				});
+			} else {
+				//Si hubo cambios, refrescar la seccion y cuando termine mostrar el toast
+				setMensaje({
+					mensaje: mensaje,
+					type: 'success'
+				});
+				console.log(mensaje);
+				setRefrescar([true]);
+			}
 		}
-		setRefrescar(true)
 	};
 
 	return (
