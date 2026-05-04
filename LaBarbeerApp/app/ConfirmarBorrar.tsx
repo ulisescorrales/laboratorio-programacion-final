@@ -10,7 +10,6 @@ export default function ConfirmarBorrar() {
 	const router = useRouter();
 	const { tipoProducto, id }=useLocalSearchParams();
 	const confirmar = () => {
-		//TODO: empaquetar esta lógica en una función común
 		AsyncStorage.getItem('token', (err, result) => {
 			if (result) {
 				fetch(backendHost + '/api/' + tipoProducto + '/' + id, {

@@ -1,4 +1,3 @@
-import { SafeAreaView } from 'react-native-safe-area-context';
 import Lapiz from './ui/Lapiz';
 import Plus from './ui/Plus';
 import {
@@ -13,7 +12,6 @@ import { Image } from 'react-native';
 import { styles2,styles } from '../app/(tabs)/index';
 import Trash from './ui/Trash';
 import { useCallback, useEffect, useState } from 'react';
-import Toast from 'react-native-toast-message';
 import { useBarber } from './BarBeerContext';
 
 type seccionProps = {

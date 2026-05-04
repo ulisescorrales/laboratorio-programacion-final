@@ -34,6 +34,7 @@ export default function Cortes() {
 
 	const [refrescar, setRefrescar] = useState<any>([]);
 	const onEndFormulario = (exito: boolean, mensaje: string) => {
+		setMostrarFormulario(null);
 		if (mensaje) {
 			setMostrarFormulario(null);
 			if (!exito) {

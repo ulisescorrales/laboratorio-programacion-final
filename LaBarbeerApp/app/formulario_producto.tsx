@@ -35,10 +35,11 @@ export default function FormularioProducto({
 
 		const backHandler = BackHandler.addEventListener(
 			'hardwareBackPress',
-			onEndFormulario(false,null)	
+			()=>{
+			  onEndFormulario(false,null);
+			  return true ;
+			}
 		);
-
-		// IMPORTANTE: Limpiar el listener para evitar fugas de memoria
 		return () => backHandler.remove();
 	}, []);
 
