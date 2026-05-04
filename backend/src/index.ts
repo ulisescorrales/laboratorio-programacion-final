@@ -5,7 +5,6 @@ import cors from 'cors';
 import { cervezasRouter } from './routes/cervezas_router'
 import { cortesRouter } from './routes/cortes_router'
 import { loginRouter } from './routes/login_router'
-import { turnosRouter } from './routes/turnos_router'
 const port = 3000;
 
 
@@ -17,7 +16,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const router=Router();
 app.use("/api/",router)
 app.use(express.static("assets"))
-app.use("/api/",cervezasRouter,cortesRouter,loginRouter,turnosRouter)
+app.use("/api/",cervezasRouter,cortesRouter,loginRouter)
 app.listen(port, () => {
 	console.log('Server started on port ' + port);
 });

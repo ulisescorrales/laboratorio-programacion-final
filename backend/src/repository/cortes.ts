@@ -7,7 +7,7 @@ export const getCortesBD = (inicio: number, fin: number) => {
 	return new Promise((resolv, reject) => {
 		const cantidadElementos = fin - inicio;
 		pool.query(
-			'SELECT nombre_corte as nombre,descripcion,marca,precio,promocion,pathImagen FROM corte ORDER BY nro_secuencia DESC LIMIT ? OFFSET ?;',
+			'SELECT nombre_corte as nombre,descripcion,marca,precio,pathImagen FROM corte ORDER BY nro_secuencia DESC LIMIT ? OFFSET ?;',
 			[cantidadElementos, inicio],
 			(err, result) => {
 				if (err) {
@@ -48,7 +48,7 @@ export const insertarCorteBD = (
 export const getCorteBD = (nombre: string) => {
 	return new Promise((resolv, reject) => {
 		pool.query(
-			'SELECT nombre_corte as nombre,descripcion,marca,precio,promocion,pathImagen FROM corte WHERE nombre_corte=?;',
+			'SELECT nombre_corte as nombre,descripcion,marca,precio,pathImagen FROM corte WHERE nombre_corte=?;',
 			[nombre],
 			(err, result: any) => {
 				if (err) {
