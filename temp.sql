@@ -1,3 +1,0 @@
-ALTER TABLE corte
-ADD COLUMN nro_secuencia INT NOT NULL AUTO_INCREMENT,
-ADD UNIQUE (nro_secuencia);

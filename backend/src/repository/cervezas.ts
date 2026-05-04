@@ -6,7 +6,7 @@ export const getCervezasBD = (inicio: number, fin: number) => {
 	return new Promise((resolv, reject) => {
 		const cantidadElementos = fin - inicio;
 		pool.query(
-			'SELECT nombre_cerveza as nombre,descripcion,marca,precio,promocion,pathImagen FROM cerveza ORDER BY nro_secuencia DESC LIMIT ? OFFSET ?;',
+			'SELECT nombre_cerveza as nombre,descripcion,marca,precio,pathImagen FROM cerveza ORDER BY nro_secuencia DESC LIMIT ? OFFSET ?;',
 			[cantidadElementos, inicio],
 			(err, result) => {
 				if (err) {
@@ -29,7 +29,7 @@ export const insertarCervezaBD = (
 	return new Promise(async (resolv, reject) => {
 		try {
 			pool.query(
-				'INSERT INTO cerveza(nombre_cerveza,descripcion,marca,precio,promocion,pathImagen) VALUES(?,?,?,?,?,?)',
+				'INSERT INTO cerveza(nombre_cerveza,descripcion,marca,precio,pathImagen) VALUES(?,?,?,?,?,?)',
 				[
 					nombre,
 					descripcion,
@@ -55,7 +55,7 @@ export const insertarCervezaBD = (
 export const getCervezaBD = (nombre: string) => {
 	return new Promise((resolv, reject) => {
 		pool.query(
-			'SELECT nombre_cerveza as nombre,descripcion,marca,precio,promocion,pathImagen FROM cerveza WHERE nombre_cerveza=?;',
+			'SELECT nombre_cerveza as nombre,descripcion,marca,precio,pathImagen FROM cerveza WHERE nombre_cerveza=?;',
 			[nombre],
 			(err, result: any) => {
 				if (err) {
