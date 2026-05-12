@@ -32,12 +32,11 @@ export default function FormularioProducto({
 	const navigation = useNavigation();
 
 	useEffect(() => {
-
 		const backHandler = BackHandler.addEventListener(
 			'hardwareBackPress',
-			()=>{
-			  onEndFormulario(false,null);
-			  return true ;
+			() => {
+				onEndFormulario(false, null);
+				return true;
 			}
 		);
 		return () => backHandler.remove();
@@ -57,7 +56,7 @@ export default function FormularioProducto({
 	const [marca, setMarca] = useState<string>('');
 	const [precio, setPrecio] = useState<string>('');
 	const [image, setImage] = useState<any>(
-		require('../assets/images/foto_anonima.jpg')
+		require('../../assets/images/foto_anonima.jpg')
 	);
 	const [fotoNombre, setFotoNombre] = useState<string>('');
 	const [hayNuevaImagen, setHayNuevaImagen] = useState<boolean>(false);
@@ -136,7 +135,6 @@ export default function FormularioProducto({
 							Platform.OS === 'android'
 								? image.uri
 								: image.uri.replace('file://', ''),
-						// uri: image,
 						type: 'image/jpeg',
 						name: fotoNombre
 					});
@@ -271,15 +269,7 @@ export default function FormularioProducto({
 					<View style={styles2.priceInputWrapper}>
 						<Text style={styles2.currencySymbol}>$</Text>
 						<TextInput
-							style={[
-								styles2.input,
-								{
-									flex: 1,
-									borderLeftWidth: 0,
-									borderTopLeftRadius: 0,
-									borderBottomLeftRadius: 0
-								}
-							]}
+							style={styles2.input}
 							placeholder="0.00"
 							placeholderTextColor="#999"
 							onChangeText={setPrecio}
@@ -298,7 +288,7 @@ export default function FormularioProducto({
 						placeholderTextColor="#999"
 						numberOfLines={6}
 						multiline={true}
-						textAlignVertical="top" // Importante para Android
+						textAlignVertical="top"
 						onChangeText={setDescripcion}
 						value={descripcion}
 					/>
@@ -354,7 +344,7 @@ const styles = StyleSheet.create({
 const styles2 = StyleSheet.create({
 	container: {
 		padding: 20,
-		backgroundColor: '#F8F9FA' // Fondo ligeramente gris para resaltar los inputs blancos
+		backgroundColor: '#F8F9FA'
 	},
 	inputGroup: {
 		marginBottom: 10
@@ -381,7 +371,11 @@ const styles2 = StyleSheet.create({
 		shadowOpacity: 0.05,
 		shadowRadius: 4,
 		// Sombra para Android
-		elevation: 2
+		elevation: 2,
+		flex: 1,
+		borderLeftWidth: 0,
+		borderTopLeftRadius: 0,
+		borderBottomLeftRadius: 0
 	},
 	textArea: {
 		height: 120,

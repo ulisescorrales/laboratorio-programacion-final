@@ -1,20 +1,14 @@
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Producto from '@/components/interfaces/Producto';
 import Descripcion from '@/components/Descripcion';
-import Seccion from '@/components/Seccion';
+import Seccion from '@/components/seccion/Seccion';
 import { useEffect, useState } from 'react';
-import {
-	Button,
-	StyleSheet,
-	Text,
-	ImageBackground,
-	Modal,
-	View
-} from 'react-native';
-import FormularioProducto from '../formulario_producto';
+import { ImageBackground, Modal } from 'react-native';
 import Toast from 'react-native-toast-message';
+import FormularioProducto from '../../formulario_producto/formulario_producto';
+import {styles} from './styles'
 
-export default function Cervezas() {
+export default function Cortes() {
 	const [mensaje, setMensaje] = useState<any>(null);
 	const [mensajeMostrar, setMensajeMostrar] = useState<any>(null);
 	useEffect(() => {
@@ -43,6 +37,7 @@ export default function Cervezas() {
 	const onEndFormulario = (exito: boolean, mensaje: string) => {
 		setMostrarFormulario(null);
 		if (mensaje) {
+			setMostrarFormulario(null);
 			if (!exito) {
 				//si no hubo cambios, mostrar directamente el toast
 				setMensaje({
@@ -63,18 +58,18 @@ export default function Cervezas() {
 
 	return (
 		<ImageBackground
-			source={require('../../assets/images/fondobarberia2.jpg')}
-			style={{ height: '100%' }}
+			source={require('../../../assets/images/fondobarberia2.jpg')}
+			style={styles.imagen}
 		>
 			<SafeAreaView style={{ flex: 1, height: '100%' }}>
 				<Seccion
-					title={'Nuestras Cervezas'}
-					tipoProducto={'cerveza'}
+					title={'Nuestros Cortes'}
+					tipoProducto={'corte'}
 					setDescripcion={Descripcion}
 					setMostrarDescripcion={setMostrarDescripcion}
 					setItemSeleccionado={setItemSeleccionado}
 					setMostrarFormulario={setMostrarFormulario}
-					setMensaje={setMensajeMostrar}
+	setMensaje={setMensajeMostrar}
 					mensaje={mensaje}
 					refrescar={refrescar}
 				/>
@@ -87,7 +82,7 @@ export default function Cervezas() {
 			</SafeAreaView>
 			{mostrarFormulario ? (
 				<Modal animationType="fade" transparent={false} visible={true}>
-					<FormularioProducto
+<FormularioProducto
 						tipoProducto={mostrarFormulario.tipoProducto}
 						tipoAccion={mostrarFormulario.tipoAccion}
 						id={mostrarFormulario.id}
@@ -98,18 +93,3 @@ export default function Cervezas() {
 		</ImageBackground>
 	);
 }
-const styles = StyleSheet.create({
-	overlay: {
-		flex: 1,
-		backgroundColor: 'white',
-		justifyContent: 'center',
-		alignItems: 'center'
-	},
-	content: {
-		width: '80%',
-		padding: 20,
-		backgroundColor: 'white',
-		borderRadius: 10,
-		elevation: 5
-	}
-});

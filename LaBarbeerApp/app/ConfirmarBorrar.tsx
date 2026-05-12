@@ -1,14 +1,13 @@
-import {useLocalSearchParams} from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
-import { Button, Text, View, StyleSheet , ImageBackground} from 'react-native';
+import { Button, Text, View, StyleSheet, ImageBackground } from 'react-native';
 
 // Definimos la interfaz para los props
 export default function ConfirmarBorrar() {
-
 	const backendHost = process.env.EXPO_PUBLIC_BACKEND_HOST;
 	const router = useRouter();
-	const { tipoProducto, id }=useLocalSearchParams();
+	const { tipoProducto, id } = useLocalSearchParams();
 	const confirmar = () => {
 		AsyncStorage.getItem('token', (err, result) => {
 			if (result) {
@@ -18,33 +17,35 @@ export default function ConfirmarBorrar() {
 						'Content-Type': 'application/json',
 						Authorization: 'Bearer ' + result
 					}
-				}).then(data=>{
-					switch(data.status){
+				}).then((data) => {
+					switch (data.status) {
 						case 200:
-							data.text().then(text=>{
-							router.replace({
-							pathname:"/",
-							params:{
-								mensaje:"Elemento eliminado correctamente"
-							}
-						})
-						})
+							data.text().then((text) => {
+								router.replace({
+									pathname: '/',
+									params: {
+										mensaje:
+											'Elemento eliminado correctamente'
+									}
+								});
+							});
 							break;
 						case 401:
 							router.push({
-							pathname:"/login",
-							params:{
-								mensaje:"Sesión expirada, vuelva a loguearse"
-							}
-						})
+								pathname: '/login',
+								params: {
+									mensaje:
+										'Sesión expirada, vuelva a loguearse'
+								}
+							});
 							break;
 						default:
 							router.replace({
-							pathname:"/",
-							params:{
-								mensaje:"Error no identificado"
-							}
-						})
+								pathname: '/',
+								params: {
+									mensaje: 'Error no identificado'
+								}
+							});
 							break;
 					}
 				});
@@ -52,25 +53,39 @@ export default function ConfirmarBorrar() {
 		});
 	};
 	const cancelar = () => {
-		router.back()
+		router.back();
 	};
 	return (
 		<ImageBackground
 			source={require('../assets/images/fondobarberia2.jpg')}
-			style={{ height: '100%',alignItems: 'center' }}
+			style={styles.imagen}
 		>
-		<View style={styles.container}>
-			<Text style={styles.text}>¿Desea borrar el elemento "{id}"?</Text>
-			<View style={styles.buttonContainer}>
-				<Button title="Sí" onPress={() => confirmar()} color="red" />
-				<Button title="No" onPress={() => cancelar()} color="gray" />
+			<View style={styles.container}>
+				<Text style={styles.text}>
+					¿Desea borrar el elemento "{id}"?
+				</Text>
+				<View style={styles.buttonContainer}>
+					<Button
+						title="Sí"
+						onPress={() => confirmar()}
+						color="red"
+					/>
+					<Button
+						title="No"
+						onPress={() => cancelar()}
+						color="gray"
+					/>
+				</View>
 			</View>
-		</View>
 		</ImageBackground>
 	);
 }
 
 const styles = StyleSheet.create({
+	imagen: {
+	  height: '100%', 
+	  alignItems: 'center' 
+	},
 	container: {
 		padding: 20,
 		backgroundColor: '#f9f9f9',
@@ -78,7 +93,7 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		position: 'absolute',
 		top: '30%',
-		margin:'auto'
+		margin: 'auto'
 	},
 	text: {
 		marginBottom: 15,

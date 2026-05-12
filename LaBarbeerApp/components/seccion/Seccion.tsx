@@ -1,18 +1,17 @@
-import Lapiz from './ui/Lapiz';
-import Plus from './ui/Plus';
+import Lapiz from '../ui/Lapiz';
+import Plus from '../ui/Plus';
 import {
 	ActivityIndicator,
-	Dimensions,
 	RefreshControl,
-	StyleSheet
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Text, Pressable, View, FlatList } from 'react-native';
 import { Image } from 'react-native';
-import { styles2,styles } from '../app/(tabs)/index';
-import Trash from './ui/Trash';
-import { useCallback, useEffect, useState } from 'react';
-import { useBarber } from './BarBeerContext';
+import { styles } from '../../app/(tabs)/home/styles';
+import Trash from '../ui/Trash';
+import { useEffect, useState } from 'react';
+import { useBarber } from '../BarBeerContext';
+import {styleItem,colorsRefresh} from './styles'
 
 type seccionProps = {
 	title: string;
@@ -128,7 +127,7 @@ export default function Seccion({
 		}
 	}, [espacioOcupado]);
 	return (
-		<View style={{ height: '100%' }}>
+		<View style={styleItem.contenedorSeccion}>
 			<View >
 				<Text style={styles.title}>{title}</Text>
 			</View>
@@ -164,7 +163,7 @@ export default function Seccion({
 						refreshing={refreshing}
 						onRefresh={onRefresh}
 						// Opcional: Personalización de colores
-						colors={['#9Bd35A', '#689F38']} // Android
+						colors={colorsRefresh} // Android
 						tintColor="#689F38" // iOS
 					/>
 				}
@@ -184,22 +183,14 @@ export default function Seccion({
 										uri: backendHost + item.pathImagen
 									}}
 									key={index}
-									style={[styles.image]}
+									style={styles.image}
 									borderRadius={16}
 								/>
 								{context &&
 								context.sesion &&
 								context.sesion.rol == 'admin' ? (
 									<Lapiz
-										style={{
-											position: 'absolute',
-											top: '50%',
-											left: '30%',
-											transform: [
-												{ translateX: -30 }, // half of svg width
-												{ translateY: -30 } // half of svg height
-											]
-										}}
+										style={styleItem.lapiz}
 										onPress={() => {
 											editarItem(item);
 										}}
@@ -209,15 +200,7 @@ export default function Seccion({
 								context.sesion &&
 								context.sesion.rol == 'admin' ? (
 									<Trash
-										style={{
-											position: 'absolute',
-											top: '50%',
-											left: '70%',
-											transform: [
-												{ translateX: -30 }, // half of svg width
-												{ translateY: -30 } // half of svg height
-											]
-										}}
+										style={styleItem.trash}
 										onPress={() =>
 											router.push({
 												pathname: '/ConfirmarBorrar',
@@ -242,13 +225,12 @@ export default function Seccion({
 					</View>
 				)}
 			/>
-			<View style={{ alignItems: 'center' }}>
+			<View style={styleItem.plusContainer}>
 				{context && context.sesion && context.sesion.rol == 'admin' ? (
 					<Plus
-						style={{}}
 						onPress={() => {
 							router.push({
-								pathname: '/formulario_producto',
+								pathname: '/formulario_producto/formulario_producto',
 								params: {
 									tipoAccion: 'i',
 									tipoProducto: tipoProducto,
@@ -262,22 +244,3 @@ export default function Seccion({
 		</View>
 	);
 }
-const styleItem = StyleSheet.create({
-	textItem: {
-		textAlign: 'center',
-		color: 'black',
-		fontSize: 16
-	},
-	itemCard: {
-		backgroundColor: 'white',
-		borderRadius: 15
-	},
-	title: {
-		fontSize: 32,
-		fontWeight: 'bold',
-		backgroundColor: '#000000c0',
-		color: 'white',
-		width: '100%',
-		textAlign: 'center'
-	}
-});

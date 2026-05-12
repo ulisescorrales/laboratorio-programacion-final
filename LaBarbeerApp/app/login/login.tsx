@@ -1,7 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
 	TextInput,
-	StyleSheet,
 	Text,
 	Switch,
 	View,
@@ -11,42 +10,42 @@ import {
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { useBarber } from '@/components/BarBeerContext';
+import { styles2 } from './styles'
 export default function Login() {
 	const { mensaje } = useLocalSearchParams();
 	const router = useRouter();
 	const backendHost = process.env.EXPO_PUBLIC_BACKEND_HOST;
 	const [user, setUser] = useState<string>('');
 	const [password, setPassword] = useState<string>('');
-	// const [showPassword, setShowPassword] = useState<boolean>(false);
 	const [isEnabled, setIsEnabled] = useState<boolean>(false);
 	const context = useBarber();
 
-	const [error,setError]=useState("");
+	const [error, setError] = useState('');
 
 	const toggleSwitch = () =>
 		setIsEnabled((previousState: boolean) => !previousState);
 
-		useEffect(() => {
-			if(mensaje){
-				Toast.show({
-					type: 'info',
-					text1: mensaje,
-					position: 'bottom'
-				})
-			}
-		}, [mensaje]);
+	useEffect(() => {
+		if (mensaje) {
+			Toast.show({
+				type: 'info',
+				text1: mensaje,
+				position: 'bottom'
+			});
+		}
+	}, [mensaje]);
 
 	const login = () => {
-		setError("")
-		if(user.length==0){
-			Keyboard.dismiss()
-			setError("Indique el usuario")
-			return
+		setError('');
+		if (user.length == 0) {
+			Keyboard.dismiss();
+			setError('Indique el usuario');
+			return;
 		}
-		if(password.length==0){
-			Keyboard.dismiss()
-			setError("Indique la contraseña")
-			return
+		if (password.length == 0) {
+			Keyboard.dismiss();
+			setError('Indique la contraseña');
+			return;
 		}
 		fetch(backendHost + '/api/login/auth', {
 			method: 'POST',
@@ -60,18 +59,16 @@ export default function Login() {
 		}).then((data: any) => {
 			if (data.status == 200) {
 				data.json().then((json: any) => {
-					// AsyncStorage.setItem('role', json.role);
-					if(context){
+					if (context) {
 						context.setSesion({
-							token:json.token,
-							usuario:user,
-							rol:json.role
-						})
+							token: json.token,
+							usuario: user,
+							rol: json.role
+						});
 					}
 					AsyncStorage.setItem('token', json.token);
-					// AsyncStorage.setItem('user', user);
 					router.replace({
-						pathname: '/',
+						pathname: '/home',
 						params: {
 							role: json.role,
 							mensaje: 'Logueado correctamente',
@@ -80,13 +77,13 @@ export default function Login() {
 					});
 				});
 			} else {
-				setError("Usuario y contraseña incorrecta")
+				setError('Usuario y contraseña incorrecta');
 			}
 		});
 	};
 
 	return (
-		<View style={{margin:10,padding:10,height:'40%',top:'20%',borderWidth:2,borderRadius:10}}>
+		<View style={styles2.contenedorLogin}>
 			<Text style={styles2.label}>Usuario:</Text>
 			<TextInput
 				value={user}
@@ -111,63 +108,9 @@ export default function Login() {
 					style={{ alignSelf: 'flex-start' }}
 				/>
 			</View>
-			<Text style={{color:'red',fontSize:14}}>{error}</Text>
+			<Text style={styles2.textError}>{error}</Text>
 			<Button title={'Login'} onPress={login} />
 		</View>
 	);
 }
 
-const styles2 = StyleSheet.create({
-	container: {
-		padding: 20,
-		backgroundColor: '#F8F9FA' // Fondo ligeramente gris para resaltar los inputs blancos
-	},
-	inputGroup: {
-		marginBottom: 10
-	},
-	label: {
-		fontSize: 16,
-		fontWeight: '600',
-		color: '#333',
-		marginBottom: 8,
-		marginLeft: 4
-	},
-	input: {
-		backgroundColor: '#FFF',
-		height: 40,
-		borderRadius: 12,
-		paddingHorizontal: 16,
-		fontSize: 16,
-		color: '#000',
-		borderWidth: 1,
-		borderColor: '#DDD',
-		// Sombra para iOS
-		shadowColor: '#000',
-		shadowOffset: { width: 0, height: 2 },
-		shadowOpacity: 0.05,
-		shadowRadius: 4,
-		// Sombra para Android
-		elevation: 2
-	},
-	textArea: {
-		height: 120,
-		paddingTop: 15
-	},
-	priceInputWrapper: {
-		flexDirection: 'row',
-		alignItems: 'center'
-	},
-	currencySymbol: {
-		backgroundColor: '#EEE',
-		height: 50,
-		paddingHorizontal: 15,
-		justifyContent: 'center',
-		lineHeight: 50,
-		borderTopLeftRadius: 12,
-		borderBottomLeftRadius: 12,
-		borderWidth: 1,
-		borderColor: '#DDD',
-		color: '#555',
-		fontWeight: 'bold'
-	}
-});
