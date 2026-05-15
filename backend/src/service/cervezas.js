@@ -1,49 +1,49 @@
-import * as cervezasRepository from '../repository/cervezas'
-import *  as fileSystem from '../repository/filesystem'
+import * as cervezasRepository from '../repository/cervezas.js'
+import *  as fileSystem from '../repository/filesystem.js'
 
-export const getCervezasJSON=async (inicio:number,fin:number)=>{
+export const getCervezasJSON=async (inicio,fin)=>{
 	try{
 		const cervezas=await cervezasRepository.getCervezasBD(inicio,fin)
 		return cervezas
-	}catch(err:any){
+	}catch(err){
 		throw new Error(err.message)
 	}
 }
-export const getCervezaJSON=async(nombre:string)=>{
+export const getCervezaJSON=async(nombre)=>{
 	try{
 		const corte=await cervezasRepository.getCervezaBD(nombre)
 		return corte;
-	}catch(err:any){
+	}catch(err){
 		throw new Error(err)
 	}
 }
-export const registrarCervezaService=async(nombre:string,descripcion:string,marca:string,precio:number,pathImagen:string)=>{
+export const registrarCervezaService=async(nombre,descripcion,marca,precio,pathImagen)=>{
 	pathImagen = pathImagen.replace('assets', '');
 	try{
 		await cervezasRepository.insertarCervezaBD(nombre,descripcion,marca,precio,pathImagen)
-	}catch(err:any){
+	}catch(err){
 		//El controller borra la imagen
 		throw new Error(err.message)
 	}
 }
-export const borrarCervezaService=async(nombre:string)=>{
+export const borrarCervezaService=async(nombre)=>{
 	try{
 	let exito=await cervezasRepository.borrarImagenCervezaPorId(nombre)
 	if(exito){
 		exito=await cervezasRepository.borrarCervezaBD(nombre);
 	}
 	return exito
-	}catch(err:any){
+	}catch(err){
 		throw new Error(err.message)
 	}
 }
 export const  modificarCervezaService=async (
-			nombre:string,
-			descripcion:string,
-			marca:string,
-			precio:number,
-			imagenPath: string,
-			nombreOrigen:string)=>{
+			nombre,
+			descripcion,
+			marca,
+			precio,
+			imagenPath,
+			nombreOrigen)=>{
 	//si no se cargó una imagen desde el frontend, ignorar
 	try {
 		if (imagenPath) {
@@ -64,6 +64,6 @@ export const  modificarCervezaService=async (
 		throw new Error('Error en cortes service');
 	}
 }
-export const borrarImagenCerveza=async (pathImagen:string)=>{
+export const borrarImagenCerveza=async (pathImagen)=>{
 	await fileSystem.borrarImagenPorPath(pathImagen)
 }

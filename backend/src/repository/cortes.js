@@ -1,9 +1,8 @@
-import { pool } from '../config';
-import { writeFile } from 'node:fs';
+import { pool } from '../config.js';
 import fs from 'node:fs';
 // import {backend_path} from '../config'
 
-export const getCortesBD = (inicio: number, fin: number) => {
+export const getCortesBD = (inicio, fin) => {
 	return new Promise((resolv, reject) => {
 		const cantidadElementos = fin - inicio;
 		pool.query(
@@ -21,10 +20,10 @@ export const getCortesBD = (inicio: number, fin: number) => {
 	});
 };
 export const insertarCorteBD = (
-	nombre: string,
-	descripcion: string,
-	precio: number,
-	pathImagen: string
+	nombre,
+	descripcion,
+	precio,
+	pathImagen
 ) => {
 	return new Promise(async (resolv, reject) => {
 		try {
@@ -45,12 +44,12 @@ export const insertarCorteBD = (
 	});
 };
 
-export const getCorteBD = (nombre: string) => {
+export const getCorteBD = (nombre) => {
 	return new Promise((resolv, reject) => {
 		pool.query(
 			'SELECT nombre_corte as nombre,descripcion,marca,precio,pathImagen FROM corte WHERE nombre_corte=?;',
 			[nombre],
-			(err, result: any) => {
+			(err, result) => {
 				if (err) {
 					console.log(err);
 					reject('500');
@@ -65,12 +64,12 @@ export const getCorteBD = (nombre: string) => {
 		);
 	});
 };
-export const borrarCorteBD = (nombre: string) => {
+export const borrarCorteBD = (nombre) => {
 	return new Promise((resolv, reject) => {
 		pool.query(
 			'DELETE FROM corte WHERE nombre_corte=?',
 			[nombre],
-			(err, result: any) => {
+			(err, result) => {
 				if (err) {
 					console.log(err);
 					reject(false);
@@ -87,10 +86,10 @@ export const borrarCorteBD = (nombre: string) => {
 	});
 };
 export const modificarCorteBDSinImagen = (
-	nombre: string,
-	descripcion: string,
-	precio: number,
-	nombreOrigen: any
+	nombre,
+	descripcion,
+	precio,
+	nombreOrigen
 ) => {
 	//La carga de imagen se realiza en un método aparte
 	return new Promise<boolean>((resolv, reject) => {
@@ -100,7 +99,7 @@ export const modificarCorteBDSinImagen = (
 		query = `UPDATE corte
 				   SET nombre_corte=?,descripcion=?,precio=?
 				   WHERE nombre_corte=?;`;
-		pool.query(query, args, (err, result: any) => {
+		pool.query(query, args, (err, result) => {
 			if (err) {
 				console.log(err);
 				reject(false);
@@ -116,11 +115,11 @@ export const modificarCorteBDSinImagen = (
 	});
 };
 export const modificarCorteBD = (
-	nombre: string,
-	descripcion: string,
-	precio: number,
-	pathImagen: string,
-	nombreOrigen: any
+	nombre,
+	descripcion,
+	precio,
+	pathImagen,
+	nombreOrigen
 ) => {
 	//La carga de imagen se realiza en un método aparte
 	return new Promise<boolean>((resolv, reject) => {
@@ -138,7 +137,7 @@ export const modificarCorteBD = (
 				   SET nombre_corte=?,descripcion=?,precio=?
 				   WHERE nombre_corte=?;`;
 		}
-		pool.query(query, args, (err, result: any) => {
+		pool.query(query, args, (err, result) => {
 			if (err) {
 				console.log(err);
 				reject(false);
@@ -153,13 +152,13 @@ export const modificarCorteBD = (
 		});
 	});
 };
-export const borrarImagenCortePorId = (id: string) => {
+export const borrarImagenCortePorId = (id) => {
 	//Elimina el corte
 	return new Promise((resolv, reject) => {
 		pool.query(
 			'SELECT pathImagen from corte WHERE nombre_corte=?',
 			[id],
-			(err, result: any) => {
+			(err, result) => {
 				if (err) {
 					console.log(err);
 					reject('Error consultando pathImagen de corte');
@@ -187,12 +186,12 @@ export const borrarImagenCortePorId = (id: string) => {
 		);
 	});
 };
-export const guardarImagenEnBD = (id: string, path: string) => {
+export const guardarImagenEnBD = (id, path) => {
 	return new Promise((resolv, reject) => {
 		pool.query(
 			'UPDATE corte SET pathImagen=? WHERE nombre_corte=?',
 			[path, id],
-			(err, result: any) => {
+			(err, result) => {
 				if (err) {
 					console.log(err);
 					reject('Error actualizando pathImagen en la BD en corte');

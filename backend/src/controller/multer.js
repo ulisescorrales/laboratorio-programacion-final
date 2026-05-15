@@ -1,11 +1,12 @@
-const multer = require('multer');
+// const multer = require('multer');
+import multer from 'multer'
 // Configuración de almacenamiento
 const storage = multer.diskStorage({
-	destination: (req: any, file: any, cb: any) => {
+	destination: (req, file, cb) => {
 		let carpeta = req.body.tipoProducto;
 		cb(null, 'assets/images/' + carpeta + 's');
 	},
-	filename: (req: any, file: any, cb: any) => {
+	filename: (req, file, cb) => {
 		cb(null, Date.now() + '-' + file.originalname);
 	}
 });

@@ -1,5 +1,5 @@
-import * as cervezasService from '../service/cervezas'
-export const getCervezas=async (req:any,res:any)=>{
+import * as cervezasService from '../service/cervezas.js'
+export const getCervezas=async (req,res)=>{
 	if(!req.query.inicio || !req.query.fin){
 		res.status(400).send("No están las variables inicio o fin")
 	}
@@ -15,12 +15,12 @@ export const getCervezas=async (req:any,res:any)=>{
 		res.status(500).send("Error obteniendo cervezas")
 	}
 }
-export const getCerveza=async(req:any,res:any)=>{
+export const getCerveza=async(req,res)=>{
 	const nombre=req.params.nombre
 	try{
 		const cerveza=await cervezasService.getCervezaJSON(nombre);
 		res.status(200).json(cerveza)
-	}catch(err:any){
+	}catch(err){
 		//err contiene el código de error
 		const status = Number(err.message);
 		let mensaje;
@@ -33,7 +33,7 @@ export const getCerveza=async(req:any,res:any)=>{
 	}
 }
 
-export const registrarCerveza=async(req:any,res:any)=>{
+export const registrarCerveza=async(req,res)=>{
 	const nombre = req.body.nombre;
 	const descripcion = req.body.descripcion;
 	const marca=req.body.marca
@@ -51,7 +51,7 @@ export const registrarCerveza=async(req:any,res:any)=>{
 					pathImagen
 				);
 				res.status(200).send('Guardado con éxito');
-			} catch (err: any) {
+			} catch (err) {
 				console.log(err.message)
 				cervezasService.borrarImagenCerveza(pathImagen);
 				if (err.message == '1062') {
@@ -69,7 +69,7 @@ export const registrarCerveza=async(req:any,res:any)=>{
 		res.status(400).send('Falta el precio');
 	}
 }
-export const borrarCerveza=async(req:any,res:any)=>{
+export const borrarCerveza=async(req,res)=>{
 	const nombre=req.params.nombre
 	try{
 		const exito=await cervezasService.borrarCervezaService(nombre);
@@ -82,7 +82,7 @@ export const borrarCerveza=async(req:any,res:any)=>{
 		res.status(500).send("Error del servidor al intentar borrar el elemento")
 	}
 }
-export const modificarCerveza=async(req:any,res:any)=>{
+export const modificarCerveza=async(req,res)=>{
 	const nombre = req.params.nombre;
 	const descripcion = req.body.descripcion;
 	let precio = req.body.precio;

@@ -1,27 +1,27 @@
-import * as cortesRepository from '../repository/cortes';
-import * as fileSystem from '../repository/filesystem';
+import * as cortesRepository from '../repository/cortes.js';
+import * as fileSystem from '../repository/filesystem.js';
 
-export const getCortesJSON = async (inicio: number, fin: number) => {
+export const getCortesJSON = async (inicio, fin) => {
 	try {
 		const cortes = await cortesRepository.getCortesBD(inicio, fin);
 		return cortes;
-	} catch (err: any) {
+	} catch (err) {
 		throw new Error(err.message);
 	}
 };
-export const getCorteJSON = async (nombre: string) => {
+export const getCorteJSON = async (nombre) => {
 	try {
 		const corte = await cortesRepository.getCorteBD(nombre);
 		return corte;
-	} catch (err: any) {
+	} catch (err) {
 		throw new Error(err);
 	}
 };
 export const registrarCorteService = async (
-	nombre: string,
-	descripcion: string,
-	precio: number,
-	pathImagen: string
+	nombre,
+	descripcion,
+	precio,
+	pathImagen
 ) => {
 	pathImagen = pathImagen.replace('assets', '');
 	try {
@@ -32,28 +32,28 @@ export const registrarCorteService = async (
 			precio,
 			pathImagen
 		);
-	} catch (err: any) {
+	} catch (err) {
 		//El controller borra la imagen
 		throw new Error(err);
 	}
 };
-export const borrarCorteService = async (nombre: string) => {
+export const borrarCorteService = async (nombre) => {
 	try {
 		let exito = await cortesRepository.borrarImagenCortePorId(nombre);
 		if (exito) {
 			exito = await cortesRepository.borrarCorteBD(nombre);
 		}
 		return exito;
-	} catch (err: any) {
+	} catch (err) {
 		throw new Error(err.message);
 	}
 };
 export const modificarCorteService = async (
-	nombre: string,
-	descripcion: string,
-	precio: number,
-	imagenPath: string | undefined | null,
-	nombreOrigen: string
+	nombre,
+	descripcion,
+	precio,
+	imagenPath,
+	nombreOrigen
 ) => {
 	//si no se cargó una imagen desde el frontend, ignorar
 	try {
@@ -96,6 +96,6 @@ export const modificarCorteService = async (
 		throw new Error('Error en cortes service');
 	}
 };
-export const borrarImagenCorte = async (pathImagen: string) => {
+export const borrarImagenCorte = async (pathImagen) => {
 	await fileSystem.borrarImagenPorPath(pathImagen);
 };

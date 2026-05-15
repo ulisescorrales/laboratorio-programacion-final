@@ -1,8 +1,7 @@
-import { pool } from '../config';
+import { pool } from '../config.js';
 import fs from 'node:fs';
-// import {backend_path} from '../config'
 
-export const getCervezasBD = (inicio: number, fin: number) => {
+export const getCervezasBD = (inicio , fin ) => {
 	return new Promise((resolv, reject) => {
 		const cantidadElementos = fin - inicio;
 		pool.query(
@@ -20,11 +19,11 @@ export const getCervezasBD = (inicio: number, fin: number) => {
 	});
 };
 export const insertarCervezaBD = (
-	nombre: string,
-	descripcion: string,
-	marca: string,
-	precio: number,
-	pathImagen: any
+	nombre,
+	descripcion,
+	marca,
+	precio,
+	pathImagen
 ) => {
 	return new Promise(async (resolv, reject) => {
 		try {
@@ -52,12 +51,12 @@ export const insertarCervezaBD = (
 	});
 };
 
-export const getCervezaBD = (nombre: string) => {
+export const getCervezaBD = (nombre) => {
 	return new Promise((resolv, reject) => {
 		pool.query(
 			'SELECT nombre_cerveza as nombre,descripcion,marca,precio,pathImagen FROM cerveza WHERE nombre_cerveza=?;',
 			[nombre],
-			(err, result: any) => {
+			(err, result) => {
 				if (err) {
 					console.log(err);
 					reject('500');
@@ -72,12 +71,12 @@ export const getCervezaBD = (nombre: string) => {
 		);
 	});
 };
-export const borrarCervezaBD = (nombre: string) => {
+export const borrarCervezaBD = (nombre) => {
 	return new Promise((resolv, reject) => {
 		pool.query(
 			'DELETE FROM cerveza WHERE nombre_cerveza=?',
 			[nombre],
-			(err, result: any) => {
+			(err, result) => {
 				if (err) {
 					console.log(err);
 					reject(false);
@@ -94,12 +93,12 @@ export const borrarCervezaBD = (nombre: string) => {
 	});
 };
 export const modificarCervezaBD = (
-	nombre: string,
-	descripcion: string,
-	marca: string,
-	precio: number,
-	pathImagen: string,
-	nombreOrigen: string
+	nombre,
+	descripcion,
+	marca,
+	precio,
+	pathImagen,
+	nombreOrigen 
 ) => {
 	//La carga de imagen se realiza en un método aparte
 	return new Promise<boolean>((resolv, reject) => {
@@ -120,7 +119,7 @@ export const modificarCervezaBD = (
 		pool.query(
 			query,
 			args,
-			(err, result: any) => {
+			(err, result) => {
 				if (err) {
 					console.log(err);
 					reject(false);
@@ -136,13 +135,13 @@ export const modificarCervezaBD = (
 		);
 	});
 };
-export const borrarImagenCervezaPorId = (id: string) => {
+export const borrarImagenCervezaPorId = (id) => {
 	//Elimina el cerveza
 	return new Promise((resolv, reject) => {
 		pool.query(
 			'SELECT pathImagen from cerveza WHERE nombre_cerveza=?',
 			[id],
-			(err, result: any) => {
+			(err, result) => {
 				if (err) {
 					console.log(err);
 					reject('Error consultando pathImagen de cerveza');
@@ -170,12 +169,12 @@ export const borrarImagenCervezaPorId = (id: string) => {
 		);
 	});
 };
-export const guardarImagenEnBD = (id: string, path: string) => {
+export const guardarImagenEnBD = (id, path) => {
 	return new Promise((resolv, reject) => {
 		pool.query(
 			'UPDATE cerveza SET pathImagen=? WHERE nombre_cerveza=?',
 			[path, id],
-			(err, result: any) => {
+			(err, result) => {
 				if (err) {
 					console.log(err);
 					reject('Error actualizando pathImagen en la BD en cerveza');

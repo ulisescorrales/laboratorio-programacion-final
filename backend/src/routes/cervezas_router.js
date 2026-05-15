@@ -1,7 +1,7 @@
 import {Router} from 'express'
-import * as cervezasController from '../controller/cervezas'
-import {estaLogueado,esAdmin} from '../controller/login'
-import { upload } from '../controller/multer'
+import * as cervezasController from '../controller/cervezas.js'
+import {estaLogueado,esAdmin} from '../controller/login.js'
+import { upload } from '../controller/multer.js'
 export  const cervezasRouter=Router()
 
 cervezasRouter.get("/cervezas",cervezasController.getCervezas)

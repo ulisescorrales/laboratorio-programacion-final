@@ -1,7 +1,6 @@
-import * as loginService from '../service/login';
-import { Request, Response } from 'express';
+import * as loginService from '../service/login.js';
 
-export const crearUsuario = async (req: Request, res: Response) => {
+export const crearUsuario = async (req, res) => {
 	//Genera un par usuario, contraseña
 	const user = req.body.user;
 	const password = req.body.password;
@@ -21,7 +20,7 @@ export const crearUsuario = async (req: Request, res: Response) => {
 	}
 };
 
-export const autenticarUsuario = async (req: Request, res: Response) => {
+export const autenticarUsuario = async (req, res) => {
 	//Authentica y crea un token
 	const user = req.body.user;
 	const password = req.body.password;
@@ -31,8 +30,8 @@ export const autenticarUsuario = async (req: Request, res: Response) => {
 			const role = await loginService.getRoleUser(user);
 			const token = loginService.generarToken(user, role);
 			res.status(200).json({
-				token: token,
-				role: role
+				token,
+				role
 			});
 		} catch (err) {
 			res.status(401).send('Error autenticando usuario');
@@ -42,9 +41,9 @@ export const autenticarUsuario = async (req: Request, res: Response) => {
 	}
 };
 export const verificarUsuarioSolamente = async (
-	req: any,
-	res: Response,
-	next: any
+	req,
+	res,
+	next
 ) => {
 	const authorization = req.headers.authorization;
 	if (authorization) {
@@ -61,7 +60,7 @@ export const verificarUsuarioSolamente = async (
 		res.status(500).send('Falta el token\n');
 	}
 };
-export const verificarUsuario = async (req: any, res: Response, next: any) => {
+export const verificarUsuario = async (req, res, next) => {
 	const authorization = req.headers.authorization;
 	if (authorization) {
 		const token = authorization.split(' ')[1];
@@ -77,14 +76,14 @@ export const verificarUsuario = async (req: any, res: Response, next: any) => {
 	}
 };
 //
-export const estaLogueado = (req: any, res: any, next: any) => {
+export const estaLogueado = (req, res, next) => {
 	if (req.headers.authorization != undefined) {
 		next();
 	} else {
 		res.send(401).send('No está logueado');
 	}
 };
-export const esAdmin = async (req: any, res: any, next: any) => {
+export const esAdmin = async (req, res, next) => {
 	const token = req.headers.authorization.split(' ')[1];
 	if (token != undefined) {
 		try {

@@ -1,6 +1,5 @@
-import { writeFile } from 'node:fs';
 import fs from 'node:fs';
-export const borrarImagenPorPath = (pathImagen: string) => {
+export const borrarImagenPorPath = (pathImagen) => {
 	return new Promise((resolv, reject) => {
 		fs.rm(pathImagen, (err) => {
 			if (err) {

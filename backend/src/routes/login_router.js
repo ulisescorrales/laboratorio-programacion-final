@@ -1,7 +1,7 @@
 import {Router} from 'express'
-import {crearUsuario} from '../controller/login'
-import {autenticarUsuario} from '../controller/login'
-import {verificarUsuario, verificarUsuarioSolamente} from '../controller/login'
+import {crearUsuario} from '../controller/login.js'
+import {autenticarUsuario} from '../controller/login.js'
+import { verificarUsuarioSolamente} from '../controller/login.js'
 
 export const loginRouter=Router()
 loginRouter.post("/login/crear", crearUsuario)

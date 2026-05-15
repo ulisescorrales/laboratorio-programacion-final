@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import * as cortesController from '../controller/cortes';
-import { estaLogueado, esAdmin } from '../controller/login';
-import { upload } from '../controller/multer'
+import * as cortesController from '../controller/cortes.js';
+import { estaLogueado, esAdmin } from '../controller/login.js';
+import { upload } from '../controller/multer.js'
 export const cortesRouter = Router();
 
 cortesRouter.get('/cortes', cortesController.getCortes);

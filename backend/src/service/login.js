@@ -1,14 +1,16 @@
-import * as loginRepository from "../repository/login"
-const jwt=require('jsonwebtoken');
+import * as loginRepository from "../repository/login.js"
+// const jwt=require('jsonwebtoken');
+import jwt from 'jsonwebtoken'
 const secreto='secreto'
-const bcrypt=require('bcrypt')
+// const bcrypt=require('bcrypt')
+import bcrypt from 'bcrypt'
 const saltRounds=10;
 
-export const compararContrasenias=async(user:string,password:string)=>{
+export const compararContrasenias=async(user,password)=>{
 	return new Promise(async(resolv,reject)=>{
 		try {
 			const hash= await loginRepository.getHash(user)
-			bcrypt.compare(password,hash,(err:any,result:any)=>{
+			bcrypt.compare(password,hash,(err,result)=>{
 			if(err){
 				reject(err)
 			}else{
@@ -24,13 +26,13 @@ export const compararContrasenias=async(user:string,password:string)=>{
 		}
 	})
 }
-export const generarUsuario=async(user:string,password:string)=>{
+export const generarUsuario=async(user,password)=>{
 	return new Promise((resolv,reject)=>{
-		bcrypt.genSalt(saltRounds,(err:any,salt:any)=>{
+		bcrypt.genSalt(saltRounds,(err,salt)=>{
 			if(err){
 				reject(err)
 			}
-			bcrypt.hash(password,salt,async (err:any,hash:any)=>{
+			bcrypt.hash(password,salt,async (err,hash)=>{
 				if(err){
 					reject(err)
 				}else{
@@ -47,15 +49,15 @@ export const generarUsuario=async(user:string,password:string)=>{
 
 	})
 }
-export const generarToken=(user:string,role:string)=>{
+export const generarToken=(user,role)=>{
 	return 	jwt.sign({
 				user: user,
 				role:role
 			},secreto,{expiresIn:'1h'})
 }
-export const getRole=(token:string)=>{
+export const getRole=(token)=>{
 	return new Promise<string>((resolv,reject)=>{
-		jwt.verify(token,secreto,(err:any,decoded:any)=>{
+		jwt.verify(token,secreto,(err,decoded)=>{
 			if(err){
 				reject("Token vencido")
 			}else{
@@ -64,10 +66,10 @@ export const getRole=(token:string)=>{
 		})
 	})
 }
-export const getUserRole=(token:string)=>{
+export const getUserRole=(token)=>{
 	//Reciben un token jwt, verifica y retorna usuario y rol asignado
 	return new Promise((resolv,reject)=>{
-		jwt.verify(token,secreto,(err:any,decoded:any)=>{
+		jwt.verify(token,secreto,(err,decoded)=>{
 			if(err){
 				// console.log(err)
 				reject("Token inválido o vencido")
@@ -77,11 +79,11 @@ export const getUserRole=(token:string)=>{
 		})
 	})
 }
-export const getRoleUser=async(user:string)=>{
+export const getRoleUser=async(user)=>{
 	try{
-		const role:string=await loginRepository.getRoleBD(user)
+		const role=await loginRepository.getRoleBD(user)
 		return role;
-	}catch(err:any){
+	}catch(err){
 		throw new Error(err.message)
 	}
 }
