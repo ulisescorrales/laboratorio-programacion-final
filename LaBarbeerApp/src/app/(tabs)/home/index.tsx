@@ -18,7 +18,6 @@ export default function HomeScreen() {
 
 	useEffect(() => {
 		//Si llega un mensaje a este screen, mostrar en un Toast
-		console.log(mensaje);
 		if (mensaje) {
 			Toast.show({
 				type: 'success',
@@ -73,13 +72,12 @@ export default function HomeScreen() {
 							});
 						}
 						data.json().then((json) => {
-							if (context) {
 								context.setSesion({
 									rol: json.role,
 									usuario: json.user,
-									token: json.token
+									token: result
 								});
-							}
+								console.log(context.sesion) 
 						});
 					} else {
 						//Borrar en storage
@@ -100,16 +98,12 @@ export default function HomeScreen() {
 	return (
 		<ImageBackground
 			source={require('../../../assets/images/fondobarberia2.jpg')}
-			style={{ height: '100%' }}
+			style={styles.imageBackground}
 		>
 			<View>
 				<View>
 					<View
-						style={{
-							flexDirection: 'row',
-							alignItems: 'center',
-							justifyContent: 'space-between'
-						}}
+						style={styles.cabecera}
 					>
 						<Image
 							source={require('../../../assets/images/logo.png')}

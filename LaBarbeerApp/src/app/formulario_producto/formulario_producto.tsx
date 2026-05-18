@@ -1,4 +1,5 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import {campoMarca,campoDescripcion,campoNombre,campoPrecio,styles,colorCancelar,colorActualizar} from './styles'
+import { useBarber } from '../../components/BarBeerContext';
 import * as ImagePicker from 'expo-image-picker';
 import {
 	Alert,
@@ -10,7 +11,7 @@ import {
 	Platform,
 	BackHandler
 } from 'react-native';
-import { TextInput, StyleSheet } from 'react-native';
+import { TextInput } from 'react-native';
 import { useEffect, useState } from 'react';
 import { router, useNavigation } from 'expo-router';
 import Toast from 'react-native-toast-message';
@@ -28,6 +29,7 @@ export default function FormularioProducto({
 	id,
 	onEndFormulario
 }: FormProps) {
+	const context = useBarber();
 	let nombreScreen: string = '';
 	const navigation = useNavigation();
 
@@ -50,7 +52,6 @@ export default function FormularioProducto({
 	}, [navigation]);
 
 	const backendHost = process.env.EXPO_PUBLIC_BACKEND_HOST;
-	const [token, setToken] = useState<string>('');
 	const [nombre, setNombre] = useState<string>('');
 	const [descripcion, setDescripcion] = useState<string>('');
 	const [marca, setMarca] = useState<string>('');
@@ -153,13 +154,14 @@ export default function FormularioProducto({
 					fetch(path, {
 						method: method,
 						headers: {
-							Authorization: 'Bearer ' + token
+							Authorization: 'Bearer ' + context.sesion.token
 							// 'Accept': 'application/json',
 							// 'Content-Type': 'multipart/form-data'
 						},
 						body: formData
 					})
 						.then((data) => {
+							console.log(data);
 							let mensaje: string = '';
 							let exito = false;
 							switch (data.status) {
@@ -195,13 +197,9 @@ export default function FormularioProducto({
 		}
 	};
 	useEffect(() => {
-		AsyncStorage.getItem('token', (err, result: any) => {
-			if (err) {
-				router.push('/login');
-			} else {
-				setToken(result);
-			}
-		});
+		if (!context.sesion) {
+			router.push('/login');
+		}
 		if (id) {
 			//Modificar: traer los datos, sino es insertar y los campos quedan en blanco
 			const getPath = backendHost + '/api/' + tipoProducto + '/' + id;
@@ -222,12 +220,7 @@ export default function FormularioProducto({
 				})
 				.catch((err) => {
 					console.log(err);
-					router.replace({
-						pathname: '/',
-						params: {
-							mensaje: 'Error de red'
-						}
-					});
+					onEndFormulario(false,"Error de red")
 				});
 		}
 	}, []);
@@ -236,14 +229,14 @@ export default function FormularioProducto({
 		onEndFormulario(false, null);
 	};
 	return (
-		<View style={{ height: '95%' }}>
+		<View style={styles.alto}>
 			<ScrollView>
-				<View style={styles2.inputGroup}>
-					<Text style={styles2.label}>Nombre del producto</Text>
+				<View style={styles.inputGroup}>
+					<Text style={styles.label}>Nombre del producto</Text>
 					<TextInput
-						style={styles2.input}
-						placeholder="Ej: IPA Artesanal o Degradado medio"
-						placeholderTextColor="#999"
+						style={styles.input}
+						placeholder={campoNombre.placeholder}
+						placeholderTextColor={campoNombre.placeholderTextColor}
 						onChangeText={setNombre}
 						value={nombre}
 					/>
@@ -251,12 +244,12 @@ export default function FormularioProducto({
 
 				{/* Campo Marca */}
 				{tipoProducto == 'cerveza' ? (
-					<View style={styles2.inputGroup}>
-						<Text style={styles2.label}>Marca / Origen</Text>
+					<View style={styles.inputGroup}>
+						<Text style={styles.label}>Marca / Origen</Text>
 						<TextInput
-							style={styles2.input}
-							placeholder="Nombre de la marca"
-							placeholderTextColor="#999"
+							style={styles.input}
+							placeholder={campoMarca.placeholder}
+							placeholderTextColor={campoMarca.placeholderTextColor}
 							onChangeText={setMarca}
 							value={marca}
 						/>
@@ -264,31 +257,31 @@ export default function FormularioProducto({
 				) : null}
 
 				{/* Campo Precio */}
-				<View style={styles2.inputGroup}>
-					<Text style={styles2.label}>Precio</Text>
-					<View style={styles2.priceInputWrapper}>
-						<Text style={styles2.currencySymbol}>$</Text>
+				<View style={styles.inputGroup}>
+					<Text style={styles.label}>Precio</Text>
+					<View style={styles.priceInputWrapper}>
+						<Text style={styles.currencySymbol}>$</Text>
 						<TextInput
-							style={styles2.input}
-							placeholder="0.00"
-							placeholderTextColor="#999"
+							style={styles.input}
+							placeholder={campoPrecio.placeholder}
+							placeholderTextColor={campoPrecio.placeholderTextColor}
 							onChangeText={setPrecio}
 							value={precio}
-							keyboardType="numeric"
+							keyboardType={campoPrecio.keyboardType}
 						/>
 					</View>
 				</View>
 
 				{/* Campo Descripción */}
-				<View style={styles2.inputGroup}>
-					<Text style={styles2.label}>Descripción</Text>
+				<View style={styles.inputGroup}>
+					<Text style={styles.label}>Descripción</Text>
 					<TextInput
-						style={[styles2.input, styles2.textArea]}
+						style={[styles.input, styles.textArea]}
 						placeholder="Cuéntanos más sobre esto..."
-						placeholderTextColor="#999"
-						numberOfLines={6}
-						multiline={true}
-						textAlignVertical="top"
+						placeholderTextColor={campoDescripcion.placeholderTextColor}
+						numberOfLines={campoDescripcion.numberOfLines}
+						multiline={campoDescripcion.multiline}
+						textAlignVertical={campoDescripcion.textAlignVertical}
 						onChangeText={setDescripcion}
 						value={descripcion}
 					/>
@@ -296,22 +289,18 @@ export default function FormularioProducto({
 				<View>
 					<Image source={image} style={styles.image} />
 				</View>
-				<View style={{ margin: 10, width: 200, alignSelf: 'center' }}>
+				<View style={styles.selectorImagen}>
 					<Button title="Seleccionar imagen" onPress={pickImage} />
 				</View>
 				<Toast />
 			</ScrollView>
 			<View
-				style={{
-					width: '100%',
-					flexDirection: 'row',
-					gap: 10
-				}}
+				style={styles.botonActualizar}
 			>
-				<View style={{ flex: 1 }}>
+				<View style={styles.botonActualizar2}>
 					<Button
 						onPress={submit}
-						color="blue"
+						color={colorActualizar}
 						title={
 							tipoAccion == 'm'
 								? 'Actualizar'
@@ -322,80 +311,10 @@ export default function FormularioProducto({
 					/>
 				</View>
 
-				<View style={{ flex: 1 }}>
-					<Button onPress={cancelar} color="red" title={'Cancelar'} />
+				<View style={styles.botonCancelar}>
+					<Button onPress={cancelar} color={colorCancelar} title={'Cancelar'} />
 				</View>
 			</View>
 		</View>
 	);
 }
-const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		alignItems: 'center',
-		justifyContent: 'center'
-	},
-	image: {
-		width: 200,
-		height: 200,
-		alignSelf: 'center'
-	}
-});
-const styles2 = StyleSheet.create({
-	container: {
-		padding: 20,
-		backgroundColor: '#F8F9FA'
-	},
-	inputGroup: {
-		marginBottom: 10
-	},
-	label: {
-		fontSize: 16,
-		fontWeight: '600',
-		color: '#333',
-		marginBottom: 8,
-		marginLeft: 4
-	},
-	input: {
-		backgroundColor: '#FFF',
-		height: 40,
-		borderRadius: 12,
-		paddingHorizontal: 16,
-		fontSize: 16,
-		color: '#000',
-		borderWidth: 1,
-		borderColor: '#DDD',
-		// Sombra para iOS
-		shadowColor: '#000',
-		shadowOffset: { width: 0, height: 2 },
-		shadowOpacity: 0.05,
-		shadowRadius: 4,
-		// Sombra para Android
-		elevation: 2,
-		flex: 1,
-		borderLeftWidth: 0,
-		borderTopLeftRadius: 0,
-		borderBottomLeftRadius: 0
-	},
-	textArea: {
-		height: 120,
-		paddingTop: 15
-	},
-	priceInputWrapper: {
-		flexDirection: 'row',
-		alignItems: 'center'
-	},
-	currencySymbol: {
-		backgroundColor: '#EEE',
-		height: 50,
-		paddingHorizontal: 15,
-		justifyContent: 'center',
-		lineHeight: 50,
-		borderTopLeftRadius: 12,
-		borderBottomLeftRadius: 12,
-		borderWidth: 1,
-		borderColor: '#DDD',
-		color: '#555',
-		fontWeight: 'bold'
-	}
-});

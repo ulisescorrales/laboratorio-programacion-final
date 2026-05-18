@@ -105,7 +105,7 @@ export default function Login() {
 					ios_backgroundColor="#3e3e3e"
 					onValueChange={toggleSwitch}
 					value={isEnabled}
-					style={{ alignSelf: 'flex-start' }}
+					style={styles2.switchMostrarContraseña}
 				/>
 			</View>
 			<Text style={styles2.textError}>{error}</Text>

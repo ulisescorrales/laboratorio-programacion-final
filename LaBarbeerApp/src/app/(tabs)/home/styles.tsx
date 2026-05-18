@@ -35,6 +35,14 @@ export const styles = StyleSheet.create({
 		// justifyContent:'center',
 		alignItems: 'center'
 	},
+	cabecera: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		justifyContent: 'space-between'
+	},
+	imageBackground: {
+		height: '100%'
+	},
 	image: {
 		height: 170,
 		width: 170,
@@ -67,7 +75,7 @@ export const styles2 = StyleSheet.create({
 	container: {
 		padding: 20,
 		// backgroundColor: '#121212' // Fondo oscuro premium
-		height:'auto',
+		height: 'auto',
 		backgroundColor: 'rgba(0, 0, 0, 0.6)'
 	},
 	headerContainer: {

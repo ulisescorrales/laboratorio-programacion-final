@@ -4,7 +4,6 @@ import {
 	ActivityIndicator,
 	RefreshControl,
 } from 'react-native';
-import { useRouter } from 'expo-router';
 import { Text, Pressable, View, FlatList } from 'react-native';
 import { Image } from 'react-native';
 import { styles } from '../../app/(tabs)/home/styles';
@@ -23,9 +22,11 @@ type seccionProps = {
 	setMensaje: any;
 	mensaje: string;
 	refrescar: boolean;
+	setMostrarBorrar:any
 };
 
 export default function Seccion({
+  //TODO : revisar si son necesarios todos estos parámetros
 	title,
 	tipoProducto,
 	setMostrarDescripcion,
@@ -33,9 +34,9 @@ export default function Seccion({
 	setMostrarFormulario,
 	setMensaje,
 	mensaje,
-	refrescar
+	refrescar,
+	setMostrarBorrar
 }: seccionProps) {
-	const router = useRouter();
 	const context = useBarber();
 	const backendHost = process.env.EXPO_PUBLIC_BACKEND_HOST;
 	const [colProductos, setColProductos] = useState<any>([]);
@@ -120,6 +121,13 @@ export default function Seccion({
 			id: item.nombre
 		});
 	};
+	const agregarItem = () => {
+		setMostrarFormulario({
+			tipoAccion: 'i',
+			tipoProducto: tipoProducto,
+			id: null
+		});
+	};
 	useEffect(() => {
 		//Revisar si hay un mensaje para el toast
 		if (mensaje) {
@@ -175,9 +183,9 @@ export default function Seccion({
 				}
 				data={colProductos}
 				renderItem={({ item, index }) => (
-					<View style={{ margin: 10 }}>
+					<View style={styleItem.contenedorImagenes}>
 						<Pressable onPress={() => actualizarDescripcion(item)}>
-							<View style={{ position: 'relative' }}>
+							<View style={styleItem.contenedorImagen}>
 								<Image
 									source={{
 										uri: backendHost + item.pathImagen
@@ -202,13 +210,17 @@ export default function Seccion({
 									<Trash
 										style={styleItem.trash}
 										onPress={() =>
-											router.push({
-												pathname: '/ConfirmarBorrar',
-												params: {
-													tipoProducto: tipoProducto,
-													id: item.nombre
-												}
-											})
+										  setMostrarBorrar({
+											id:item.nombre,
+											mostrar:true
+										  })
+											// router.push({
+											// 	pathname: '/ConfirmarBorrar',
+											// 	params: {
+											// 		tipoProducto: tipoProducto,
+											// 		id: item.nombre
+											// 	}
+											// })
 										}
 									/>
 								) : null}
@@ -229,14 +241,15 @@ export default function Seccion({
 				{context && context.sesion && context.sesion.rol == 'admin' ? (
 					<Plus
 						onPress={() => {
-							router.push({
-								pathname: '/formulario_producto/formulario_producto',
-								params: {
-									tipoAccion: 'i',
-									tipoProducto: tipoProducto,
-									id: null
-								}
-							});
+						  agregarItem();
+							// router.push({
+							// 	pathname: '/formulario_producto/formulario_producto',
+							// 	params: {
+							// 		tipoAccion: 'i',
+							// 		tipoProducto: tipoProducto,
+							// 		id: null
+							// 	}
+							// });
 						}}
 					/>
 				) : null}

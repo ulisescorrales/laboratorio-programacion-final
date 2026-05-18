@@ -2,6 +2,7 @@ import {
 	StyleSheet,
 } from 'react-native';
 export const styles2 = StyleSheet.create({
+	switchMostrarContraseña:{ alignSelf: 'flex-start' },
 	textError: {
 	  color: 'red', fontSize: 14 
 	},

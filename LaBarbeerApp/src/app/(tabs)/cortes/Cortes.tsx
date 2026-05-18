@@ -1,12 +1,13 @@
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Producto from '@/components/interfaces/Producto';
+import ConfirmarBorrar from '@/components/ConfirmarBorrar/ConfirmarBorrar';
 import Descripcion from '@/components/Descripcion';
 import Seccion from '@/components/seccion/Seccion';
 import { useEffect, useState } from 'react';
 import { ImageBackground, Modal } from 'react-native';
 import Toast from 'react-native-toast-message';
 import FormularioProducto from '../../formulario_producto/formulario_producto';
-import {styles} from './styles'
+import { styles } from './styles';
 
 export default function Cortes() {
 	const [mensaje, setMensaje] = useState<any>(null);
@@ -32,7 +33,11 @@ export default function Cortes() {
 			setMostrarDescripcion(true);
 		}
 	}, [itemSeleccionado]);
-
+	//id y false o true
+	const [mostrarBorrar, setMostrarBorrar] = useState({
+	  id:null,
+	  mostrar:false
+	});
 	const [refrescar, setRefrescar] = useState<any>([]);
 	const onEndFormulario = (exito: boolean, mensaje: string) => {
 		setMostrarFormulario(null);
@@ -61,7 +66,7 @@ export default function Cortes() {
 			source={require('../../../assets/images/fondobarberia2.jpg')}
 			style={styles.imagen}
 		>
-			<SafeAreaView style={{ flex: 1, height: '100%' }}>
+			<SafeAreaView style={styles.areaTab}>
 				<Seccion
 					title={'Nuestros Cortes'}
 					tipoProducto={'corte'}
@@ -69,9 +74,10 @@ export default function Cortes() {
 					setMostrarDescripcion={setMostrarDescripcion}
 					setItemSeleccionado={setItemSeleccionado}
 					setMostrarFormulario={setMostrarFormulario}
-	setMensaje={setMensajeMostrar}
+					setMensaje={setMensajeMostrar}
 					mensaje={mensaje}
 					refrescar={refrescar}
+					setMostrarBorrar={setMostrarBorrar}
 				/>
 				{mostrarDescripcion ? (
 					<Descripcion
@@ -82,12 +88,22 @@ export default function Cortes() {
 			</SafeAreaView>
 			{mostrarFormulario ? (
 				<Modal animationType="fade" transparent={false} visible={true}>
-<FormularioProducto
+					<FormularioProducto
 						tipoProducto={mostrarFormulario.tipoProducto}
 						tipoAccion={mostrarFormulario.tipoAccion}
 						id={mostrarFormulario.id}
 						onEndFormulario={onEndFormulario}
 					/>
+				</Modal>
+			) : null}
+			{mostrarBorrar.mostrar ? (
+				<Modal animationType="fade" transparent={false} visible={true}>
+					<ConfirmarBorrar
+						onEndFormulario={onEndFormulario}
+						setMostrarBorrar={setMostrarBorrar}
+						tipoProducto={"corte"}
+						id={mostrarBorrar.id}
+					></ConfirmarBorrar>
 				</Modal>
 			) : null}
 		</ImageBackground>

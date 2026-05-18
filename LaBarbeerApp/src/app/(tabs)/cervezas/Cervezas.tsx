@@ -2,6 +2,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Producto from '@/components/interfaces/Producto';
 import Descripcion from '@/components/Descripcion';
 import Seccion from '@/components/seccion/Seccion';
+import ConfirmarBorrar from '@/components/ConfirmarBorrar/ConfirmarBorrar';
 import { useEffect, useState } from 'react';
 import {
 	ImageBackground,
@@ -35,7 +36,10 @@ export default function Cervezas() {
 			setMostrarDescripcion(true);
 		}
 	}, [itemSeleccionado]);
-
+	const [mostrarBorrar, setMostrarBorrar] = useState({
+	  id:null,
+	  mostrar:false
+	});
 	const [refrescar, setRefrescar] = useState<any>([]);
 	const onEndFormulario = (exito: boolean, mensaje: string) => {
 		setMostrarFormulario(null);
@@ -74,6 +78,7 @@ export default function Cervezas() {
 					setMensaje={setMensajeMostrar}
 					mensaje={mensaje}
 					refrescar={refrescar}
+					setMostrarBorrar={setMostrarBorrar}
 				/>
 				{mostrarDescripcion ? (
 					<Descripcion
@@ -92,6 +97,15 @@ export default function Cervezas() {
 					/>
 				</Modal>
 			) : null}
+			{
+			  mostrarBorrar.mostrar?
+				<Modal animationType="fade" transparent={false} visible={true}>
+				  <ConfirmarBorrar onEndFormulario={onEndFormulario} setMostrarBorrar={setMostrarBorrar}
+					tipoProducto={"cerveza"} id={mostrarBorrar.id}
+				  ></ConfirmarBorrar>
+				</Modal>
+				  :null
+			}
 		</ImageBackground>
 	);
 }

@@ -19,6 +19,7 @@ export const getCervezaJSON=async(nombre)=>{
 }
 export const registrarCervezaService=async(nombre,descripcion,marca,precio,pathImagen)=>{
 	pathImagen = pathImagen.replace('assets', '');
+	// console.log(pathImagen);
 	try{
 		await cervezasRepository.insertarCervezaBD(nombre,descripcion,marca,precio,pathImagen)
 	}catch(err){

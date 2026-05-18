@@ -56,7 +56,7 @@ export const generarToken=(user,role)=>{
 			},secreto,{expiresIn:'1h'})
 }
 export const getRole=(token)=>{
-	return new Promise<string>((resolv,reject)=>{
+	return new Promise((resolv,reject)=>{
 		jwt.verify(token,secreto,(err,decoded)=>{
 			if(err){
 				reject("Token vencido")

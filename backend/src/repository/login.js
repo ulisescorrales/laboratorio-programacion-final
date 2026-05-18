@@ -74,7 +74,7 @@ export const getHash = (user) => {
 	});
 };
 export const getRoleBD = (user) => {
-	return new Promise<string>((resolv, reject) => {
+	return new Promise((resolv, reject) => {
 		pool.query(
 			'select `nombre_rol` from `usuario_rol` where `nombre_usuario` = ? ;',
 			[user],

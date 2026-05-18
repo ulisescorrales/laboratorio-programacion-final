@@ -92,7 +92,7 @@ export const modificarCorteBDSinImagen = (
 	nombreOrigen
 ) => {
 	//La carga de imagen se realiza en un método aparte
-	return new Promise<boolean>((resolv, reject) => {
+	return new Promise((resolv, reject) => {
 		let args;
 		let query;
 		args = [nombre, descripcion, precio, nombreOrigen];
@@ -122,7 +122,7 @@ export const modificarCorteBD = (
 	nombreOrigen
 ) => {
 	//La carga de imagen se realiza en un método aparte
-	return new Promise<boolean>((resolv, reject) => {
+	return new Promise((resolv, reject) => {
 		let args;
 		let query;
 		pathImagen = pathImagen.replace('assets', '');

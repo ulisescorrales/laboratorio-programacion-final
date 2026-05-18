@@ -42,6 +42,7 @@ export const registrarCerveza=async(req,res)=>{
 	if (precio) {
 		precio = Number(precio);
 		if (nombre && descripcion && precio && pathImagen) {
+			console.log("registrando cerveza")
 			try {
 				await cervezasService.registrarCervezaService(
 					nombre,

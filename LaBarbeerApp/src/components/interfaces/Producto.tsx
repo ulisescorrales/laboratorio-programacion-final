@@ -3,6 +3,5 @@ export default interface Producto{
   descripcion:string,
   marca:string|null,
   precio:number,
-  promocion:string|null,
   pathImagen:string
 }

@@ -34,6 +34,7 @@ export const autenticarUsuario = async (req, res) => {
 				role
 			});
 		} catch (err) {
+			console.log(err)
 			res.status(401).send('Error autenticando usuario');
 		}
 	} else {
@@ -51,7 +52,10 @@ export const verificarUsuarioSolamente = async (
 		try {
 			const userRole = await loginService.getUserRole(token);
 			// req.user=userRole
-			res.status(200).json(userRole);
+			res.status(200).json({
+				user:userRole.user,
+				role:userRole.role
+			});
 		} catch (err) {
 			console.log(err);
 			res.status(401).send('Token inválido');
