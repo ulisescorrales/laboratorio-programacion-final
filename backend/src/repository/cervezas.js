@@ -104,7 +104,7 @@ export const modificarCervezaBD = (
 		let args;
 		let query;
 		if(pathImagen){
-			pathImagen=pathImagen.replace("assets","" )
+			pathImagen=pathImagen.replace("src/assets","" )
 			query=`UPDATE cerveza 
 				   SET nombre_cerveza=?,descripcion=?,marca=?,precio=?,pathImagen=?
 				   WHERE nombre_cerveza=?;`
@@ -153,7 +153,7 @@ export const borrarImagenCervezaPorId = (id) => {
 							'No existe el id de cerveza para borrar su imagen'
 						);
 					}
-					result[0].pathImagen = 'assets' + result[0].pathImagen;
+					result[0].pathImagen = 'src/assets' + result[0].pathImagen;
 					const path = result[0].pathImagen;
 					fs.rm(path, async (err) => {
 						if (err) {

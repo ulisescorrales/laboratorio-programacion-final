@@ -23,7 +23,7 @@ export const registrarCorteService = async (
 	precio,
 	pathImagen
 ) => {
-	pathImagen = pathImagen.replace('assets', '');
+	pathImagen = pathImagen.replace('src/assets', '');
 	try {
 		// pathImagen=await cortesRepository.guardarImagenEnFS(imagen);
 		await cortesRepository.insertarCorteBD(

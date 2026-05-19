@@ -14,7 +14,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 const router=express.Router();
 app.use("/api/",router)
-app.use(express.static("assets"))
+app.use(express.static("src/assets"))
 app.use("/api/",cervezasRouter,cortesRouter,loginRouter)
 app.listen(port, () => {
 	console.log('Server started on port ' + port);

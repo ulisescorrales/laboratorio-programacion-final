@@ -125,7 +125,7 @@ export const modificarCorteBD = (
 	return new Promise((resolv, reject) => {
 		let args;
 		let query;
-		pathImagen = pathImagen.replace('assets', '');
+		pathImagen = pathImagen.replace('src/assets', '');
 		if (pathImagen) {
 			args = [nombre, descripcion, precio, pathImagen, nombreOrigen];
 			query = `UPDATE corte
@@ -171,7 +171,7 @@ export const borrarImagenCortePorId = (id) => {
 							'No existe el id de corte para borrar su imagen'
 						);
 					}
-					result[0].pathImagen = 'assets' + result[0].pathImagen;
+					result[0].pathImagen = 'src/assets' + result[0].pathImagen;
 					const path = result[0].pathImagen;
 					fs.rm(path, async (err) => {
 						if (err) {

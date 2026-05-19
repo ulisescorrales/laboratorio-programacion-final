@@ -4,7 +4,7 @@ import multer from 'multer'
 const storage = multer.diskStorage({
 	destination: (req, file, cb) => {
 		let carpeta = req.body.tipoProducto;
-		cb(null, 'assets/images/' + carpeta + 's');
+		cb(null, 'src/assets/images/' + carpeta + 's');
 	},
 	filename: (req, file, cb) => {
 		cb(null, Date.now() + '-' + file.originalname);
