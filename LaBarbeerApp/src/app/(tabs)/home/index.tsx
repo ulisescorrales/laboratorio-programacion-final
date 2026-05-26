@@ -31,7 +31,7 @@ export default function HomeScreen() {
 		console.log(context)
 		if (!context || !context.sesion || !context.sesion.rol) {
 			//Ir a la pantalla de login
-			router.push('/login/login');
+			router.push('/login/Login');
 		} else {
 			//Desloguearse
 			if (context) {

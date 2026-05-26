@@ -229,9 +229,6 @@ export default function Seccion({
 								<Text style={styleItem.textItem}>
 									{item.nombre}
 								</Text>
-								<Text style={styleItem.textItem}>
-									{item.precio}
-								</Text>
 							</View>
 						</Pressable>
 					</View>

@@ -1,3 +1,4 @@
+import {ImageBackground} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
 	TextInput,
@@ -83,6 +84,10 @@ export default function Login() {
 	};
 
 	return (
+		<ImageBackground
+			source={require('../../assets/images/fondobarberia2.jpg')}
+			style={styles2.imagenBackground}
+		>
 		<View style={styles2.contenedorLogin}>
 			<Text style={styles2.label}>Usuario:</Text>
 			<TextInput
@@ -111,6 +116,7 @@ export default function Login() {
 			<Text style={styles2.textError}>{error}</Text>
 			<Button title={'Login'} onPress={login} />
 		</View>
+		</ImageBackground>
 	);
 }
 

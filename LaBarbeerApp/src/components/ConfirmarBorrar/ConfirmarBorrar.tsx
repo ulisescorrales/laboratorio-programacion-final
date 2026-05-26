@@ -52,7 +52,7 @@ export default function ConfirmarBorrar({
 					break;
 				case 401:
 					router.push({
-						pathname: '/login',
+						pathname: '/login/Login',
 						params: {
 							mensaje: 'Sesión expirada, vuelva a loguearse'
 						}

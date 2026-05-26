@@ -198,7 +198,7 @@ export default function FormularioProducto({
 	};
 	useEffect(() => {
 		if (!context.sesion) {
-			router.push('/login/Login');
+			router.push('/login');
 		}
 		if (id) {
 			//Modificar: traer los datos, sino es insertar y los campos quedan en blanco

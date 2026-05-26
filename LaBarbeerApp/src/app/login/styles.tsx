@@ -1,10 +1,12 @@
-import {
-	StyleSheet,
-} from 'react-native';
+import { StyleSheet } from 'react-native';
 export const styles2 = StyleSheet.create({
-	switchMostrarContraseña:{ alignSelf: 'flex-start' },
+	imagenBackground: {
+		height: '100%'
+	},
+	switchMostrarContraseña: { alignSelf: 'flex-start' },
 	textError: {
-	  color: 'red', fontSize: 14 
+		color: 'red',
+		fontSize: 14
 	},
 	contenedorLogin: {
 		margin: 10,
@@ -12,7 +14,8 @@ export const styles2 = StyleSheet.create({
 		height: '40%',
 		top: '20%',
 		borderWidth: 2,
-		borderRadius: 10
+		borderRadius: 10,
+		backgroundColor:"white"
 	},
 	container: {
 		padding: 20,

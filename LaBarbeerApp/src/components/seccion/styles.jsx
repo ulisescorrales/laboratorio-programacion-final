@@ -9,7 +9,8 @@ export const styleItem = StyleSheet.create({
 	},
 	itemCard: {
 		backgroundColor: 'white',
-		borderRadius: 15
+		borderRadius: 15,
+		padding:15
 	},
 	title: {
 		fontSize: 32,
