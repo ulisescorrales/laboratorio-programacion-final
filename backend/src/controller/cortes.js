@@ -44,6 +44,14 @@ export const registrarCorte = async (req, res) => {
 	if (precio) {
 		precio = Number(precio);
 		if (nombre && descripcion && precio && pathImagen) {
+			//Las longitudes de los atributos deben ser compatibles con los tipos de datos de la BD
+			if(nombre.length>100){
+				res.status(400).send("Nombre demasiado largo")
+			}else if(descripcion.length>255){
+				res.status(400).send("Descripcion demasiado largo")
+			}else if(marca.length>100){
+				res.status(400).send("Marca demasiado largo")
+			}
 			try {
 				await cortesService.registrarCorteService(
 					nombre,
