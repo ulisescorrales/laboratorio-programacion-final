@@ -13,5 +13,4 @@ export default function BarbeerProvider({ children }) {
 	);
 }
 
-// Hook personalizado para usarlo fácilmente
 export const useBarber = () => useContext(BarberContext);
