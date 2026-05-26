@@ -43,6 +43,15 @@ export const registrarCerveza=async(req,res)=>{
 		precio = Number(precio);
 		if (nombre && descripcion && precio && pathImagen) {
 			console.log("registrando cerveza")
+			//Las longitudes de los atributos deben ser compatibles con los tipos de datos de la BD
+			if(nombre.length>100){
+				res.status(400).send("Nombre demasiado largo")
+			}else if(descripcion.length>255){
+				res.status(400).send("Descripcion demasiado largo")
+			}else if(marca.length>100){
+				res.status(400).send("Marca demasiado largo")
+			}
+		
 			try {
 				await cervezasService.registrarCervezaService(
 					nombre,
